@@ -1,0 +1,342 @@
+<h2 data-sourcepos="1:1-1:21">
+<span id="本記事の目的" class="fragment"></span><a href="#%E6%9C%AC%E8%A8%98%E4%BA%8B%E3%81%AE%E7%9B%AE%E7%9A%84"><i class="fa fa-link"></i></a>本記事の目的</h2>
+<p data-sourcepos="3:1-3:306">BlenderのGeometry Nodes（ジオメトリノード）には、いくつかハマりどころがあるのだけれど、それらのハマりどころについて、直感的に解説している記事は多いものの、ソースコードなどの出典が書かれている記事はかなり少ない。</p>
+<p data-sourcepos="5:1-5:222">そこで当記事では、Blenderのソースコード・リーディングのさわりとして、実際のGeometry Nodesの実装がどのソースコードに書かれているかなどの対応を確認していく。</p>
+<div data-sourcepos="7:1-9:3" class="note warn">
+<span class="fa fa-fw fa-exclamation-circle"></span><div>
+<p data-sourcepos="8:1-8:399">筆者はBlenderのコミッターではないので、以下で書く考察については、あくまでソースコードに書かれたメモ（ドキュメントおよびコメント）やコードから類推しているに過ぎない。実際には読者自身がご自身の目でコードやIssue、メーリングリストやチャット等を確認されることを強く推奨する。</p>
+</div>
+</div>
+<h2 data-sourcepos="11:1-11:41">
+<span id="利用するソースコード-github" class="fragment"></span><a href="#%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%89-github"><i class="fa fa-link"></i></a>利用するソースコード: GitHub</h2>
+<p data-sourcepos="13:1-14:72">今回は、Blenderソースコードの公式ミラーである、GitHub版を使っていく。<br>
+<a href="https://github.com/blender/blender" rel="nofollow noopener" target="_blank">https://github.com/blender/blender</a></p>
+<p data-sourcepos="16:1-16:259">Blenderには複数のバージョンがあるが、今回はGitHubのソースコード検索の関係で、執筆時点で最新のmain（執筆時点で v4.4.3 以降）を題材として取り上げる。（ただし、筆者Blender環境はv4.2 LTS。）</p>
+<p data-sourcepos="18:1-18:228">なお、手元で検索したい場合は、 <code>git clone --depth=1 https://github.com/blender/blender -b main</code> などを行い、VSCode等で検索を行うと良い。（定義ジャンプについてはこちらが便利。）</p>
+<h2 data-sourcepos="20:1-20:47">
+<span id="geometry-nodesとソースコードの対応" class="fragment"></span><a href="#geometry-nodes%E3%81%A8%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E5%AF%BE%E5%BF%9C"><i class="fa fa-link"></i></a>Geometry Nodesとソースコードの対応</h2>
+<p data-sourcepos="22:1-22:250"><a href="https://github.com/blender/blender/tree/50927827ff1c4da70ece03d609490b4cf0768cfe/source/blender/nodes/geometry/nodes" rel="nofollow noopener" target="_blank">source/blender/nodes/geometry/nodes</a> 以下に、各Geometry Nodeに対応するソースコードがズラッと並んでいる。</p>
+<p data-sourcepos="24:1-24:161"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fccbe17c0-ec28-4b11-b30d-ad43df0191c3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=34a8f125950c4daae22e597e0daa6111" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fccbe17c0-ec28-4b11-b30d-ad43df0191c3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=34a8f125950c4daae22e597e0daa6111" alt="スクリーンショット 2025-06-11 8.58.02.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fccbe17c0-ec28-4b11-b30d-ad43df0191c3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=17edef6b2a6c4375ba100e10dbe7cb60 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/ccbe17c0-ec28-4b11-b30d-ad43df0191c3.png" loading="lazy"></a></p>
+<p data-sourcepos="26:1-26:208">ちなみにこれらの名前は、実際に利用する際の名前とは異なっているので、表示名で検索したい場合は、<code>ntype.ui_name = "Grid"</code> などで全文検索を行うと良い。</p>
+<p data-sourcepos="28:1-28:263"><code>ntype.ui_name = "Grid"</code> で実際に検索してみると、<a href="https://github.com/blender/blender/blob/50927827ff1c4da70ece03d609490b4cf0768cfe/source/blender/nodes/geometry/nodes/node_geo_mesh_primitive_grid.cc" rel="nofollow noopener" target="_blank">node_geo_mesh_primitive_grid.cc</a> が該当する。</p>
+<h2 data-sourcepos="30:1-30:66">
+<span id="前菜-gridのソースコードに少し目を通してみる" class="fragment"></span><a href="#%E5%89%8D%E8%8F%9C-grid%E3%81%AE%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AB%E5%B0%91%E3%81%97%E7%9B%AE%E3%82%92%E9%80%9A%E3%81%97%E3%81%A6%E3%81%BF%E3%82%8B"><i class="fa fa-link"></i></a>前菜: Gridのソースコードに少し目を通してみる</h2>
+<p data-sourcepos="32:1-32:368">最初の題材として、前項の流れで <a href="https://docs.blender.org/manual/en/latest/modeling/geometry_nodes/mesh/primitives/grid.html" rel="nofollow noopener" target="_blank">Grid</a> (<a href="https://github.com/blender/blender/blob/50927827ff1c4da70ece03d609490b4cf0768cfe/source/blender/nodes/geometry/nodes/node_geo_mesh_primitive_grid.cc" rel="nofollow noopener" target="_blank">node_geo_mesh_primitive_grid.cc</a>) をまず取り上げてみたい。</p>
+<p data-sourcepos="34:1-34:241">Geometry NodesのGridは、以下のようなものになっている。グリッド状のメッシュを生成するためのノードで、グリッドのサイズや頂点数を入力として受け付け、MeshやUV Mapを出力する。</p>
+<p data-sourcepos="36:1-36:161"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F22e0769a-a0f5-4df9-87df-40b66644d0fe.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=ee5e59c0cec88c9f4f4ef1d6282bce11" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F22e0769a-a0f5-4df9-87df-40b66644d0fe.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=ee5e59c0cec88c9f4f4ef1d6282bce11" alt="スクリーンショット 2025-06-11 9.04.48.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F22e0769a-a0f5-4df9-87df-40b66644d0fe.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=8fbf30341a7d6c17888f7d321cb64f24 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/22e0769a-a0f5-4df9-87df-40b66644d0fe.png" loading="lazy"></a></p>
+<p data-sourcepos="38:1-38:277"><a href="https://github.com/blender/blender/blob/50927827ff1c4da70ece03d609490b4cf0768cfe/source/blender/nodes/geometry/nodes/node_geo_mesh_primitive_grid.cc#L13-L37" rel="nofollow noopener" target="_blank">定義箇所に該当するコード</a>（node_declare）を見てみると、確かにそのような記述がある。</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="40:1-66:3"><div class="highlight"><pre><code><span class="k">static</span> <span class="kt">void</span> <span class="nf">node_declare</span><span class="p">(</span><span class="n">NodeDeclarationBuilder</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">b</span><span class="p">.</span><span class="n">add_input</span><span class="o">&lt;</span><span class="n">decl</span><span class="o">::</span><span class="n">Float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"Size X"</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">default_value</span><span class="p">(</span><span class="mf">1.0</span><span class="n">f</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">min</span><span class="p">(</span><span class="mf">0.0</span><span class="n">f</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">subtype</span><span class="p">(</span><span class="n">PROP_DISTANCE</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">description</span><span class="p">(</span><span class="s">"Side length of the plane in the X direction"</span><span class="p">);</span>
+  <span class="n">b</span><span class="p">.</span><span class="n">add_input</span><span class="o">&lt;</span><span class="n">decl</span><span class="o">::</span><span class="n">Float</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"Size Y"</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">default_value</span><span class="p">(</span><span class="mf">1.0</span><span class="n">f</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">min</span><span class="p">(</span><span class="mf">0.0</span><span class="n">f</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">subtype</span><span class="p">(</span><span class="n">PROP_DISTANCE</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">description</span><span class="p">(</span><span class="s">"Side length of the plane in the Y direction"</span><span class="p">);</span>
+  <span class="n">b</span><span class="p">.</span><span class="n">add_input</span><span class="o">&lt;</span><span class="n">decl</span><span class="o">::</span><span class="n">Int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"Vertices X"</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">default_value</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">min</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">max</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">description</span><span class="p">(</span><span class="s">"Number of vertices in the X direction"</span><span class="p">);</span>
+  <span class="n">b</span><span class="p">.</span><span class="n">add_input</span><span class="o">&lt;</span><span class="n">decl</span><span class="o">::</span><span class="n">Int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"Vertices Y"</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">default_value</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">min</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">max</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+      <span class="p">.</span><span class="n">description</span><span class="p">(</span><span class="s">"Number of vertices in the Y direction"</span><span class="p">);</span>
+  <span class="n">b</span><span class="p">.</span><span class="n">add_output</span><span class="o">&lt;</span><span class="n">decl</span><span class="o">::</span><span class="n">Geometry</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"Mesh"</span><span class="p">);</span>
+  <span class="n">b</span><span class="p">.</span><span class="n">add_output</span><span class="o">&lt;</span><span class="n">decl</span><span class="o">::</span><span class="n">Vector</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"UV Map"</span><span class="p">).</span><span class="n">field_on_all</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p data-sourcepos="68:1-68:89">よく眺めてみると、<code>UV Map</code> にだけ、<code>field_on_all()</code> と書かれている。</p>
+<p data-sourcepos="70:1-70:102">Gridノードをよく見てみると、<code>UV Map</code>だけはひし形の形になっているようだ。</p>
+<p data-sourcepos="72:1-72:163"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fef14c95e-8b4c-48e9-8c80-3f558f9bab13.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=e1ed056af5addd3bbb364454d1853a2d" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fef14c95e-8b4c-48e9-8c80-3f558f9bab13.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=e1ed056af5addd3bbb364454d1853a2d" alt="スクリーンショット_2025-06-11_9_32_16a.jpg" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fef14c95e-8b4c-48e9-8c80-3f558f9bab13.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=873891b80d7908486cb7f5fbded25377 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/ef14c95e-8b4c-48e9-8c80-3f558f9bab13.jpeg" loading="lazy"></a></p>
+<p data-sourcepos="74:1-74:403"><a href="https://github.com/blender/blender/blob/c463860a828b491e4a3b8edd9f4de18f6d65fe4c/source/blender/nodes/intern/node_declaration.cc#L662-L681" rel="nofollow noopener" target="_blank">field_on_all()の定義</a>にジャンプしてみると、以下のような記述がある。今回は出力 = Output での利用であることに注目すると、これはどうやら出力が <code>Field</code> であることを明示するためのものらしい。</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="76:1-98:3"><div class="highlight"><pre><code><span class="n">BaseSocketDeclarationBuilder</span> <span class="o">&amp;</span><span class="n">BaseSocketDeclarationBuilder</span><span class="o">::</span><span class="n">field_on_all</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">is_input</span><span class="p">())</span> <span class="p">{</span>
+    <span class="k">this</span><span class="o">-&gt;</span><span class="n">supports_field</span><span class="p">();</span>
+  <span class="p">}</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">is_output</span><span class="p">())</span> <span class="p">{</span>
+    <span class="k">this</span><span class="o">-&gt;</span><span class="n">field_source</span><span class="p">();</span> <span class="c1">// &lt;- 今回は出力なのでこちら</span>
+  <span class="p">}</span>
+  <span class="n">field_on_all_</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+  <span class="k">this</span><span class="o">-&gt;</span><span class="n">structure_type</span><span class="p">(</span><span class="n">StructureType</span><span class="o">::</span><span class="n">Field</span><span class="p">);</span>
+  <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// field_source() の定義</span>
+<span class="n">BaseSocketDeclarationBuilder</span> <span class="o">&amp;</span><span class="n">BaseSocketDeclarationBuilder</span><span class="o">::</span><span class="n">field_source</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">BLI_assert</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">is_output</span><span class="p">());</span>
+  <span class="n">decl_base_</span><span class="o">-&gt;</span><span class="n">output_field_dependency</span> <span class="o">=</span> <span class="n">OutputFieldDependency</span><span class="o">::</span><span class="n">ForFieldSource</span><span class="p">();</span>
+  <span class="k">this</span><span class="o">-&gt;</span><span class="n">structure_type</span><span class="p">(</span><span class="n">StructureType</span><span class="o">::</span><span class="n">Field</span><span class="p">);</span>
+  <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<h2 data-sourcepos="100:1-100:53">
+<span id="ハマりどころ1-fieldとは何だろうか" class="fragment"></span><a href="#%E3%83%8F%E3%83%9E%E3%82%8A%E3%81%A9%E3%81%93%E3%82%8D1-field%E3%81%A8%E3%81%AF%E4%BD%95%E3%81%A0%E3%82%8D%E3%81%86%E3%81%8B"><i class="fa fa-link"></i></a>◆ハマりどころ1: Fieldとは何だろうか</h2>
+<p data-sourcepos="102:1-102:109">さてここで、Geometry Nodesの最初のハマりどころともいえる、Fieldが早速登場した。</p>
+<p data-sourcepos="104:1-104:125">Fieldについての直感的な解説については、以下が詳しいので、併せて参照していただきたい。</p>
+<p data-sourcepos="106:1-106:40"><iframe id="qiita-embed-content__7327d404369e325ff4371b72b2f7d17e" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__7327d404369e325ff4371b72b2f7d17e" data-content="https%3A%2F%2Fwww.ultra-noob.com%2Fblog%2F2022%2F34%2F" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="108:1-108:219">では早速、Fieldの定義を見ていく。Fieldは、<a href="https://github.com/blender/blender/blob/50927827ff1c4da70ece03d609490b4cf0768cfe/source/blender/functions/FN_field.hh" rel="nofollow noopener" target="_blank"><code>FN_Field.hh</code></a>に定義されている。</p>
+<p data-sourcepos="110:1-110:69">FN_Field.hh の冒頭に、以下のようなコメントがある。</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="112:1-142:3"><div class="highlight"><pre><code><span class="cm">/** \file
+ * \ingroup fn
+ *
+ * A #Field represents a function that outputs a value based on an arbitrary number of inputs. The
+ * inputs for a specific field evaluation are provided by a #FieldContext.
+ *
+ * A typical example is a field that computes a displacement vector for every vertex on a mesh
+ * based on its position.
+ *
+ * Fields can be built, composed and evaluated at run-time. They are stored in a directed tree
+ * graph data structure, whereby each node is a #FieldNode and edges are dependencies. A #FieldNode
+ * has an arbitrary number of inputs and at least one output and a #Field references a specific
+ * output of a #FieldNode. The inputs of a #FieldNode are other fields.
+ *
+ * There are two different types of field nodes:
+ *  - #FieldInput: Has no input and exactly one output. It represents an input to the entire field
+ *    when it is evaluated. During evaluation, the value of this input is based on a #FieldContext.
+ *  - #FieldOperation: Has an arbitrary number of field inputs and at least one output. Its main
+ *    use is to compose multiple existing fields into new fields.
+ *
+ * When fields are evaluated, they are converted into a multi-function procedure which allows
+ * efficient computation. In the future, we might support different field evaluation mechanisms for
+ * e.g. the following scenarios:
+ *  - Latency of a single evaluation is more important than throughput.
+ *  - Evaluation should happen on other hardware like GPUs.
+ *
+ * Whenever possible, multiple fields should be evaluated together to avoid duplicate work when
+ * they share common sub-fields and a common context.
+ */</span>
+</code></pre></div></div>
+<p data-sourcepos="144:1-144:114">これを翻訳すると以下のようになる。（GPT-4oによるもの。誤りを含む場合もある。）</p>
+<blockquote data-sourcepos="146:1-162:202">
+<p data-sourcepos="146:2-146:224">このファイルは、任意の数の入力に基づいて値を出力する関数を表す#Fieldについて説明しています。特定のフィールド評価の入力は#FieldContextによって提供されます。</p>
+<p data-sourcepos="148:2-148:148">典型的な例としては、メッシュ上の各頂点の位置に基づいて変位ベクトルを計算するフィールドがあります。</p>
+<p data-sourcepos="150:2-150:417">フィールドは、実行時に構築、合成、評価することができます。これらは、各ノードが#FieldNodeであり、エッジが依存関係である有向木グラフデータ構造に格納されます。#FieldNodeは任意の数の入力と少なくとも1つの出力を持ち、#Fieldは#FieldNodeの特定の出力を参照します。#FieldNodeの入力は他のフィールドです。</p>
+<p data-sourcepos="152:2-152:74">フィールドノードには2つの異なるタイプがあります：</p>
+<ul data-sourcepos="154:2-156:1">
+<li data-sourcepos="154:2-154:201">#FieldInput: 入力がなく、正確に1つの出力を持ちます。評価時に全体のフィールドへの入力を表します。この入力の値は#FieldContextに基づいています。</li>
+<li data-sourcepos="155:2-156:1">#FieldOperation: 任意の数のフィールド入力と少なくとも1つの出力を持ちます。主な用途は、複数の既存のフィールドを新しいフィールドに合成することです。</li>
+</ul>
+<p data-sourcepos="157:2-157:283">フィールドが評価されると、それらは効率的な計算を可能にする多機能手続きに変換されます。将来的には、以下のようなシナリオに対して異なるフィールド評価メカニズムをサポートする可能性があります：</p>
+<ul data-sourcepos="159:2-161:1">
+<li data-sourcepos="159:2-159:87">単一評価のレイテンシがスループットよりも重要である場合。</li>
+<li data-sourcepos="160:2-161:1">評価がGPUなどの他のハードウェアで行われるべきである場合。</li>
+</ul>
+<p data-sourcepos="162:2-162:202">可能な限り、複数のフィールドは共通のサブフィールドと共通のコンテキストを共有する場合に重複作業を避けるために一緒に評価されるべきです。</p>
+</blockquote>
+<p data-sourcepos="164:1-164:271">どうやら、Blenderのソースコードにはこのように丁寧なドキュメントが書いてあるらしい。ありがたい。（実際にはこれではなく、公式ドキュメントを閲覧したほうがわかりやすい場合も多いだろう。）</p>
+<div data-sourcepos="166:1-168:3" class="note info">
+<span class="fa fa-fw fa-check-circle"></span><div>
+<p data-sourcepos="167:1-167:141">なお、このコメントの意味がさっぱりわからなくても何の問題もない。以下で少しずつ深堀りしていく。</p>
+</div>
+</div>
+<h2 data-sourcepos="170:1-170:102">
+<span id="ハマりどころ2-fieldとしてのidやpositionはどうやって評価されているのか" class="fragment"></span><a href="#%E3%83%8F%E3%83%9E%E3%82%8A%E3%81%A9%E3%81%93%E3%82%8D2-field%E3%81%A8%E3%81%97%E3%81%A6%E3%81%AEid%E3%82%84position%E3%81%AF%E3%81%A9%E3%81%86%E3%82%84%E3%81%A3%E3%81%A6%E8%A9%95%E4%BE%A1%E3%81%95%E3%82%8C%E3%81%A6%E3%81%84%E3%82%8B%E3%81%AE%E3%81%8B"><i class="fa fa-link"></i></a>◆ハマりどころ2: FieldとしてのIDやPositionはどうやって評価されているのか</h2>
+<p data-sourcepos="172:1-172:143">さて、前項の内容（Field）の解説をするにあたって、例として、もう一つだけ別の題材を挙げておきたい。</p>
+<p data-sourcepos="174:1-174:186">Fieldの実体として、先に挙げた記事中でも紹介されている、IDやPositionなどの計算がわかりにくいという事例を例に挙げて深堀りしていく。</p>
+<p data-sourcepos="176:1-176:40"><iframe id="qiita-embed-content__b2921ed49cf9def8d3a865bc8ff9133e" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__b2921ed49cf9def8d3a865bc8ff9133e" data-content="https%3A%2F%2Fwww.ultra-noob.com%2Fblog%2F2022%2F34%2F" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="178:1-178:156">具体的に、以下のようなノードの接続があるとする。ここでは、ひし形のフィールド同士が接続されているようだ。</p>
+<p data-sourcepos="180:1-180:161"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F67967fdb-e43b-4728-b886-197b9f880d06.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=273a402db79a910adb482cca34a18e50" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F67967fdb-e43b-4728-b886-197b9f880d06.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=273a402db79a910adb482cca34a18e50" alt="スクリーンショット 2025-06-11 9.30.11.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F67967fdb-e43b-4728-b886-197b9f880d06.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=9e2f4945a21fa1670b9d426af75406e3 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/67967fdb-e43b-4728-b886-197b9f880d06.png" loading="lazy"></a></p>
+<p data-sourcepos="182:1-182:149">ここで先の記事で挙げられている疑問は、「PositionやIDというのは、何のPositionで、何のIDなのか」というもの。</p>
+<p data-sourcepos="184:1-184:359">では実際に、Positionノードの定義を見ていこうと思う。おさらいとして <code>ntype.ui_name = "Position"</code> でソースコードを検索すると、<a href="https://github.com/blender/blender/blob/c463860a828b491e4a3b8edd9f4de18f6d65fe4c/source/blender/nodes/geometry/nodes/node_geo_input_position.cc" rel="nofollow noopener" target="_blank">node_geo_input_position.cc</a> が該当する。</p>
+<p data-sourcepos="186:1-186:302">今回は定義部分（node_declare）ではなくて、node_geo_input_position.ccの<a href="https://github.com/blender/blender/blob/c463860a828b491e4a3b8edd9f4de18f6d65fe4c/source/blender/nodes/geometry/nodes/node_geo_input_position.cc#L14-L18" rel="nofollow noopener" target="_blank">実際の処理コード</a>（node_geo_exec）を見ていく。</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="188:1-194:3"><div class="highlight"><pre><code><span class="k">static</span> <span class="kt">void</span> <span class="nf">node_geo_exec</span><span class="p">(</span><span class="n">GeoNodeExecParams</span> <span class="n">params</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">Field</span><span class="o">&lt;</span><span class="n">float3</span><span class="o">&gt;</span> <span class="n">position_field</span><span class="p">{</span><span class="n">AttributeFieldInput</span><span class="o">::</span><span class="n">Create</span><span class="o">&lt;</span><span class="n">float3</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"position"</span><span class="p">)};</span>
+  <span class="n">params</span><span class="p">.</span><span class="n">set_output</span><span class="p">(</span><span class="s">"Position"</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">position_field</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p data-sourcepos="196:1-196:150">これを見ると実装自体はシンプルで、<code>AttributeFieldInput</code>というものを作って、出力に紐づけているだけのようだ。</p>
+<p data-sourcepos="198:1-198:359"><code>AttributeFieldInput</code> 自体は <a href="https://github.com/blender/blender/blob/c463860a828b491e4a3b8edd9f4de18f6d65fe4c/source/blender/blenkernel/BKE_geometry_fields.hh" rel="nofollow noopener" target="_blank"><code>BKE_geometry_fields.hh</code></a> に定義されていて、 <code>GeometryFieldInput</code> を継承している。さらに、<code>GeometryFieldInput</code> は同ソース内で <code>fn::FieldInput</code> を継承している。</p>
+<p data-sourcepos="200:1-200:118">ということは、<code>XxxFieldInput</code> は、全て <code>fn::FieldInput</code> の派生クラスだと考えてよさそうだ。</p>
+<p data-sourcepos="202:1-202:444">なお、各 <code>FieldInput</code> の派生クラスには、それぞれ <code>get_varray_for_context</code> という関数が定義されている （ <a href="https://github.com/blender/blender/blob/c463860a828b491e4a3b8edd9f4de18f6d65fe4c/source/blender/functions/FN_field.hh#L282" rel="nofollow noopener" target="_blank">親クラスである FieldInput の get_varray_for_context の定義はこちら</a> ）。この <code>get_varray_for_context</code> という関数で、実際の処理内容が確認できる。</p>
+<p data-sourcepos="204:1-204:298">実例として、定義文が比較的短い、<a href="https://github.com/blender/blender/blob/50927827ff1c4da70ece03d609490b4cf0768cfe/source/blender/blenkernel/intern/geometry_fields.cc#L497C32-L510" rel="nofollow noopener" target="_blank">IDノードの例</a> (<code>IDAttributeFieldInput::get_varray_for_context</code>の実装) を見ていきたい。</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="206:1-221:3"><div class="highlight"><pre><code><span class="n">GVArray</span> <span class="n">IDAttributeFieldInput</span><span class="o">::</span><span class="n">get_varray_for_context</span><span class="p">(</span><span class="k">const</span> <span class="n">GeometryFieldContext</span> <span class="o">&amp;</span><span class="n">context</span><span class="p">,</span>
+                                                      <span class="k">const</span> <span class="n">IndexMask</span> <span class="o">&amp;</span><span class="n">mask</span><span class="p">)</span> <span class="k">const</span>
+<span class="p">{</span>
+
+  <span class="k">const</span> <span class="n">StringRef</span> <span class="n">name</span> <span class="o">=</span> <span class="n">get_random_id_attribute_name</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">domain</span><span class="p">());</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">auto</span> <span class="n">attributes</span> <span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="n">attributes</span><span class="p">())</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">GVArray</span> <span class="n">attribute</span> <span class="o">=</span> <span class="o">*</span><span class="n">attributes</span><span class="o">-&gt;</span><span class="n">lookup</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">context</span><span class="p">.</span><span class="n">domain</span><span class="p">(),</span> <span class="n">CD_PROP_INT32</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="n">attribute</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="cm">/* Use the index as the fallback if no random ID attribute exists. */</span>
+  <span class="k">return</span> <span class="n">fn</span><span class="o">::</span><span class="n">IndexFieldInput</span><span class="o">::</span><span class="n">get_index_varray</span><span class="p">(</span><span class="n">mask</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p data-sourcepos="223:1-223:129">ここで注目したいのは、<code>context.domain()</code>というものを引数にとって、実際の計算をしていること。</p>
+<p data-sourcepos="225:1-225:238">このドメインの型となっている <a href="https://github.com/blender/blender/blob/50927827ff1c4da70ece03d609490b4cf0768cfe/source/blender/blenkernel/BKE_attribute.hh#L62-L79" rel="nofollow noopener" target="_blank"><code>AttrDomain</code>の定義</a>は以下のようになっている。</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="227:1-246:3"><div class="highlight"><pre><code><span class="k">enum</span> <span class="k">class</span> <span class="nc">AttrDomain</span> <span class="o">:</span> <span class="kt">int8_t</span> <span class="p">{</span>
+  <span class="cm">/* Used to choose automatically based on other data. */</span>
+  <span class="n">Auto</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+  <span class="cm">/* Mesh, Curve or Point Cloud Point. */</span>
+  <span class="n">Point</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="cm">/* Mesh Edge. */</span>
+  <span class="n">Edge</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="cm">/* Mesh Face. */</span>
+  <span class="n">Face</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+  <span class="cm">/* Mesh Corner. */</span>
+  <span class="n">Corner</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+  <span class="cm">/* A single curve in a larger curve data-block. */</span>
+  <span class="n">Curve</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+  <span class="cm">/* Instance. */</span>
+  <span class="n">Instance</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+  <span class="cm">/* A layer in a grease pencil data-block. */</span>
+  <span class="n">Layer</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>
+<span class="p">};</span>
+</code></pre></div></div>
+<p data-sourcepos="248:1-248:230">つまり、<code>XxxFieldContext</code> (今回の場合は <code>GeometryFieldContext</code>) というフィールドのコンテクスト情報（文脈）を解釈し、コンテクストに応じたデータを返していることがわかる。</p>
+<p data-sourcepos="250:1-250:338">ここから類推するに、Field というのは何らかの情報の集合体で、FieldInput でコンテクストに応じて集合体の種類 (= どのFieldを返すべきか) を特定しつつ、必要な情報を受け渡す、一種の配列（バッファ）のようなもの<sup><a href="#fn-1" id="fnref-1">1</a></sup>であるというのがわかってくる。</p>
+<h2 data-sourcepos="252:1-252:92">
+<span id="ハマりどころ3-geometry-nodesはどういうふうに計算されているのか" class="fragment"></span><a href="#%E3%83%8F%E3%83%9E%E3%82%8A%E3%81%A9%E3%81%93%E3%82%8D3-geometry-nodes%E3%81%AF%E3%81%A9%E3%81%86%E3%81%84%E3%81%86%E3%81%B5%E3%81%86%E3%81%AB%E8%A8%88%E7%AE%97%E3%81%95%E3%82%8C%E3%81%A6%E3%81%84%E3%82%8B%E3%81%AE%E3%81%8B"><i class="fa fa-link"></i></a>◆ハマりどころ3: Geometry Nodesはどういうふうに計算されているのか</h2>
+<p data-sourcepos="254:1-254:223">ここで、そもそもの疑問が湧いてくる。FieldInput がコンテクストに応じて情報を返すのであれば、Geometry Nodesというのは一体どんな順序で計算されているのだろうか。</p>
+<p data-sourcepos="256:1-256:197">これは、ノードの実行の実体が書かれている <code>node_geo_exec</code> 関数が、どんな呼び出し順序で呼ばれているかを丁寧に追っていくと、垣間見えてくる。</p>
+<p data-sourcepos="258:1-258:338">まず <code>node_geo_exec</code> 関数は、<code>node_register</code> 関数内で <code>ntype.geometry_node_execute</code> にアサインされている。<a href="https://github.com/blender/blender/blob/c463860a828b491e4a3b8edd9f4de18f6d65fe4c/source/blender/nodes/geometry/nodes/node_geo_mesh_primitive_grid.cc#L69" rel="nofollow noopener" target="_blank">Gridノードでの実例</a>を以下に挙げておく。</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="260:1-274:3"><div class="highlight"><pre><code><span class="k">static</span> <span class="kt">void</span> <span class="nf">node_register</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">static</span> <span class="n">blender</span><span class="o">::</span><span class="n">bke</span><span class="o">::</span><span class="n">bNodeType</span> <span class="n">ntype</span><span class="p">;</span>
+
+  <span class="n">geo_node_type_base</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ntype</span><span class="p">,</span> <span class="s">"GeometryNodeMeshGrid"</span><span class="p">,</span> <span class="n">GEO_NODE_MESH_PRIMITIVE_GRID</span><span class="p">);</span>
+  <span class="n">ntype</span><span class="p">.</span><span class="n">ui_name</span> <span class="o">=</span> <span class="s">"Grid"</span><span class="p">;</span>
+  <span class="n">ntype</span><span class="p">.</span><span class="n">ui_description</span> <span class="o">=</span> <span class="s">"Generate a planar mesh on the XY plane"</span><span class="p">;</span>
+  <span class="n">ntype</span><span class="p">.</span><span class="n">enum_name_legacy</span> <span class="o">=</span> <span class="s">"MESH_PRIMITIVE_GRID"</span><span class="p">;</span>
+  <span class="n">ntype</span><span class="p">.</span><span class="n">nclass</span> <span class="o">=</span> <span class="n">NODE_CLASS_GEOMETRY</span><span class="p">;</span>
+  <span class="n">ntype</span><span class="p">.</span><span class="n">declare</span> <span class="o">=</span> <span class="n">node_declare</span><span class="p">;</span>
+  <span class="n">ntype</span><span class="p">.</span><span class="n">geometry_node_execute</span> <span class="o">=</span> <span class="n">node_geo_exec</span><span class="p">;</span> <span class="c1">// &lt;- この行</span>
+  <span class="n">blender</span><span class="o">::</span><span class="n">bke</span><span class="o">::</span><span class="n">node_register_type</span><span class="p">(</span><span class="n">ntype</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p data-sourcepos="276:1-276:327">そしてこの <code>geometry_node_execute</code> は、LazyFunctionForGeometryNodeというクラスの中で実際には呼び出されている。 (<a href="https://github.com/blender/blender/blob/c463860a828b491e4a3b8edd9f4de18f6d65fe4c/source/blender/nodes/intern/geometry_nodes_lazy_function.cc#L261" rel="nofollow noopener" target="_blank">geometry_nodes_lazy_function.cc#L261</a>)</p>
+<p data-sourcepos="278:1-278:324">この、LazyFunctionというのは何なのだろうか。<a href="https://github.com/blender/blender/blob/c463860a828b491e4a3b8edd9f4de18f6d65fe4c/source/blender/nodes/intern/geometry_nodes_lazy_function.cc#L5-L21" rel="nofollow noopener" target="_blank">geometry_nodes_lazy_function.cc 冒頭の解説文</a>を読んでみると、その一端が垣間見えてくる。</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="280:1-298:3"><div class="highlight"><pre><code><span class="cm">/** \file
+ * \ingroup nodes
+ *
+ * This file mainly converts a #bNodeTree into a lazy-function graph, that can then be evaluated to
+ * execute geometry nodes. This generally works by creating a lazy-function for every node, which
+ * is then put into the lazy-function graph. Then the nodes in the new graph are linked based on
+ * links in the original #bNodeTree. Some additional nodes are inserted for things like type
+ * conversions and multi-input sockets.
+ *
+ * If the #bNodeTree contains zones, those are turned into separate lazy-functions first.
+ * Essentially, a separate lazy-function graph is created for every zone that is than called by the
+ * parent zone or by the root graph.
+ *
+ * Currently, lazy-functions are even created for nodes that don't strictly require it, like
+ * reroutes or muted nodes. In the future we could avoid that at the cost of additional code
+ * complexity. So far, this does not seem to be a performance issue.
+ */</span>
+</code></pre></div></div>
+<p data-sourcepos="300:1-300:58">GPT-4oによる翻訳（誤りを含む可能性あり）:</p>
+<blockquote data-sourcepos="302:1-306:391">
+<p data-sourcepos="302:2-302:525">このファイルは、主に#bNodeTreeを遅延関数グラフに変換し、それを評価してジオメトリノードを実行できるようにします。これは一般的に、各ノードのために遅延関数を作成し、それを遅延関数グラフに配置することで機能します。新しいグラフ内のノードは、元の#bNodeTreeのリンクに基づいて接続されます。型変換や複数入力ソケットなどのために、いくつかの追加ノードが挿入されます。</p>
+<p data-sourcepos="304:2-304:281">#bNodeTreeにゾーンが含まれている場合、それらは最初に別々の遅延関数に変換されます。基本的に、親ゾーンまたはルートグラフによって呼び出される各ゾーンのために別々の遅延関数グラフが作成されます。</p>
+<p data-sourcepos="306:2-306:391">現在、遅延関数は、リルートやミュートされたノードのように厳密には必要としないノードに対しても作成されています。将来的には、追加のコードの複雑さを代償にそれを避けることができるかもしれません。これまでのところ、これはパフォーマンスの問題にはなっていないようです。</p>
+</blockquote>
+<p data-sourcepos="308:1-308:48">わかったようなわからないような。</p>
+<p data-sourcepos="310:1-310:348">これだけでは少し掴みづらいので、実際にLazyFunctionを呼び出している<a href="https://github.com/blender/blender/blob/bcfd276825f7791e3c1969309a16811d548dfdaf/source/blender/functions/intern/lazy_function_graph_executor.cc#L5-L21" rel="nofollow noopener" target="_blank">lazy_function_graph_executor.ccの冒頭の解説文</a>も少しだけ読んでみることにする。</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="312:1-334:4"><div class="highlight"><pre><code><span class="cm">/**
+ * This file implements the evaluation of a lazy-function graph. It's main objectives are:
+ * - Only compute values that are actually used.
+ * - Stay single threaded when nodes are executed quickly.
+ * - Allow spreading the work over an arbitrary number of threads efficiently.
+ *
+ * This executor makes use of `FN_lazy_threading.hh` to enable multi-threading only when it seems
+ * beneficial. It operates in two modes: single- and multi-threaded. The use of a task pool and
+ * locks is avoided in single-threaded mode. Once multi-threading is enabled the executor starts
+ * using both. It is not possible to switch back from multi-threaded to single-threaded mode.
+ *
+ * The multi-threading design implemented in this executor requires *no* main thread that
+ * coordinates everything. Instead, one thread will trigger some initial work and then many threads
+ * coordinate themselves in a distributed fashion. In an ideal situation, every thread ends up
+ * processing a separate part of the graph which results in less communication overhead. The way
+ * TBB schedules tasks helps with that: a thread will next process the task that it added to a task
+ * pool just before.
+
+ （=== 後略 ===）
+
+*/</span>
+</code></pre></div></div>
+<p data-sourcepos="336:2-336:60">GPT-4oによる翻訳（誤りを含む可能性あり）:</p>
+<blockquote data-sourcepos="338:1-346:608">
+<p data-sourcepos="338:2-338:121">このファイルは、遅延関数グラフの評価を実装しています。主な目的は以下の通りです：</p>
+<ul data-sourcepos="340:2-343:1">
+<li data-sourcepos="340:2-340:60">実際に使用される値のみを計算すること。</li>
+<li data-sourcepos="341:2-341:96">ノードが迅速に実行される場合はシングルスレッドを維持すること。</li>
+<li data-sourcepos="342:2-343:1">任意の数のスレッドに効率的に作業を分散させること。</li>
+</ul>
+<p data-sourcepos="344:2-344:565">このエグゼキュータは、FN_lazy_threading.hhを利用して、利益が見込まれる場合にのみマルチスレッドを有効にします。シングルスレッドモードとマルチスレッドモードの2つのモードで動作します。シングルスレッドモードでは、タスクプールやロックの使用は避けられます。マルチスレッドが有効になると、エグゼキュータは両方を使用し始めます。マルチスレッドからシングルスレッドモードに戻ることはできません。</p>
+<p data-sourcepos="346:2-346:608">このエグゼキュータに実装されたマルチスレッド設計は、すべてを調整するメインスレッドを必要としません。代わりに、1つのスレッドが初期作業をトリガーし、その後、多くのスレッドが分散方式で自らを調整します。理想的な状況では、各スレッドがグラフの別々の部分を処理し、通信オーバーヘッドが減少します。TBBがタスクをスケジュールする方法がこれに役立ちます：スレッドは、直前にタスクプールに追加したタスクを次に処理します。</p>
+</blockquote>
+<p data-sourcepos="348:1-348:461">なるほど、なんとなくわかってきた。つまりGeometry Nodesというのは、単純に左から右に逐次実行されているのではなくて、必要な部分だけを必要に応じて計算する、いわゆる遅延評価が行われているようだ。（ということは、実際には左から右ではなくて、右から左に必要に応じて計算を深堀りしている、という見方もできるかもしれない。）</p>
+<p data-sourcepos="350:1-350:177">今回はこれ以上深くは深堀りしないが、さらに実装が気になる場合は、関連するソースコードを読んでいくと面白いかもしれない。</p>
+<h2 data-sourcepos="352:1-352:113">
+<span id="ハマりどころ4-instance-on-points-でpick-instanceってどうやって実行されているの" class="fragment"></span><a href="#%E3%83%8F%E3%83%9E%E3%82%8A%E3%81%A9%E3%81%93%E3%82%8D4-instance-on-points-%E3%81%A7pick-instance%E3%81%A3%E3%81%A6%E3%81%A9%E3%81%86%E3%82%84%E3%81%A3%E3%81%A6%E5%AE%9F%E8%A1%8C%E3%81%95%E3%82%8C%E3%81%A6%E3%81%84%E3%82%8B%E3%81%AE"><i class="fa fa-link"></i></a>◆ハマりどころ4: Instance on Points で、Pick Instanceってどうやって実行されているの？</h2>
+<p data-sourcepos="354:1-354:260">さて、この記事の趣旨は前項までにほとんど終えているので、<strong>最後はちょっとしたオマケ</strong>として、ある特定のGeometry Nodeのわからないところを深堀りする例として、軽くだけ触れていきたい。</p>
+<p data-sourcepos="356:1-356:95">Geometry Nodesでよく使われるノードに、Instance on Pointsというものがある。</p>
+<p data-sourcepos="358:1-358:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F6786f82f-d5b6-4819-a276-b502bb45c40c.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=be695a1848858b1f0f4ae690425a19e3" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F6786f82f-d5b6-4819-a276-b502bb45c40c.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=be695a1848858b1f0f4ae690425a19e3" alt="スクリーンショット 2025-06-11 10.22.28.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F6786f82f-d5b6-4819-a276-b502bb45c40c.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=a882c999e8b0a2658727b4994f5f0a89 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/6786f82f-d5b6-4819-a276-b502bb45c40c.png" loading="lazy"></a></p>
+<p data-sourcepos="360:1-360:299">このInstance on Pointsは、入力として与えたポイントに、Instanceとして与えたものを（インスタンスとして）自動的に複製してくれるので、例えば草を生やしたり、同じものをとにかくたくさん増やしたいときに便利に使える。</p>
+<p data-sourcepos="362:1-362:246">このとき、同じインスタンスではなくて、別の種類のインスタンスも混ぜたい、ということがよくある。このとき使うのが <code>Pick Instance</code> という入力（フラグ、Boolean = 真偽値）となる。</p>
+<p data-sourcepos="364:1-364:136">※ なお、例のごとく機能の詳しい解説は行わないので、直感的な説明は以下を参照してもらいたい。</p>
+<p data-sourcepos="366:1-366:40"><iframe id="qiita-embed-content__6f39b8442e005ec7c240af8c3dcad3dd" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__6f39b8442e005ec7c240af8c3dcad3dd" data-content="https%3A%2F%2Fwww.ultra-noob.com%2Fblog%2F2022%2F33%2F" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="368:1-368:106">今回は軽く、このPick Instanceがどうやって機能しているかを見てみようと思う。</p>
+<p data-sourcepos="370:1-370:263">どのソースコードが該当しているか、まず簡潔に<a href="https://github.com/blender/blender/blob/50927827ff1c4da70ece03d609490b4cf0768cfe/source/blender/nodes/geometry/nodes/node_geo_instance_on_points.cc#L119-L136" rel="nofollow noopener" target="_blank">該当箇所</a>だけ挙げておく。</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="372:1-397:3"><div class="highlight"><pre><code>    <span class="c1">// (=== 前略 ===)</span>
+    
+    <span class="k">const</span> <span class="kt">bool</span> <span class="n">use_individual_instance</span> <span class="o">=</span> <span class="n">pick_instance</span><span class="p">[</span><span class="n">i</span><span class="p">];</span> 
+    <span class="c1">// メモ: ↑ ここでPick Instanceの値が使われている</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="n">use_individual_instance</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">src_instances</span> <span class="o">!=</span> <span class="nb">nullptr</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">const</span> <span class="kt">int</span> <span class="n">src_instances_num</span> <span class="o">=</span> <span class="n">src_instances</span><span class="o">-&gt;</span><span class="n">instances_num</span><span class="p">();</span>
+        <span class="k">const</span> <span class="kt">int</span> <span class="n">original_index</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+        <span class="cm">/* Use #mod_i instead of `%` to get the desirable wrap around behavior where -1
+         * refers to the last element. */</span>
+        <span class="k">const</span> <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="n">mod_i</span><span class="p">(</span><span class="n">original_index</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">max</span><span class="p">(</span><span class="n">src_instances_num</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">&lt;</span> <span class="n">src_instances_num</span><span class="p">)</span> <span class="p">{</span>
+          <span class="cm">/* Get the reference to the source instance. */</span>
+          <span class="k">const</span> <span class="kt">int</span> <span class="n">src_handle</span> <span class="o">=</span> <span class="n">src_instances</span><span class="o">-&gt;</span><span class="n">reference_handles</span><span class="p">()[</span><span class="n">index</span><span class="p">];</span>
+          <span class="n">dst_handle</span> <span class="o">=</span> <span class="n">handle_mapping</span><span class="p">[</span><span class="n">src_handle</span><span class="p">];</span>
+
+          <span class="cm">/* Take transforms of the source instance into account. */</span>
+          <span class="n">mul_m4_m4_post</span><span class="p">(</span><span class="n">dst_transform</span><span class="p">.</span><span class="n">ptr</span><span class="p">(),</span> <span class="n">src_instances</span><span class="o">-&gt;</span><span class="n">transforms</span><span class="p">()[</span><span class="n">index</span><span class="p">].</span><span class="n">ptr</span><span class="p">());</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// (=== 後略 ===)</span>
+</code></pre></div></div>
+<p data-sourcepos="399:1-399:392">正直、前後のコードをよく見てもらわないと意味がわからないとは思うのだけれど、確かに、Pick Instanceが有効になっている場合は、<code>handle_mapping</code>なるものを参照しながら、入力されたインスタンスから選び取って、出力先にハンドルを渡しているようだ。（今回はこれ以上深入りはしない。）</p>
+<p data-sourcepos="401:1-401:351">なおこのコードは、<code>add_instances_from_component</code>関数の一部なのだけれど、前述したノードの実装が書かれている<code>node_geo_exec</code>関数から内部的に呼び出されている。（これを辿れたのは、<code>Pick Instance</code>で検索して、それがどんなふうに変数に渡っているかを辿った結果。）</p>
+<p data-sourcepos="403:1-403:383">今回のこの短い項で伝えたかったのは、Geometry Nodesのなかで気になる機能があれば、ソースコード中で丁寧に機能を辿っていけば、該当箇所がソースに書かれているよ、ということ。こうやってできるだけ一次資料（原典）に触れることで、実装の実体を理解する一助になると嬉しい。</p>
+<h2 data-sourcepos="405:1-405:12">
+<span id="まとめ" class="fragment"></span><a href="#%E3%81%BE%E3%81%A8%E3%82%81"><i class="fa fa-link"></i></a>まとめ</h2>
+<p data-sourcepos="407:1-407:131">さて、今回は早足になったが、Geometry Nodesの実際のソースコードを、ほんの一部だけ眺めてみた。</p>
+<p data-sourcepos="409:1-409:508">Blenderのソースコードはかなり膨大なので、全てに目を通すのは事実上不可能だと思うのだけれど、例えばコアとなるBlenderカーネルには <code>BKE_</code> という接頭辞がついているとか、そうしたほんの少しの情報があれば、ちょっとずつでもソースコードの海を泳いでみることができるのではないだろうか。（難しいものを自分で解読するということ自体にも、楽しさがある気がする。）</p>
+<p data-sourcepos="411:1-411:462">なかなかこうした一次資料（原典）に触れるというのは、大変な作業なので気軽にはできないと思う。けれど、GitHubのソースコード検索機能なども年々使いやすくなっているし、こうした身近なところから、ソースコード・リーディングというものに触れてもらえれば、実体験と照らし合わせてコードが読めるので楽しいのではないかと思う。</p>
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p data-sourcepos="413:7-413:2318">GVArray (= Generic Virtual Array) というのが Field に実際にアクセスする際のインターフェイスとなっている。GVArrayの実装は <a href="https://github.com/blender/blender/blob/13fa79aa37c647f7eb2856d5d338b95bf953e1cf/source/blender/blenlib/BLI_generic_virtual_array.hh#L30" rel="nofollow noopener" target="_blank">BLI_generic_virtual_array.hh (#L30)</a> に書かれており、仮想配列についての解説は <a href="https://github.com/blender/blender/blob/13fa79aa37c647f7eb2856d5d338b95bf953e1cf/source/blender/blenlib/BLI_virtual_array.hh#L7C1-L26C4" rel="nofollow noopener" target="_blank">BLI_virtual_array.hh の冒頭の解説文</a> が詳しい。以下にGPT-4oによる翻訳を挙げておく。<br></p>
+<blockquote>
+<p>仮想配列は、配列に似たデータ構造ですが、その要素は仮想メソッドを通じてアクセスされます。これにより、関数と呼び出し元の間の結合が改善され、関数はデータがメモリにどのように配置されているか、またはメモリに保存されているかを正確に知る必要がなくなります。データはその場で計算されることもあります。</p>
+<p>仮想配列をパラメータとして受け取ることは、より具体的な非仮想型を受け取ることに比べていくつかのトレードオフがあります。個々の要素へのアクセスは、関数呼び出しのオーバーヘッドのために遅くなります。一方で、潜在的な呼び出し元はデータを関数に必要な特定の形式に変換する必要がなくなります。最終的にアクセスされる要素が少ない場合、この変換はコストがかかることがあります。</p>
+<p>仮想配列を入力として受け取る関数は、異なるデータレイアウトに対して最適化を行うことができます。たとえば、配列が内部で連続したメモリを参照しているか、すべてのインデックスに対して同じ値であるかを確認できます。関数内で異なるデータレイアウトに対して最適化する価値があるかどうかは、ケースバイケースで判断する必要があります。コンパイル時間とバイナリサイズの増加がそれに見合うかどうかを確認するために、常にベンチマークを行うべきです。</p>
+</blockquote> <a href="#fnref-1" class="">↩</a>
+</li>
+</ol>
+</section>

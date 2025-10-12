@@ -1,0 +1,79 @@
+<div data-sourcepos="1:1-5:3" class="note warn">
+<span class="fa fa-fw fa-exclamation-circle"></span><div>
+<p data-sourcepos="2:1-2:260">【追記】以下のPRによりレンダラーが<a href="https://github.com/astomih/paranoixa" rel="nofollow noopener" target="_blank">Paranoixa</a>に変更されたようなので、バックエンドにSDL GPUおよびDX12、WebGPUが追加された。これについても今後追記していきたい。</p>
+<p data-sourcepos="4:1-4:40"><a href="https://github.com/astomih/sinen/pull/24" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/astomih/sinen/pull/24</a></p>
+</div>
+</div>
+<p data-sourcepos="7:1-7:420">本当は日中に執筆しようと思ったのだけれど、今から紹介する<a href="https://github.com/astomih/sinen" rel="nofollow noopener" target="_blank">Sinen</a>が、MoltenVKによって<a href="https://github.com/astomih/sinen/issues/14" rel="nofollow noopener" target="_blank">Macに対応</a>したことによって、Win/Mac/Linuxのクロスプラットフォーム対応になったことにワクワクしてしまって寝付けないので、思い切ってその勢いで記事を書きたい。</p>
+<p data-sourcepos="9:1-9:32"><iframe id="qiita-embed-content__20ffabf9f9c6bfb48904df0954127f89" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__20ffabf9f9c6bfb48904df0954127f89" data-content="https%3A%2F%2Fgithub.com%2Fastomih%2Fsinen" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="11:1-11:338">Sinenは、Vulkanをベースにしたクリエイティブコーディングフレームワークで、2D/3Dに対応し、フォントの読み込み、GLTFモデルの読み込みなど、基本的な機能は一通り揃っていて、シンプルでとても使いやすい印象を持つ。言語はLuaとC++に対応している。</p>
+<p data-sourcepos="13:1-13:344">2021年から開発が進められていた様子で、当初はOpenGLを使っていたのが、2023年頃にVulkanレンダラーに刷新された様子。ちなみに作者によると、<a href="https://github.com/astomih/paranoixa" rel="nofollow noopener" target="_blank">Paranoixa</a>という新しい描画基盤(RHI)を開発中とのことで、これにも期待していきたい。</p>
+<p data-sourcepos="15:1-15:36"><iframe id="qiita-embed-content__8aa6549b176bf357954aca1bacc2b181" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__8aa6549b176bf357954aca1bacc2b181" data-content="https%3A%2F%2Fgithub.com%2Fastomih%2Fparanoixa" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<h2 data-sourcepos="17:1-17:19">
+<span id="hello-world-2d" class="fragment"></span><a href="#hello-world-2d"><i class="fa fa-link"></i></a>Hello World (2D)</h2>
+<div class="code-frame" data-lang="lua" data-sourcepos="19:1-42:3"><div class="highlight"><pre><code><span class="kd">local</span> <span class="n">hello_texture</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="kd">local</span> <span class="n">hello_font</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="kd">local</span> <span class="n">hello_drawer</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c1">-- Create a texture</span>
+<span class="n">hello_texture</span> <span class="o">=</span> <span class="n">texture</span><span class="p">()</span>
+<span class="c1">-- Create a draw2D</span>
+<span class="n">hello_drawer</span> <span class="o">=</span> <span class="n">draw2d</span><span class="p">(</span><span class="n">hello_texture</span><span class="p">)</span>
+<span class="c1">-- Create a font</span>
+<span class="n">hello_font</span> <span class="o">=</span> <span class="n">font</span><span class="p">()</span>
+<span class="c1">-- Load a font from file(96px)</span>
+<span class="n">hello_font</span><span class="p">:</span><span class="nb">load</span><span class="p">(</span><span class="s2">"mplus/mplus-1p-medium.ttf"</span><span class="p">,</span> <span class="mi">96</span><span class="p">)</span>
+<span class="c1">-- Render text to texture</span>
+<span class="n">hello_font</span><span class="p">:</span><span class="n">render_text</span><span class="p">(</span><span class="n">hello_texture</span><span class="p">,</span> <span class="s2">"Hello Sinen World!"</span><span class="p">,</span>
+    <span class="n">color</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="c1">-- Set scale to texture size</span>
+<span class="n">hello_drawer</span><span class="p">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">hello_texture</span><span class="p">:</span><span class="n">size</span><span class="p">()</span>
+
+<span class="k">function</span> <span class="nf">update</span><span class="p">()</span>
+    <span class="c1">-- Draw</span>
+    <span class="n">hello_drawer</span><span class="p">:</span><span class="n">draw</span><span class="p">()</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<p data-sourcepos="44:1-44:126"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fef8abca5-2812-1b07-df11-403d1fb6fbfd.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=db42626113ac1dc58317fdf2d88c74ed" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fef8abca5-2812-1b07-df11-403d1fb6fbfd.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=db42626113ac1dc58317fdf2d88c74ed" alt="hello_world.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fef8abca5-2812-1b07-df11-403d1fb6fbfd.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=51f3e31f90a5677a9b731ca114c5afd1 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/ef8abca5-2812-1b07-df11-403d1fb6fbfd.png" loading="lazy"></a></p>
+<h2 data-sourcepos="46:1-46:21">
+<span id="3d-example-works" class="fragment"></span><a href="#3d-example-works"><i class="fa fa-link"></i></a>3D Example (works)</h2>
+<p data-sourcepos="48:1-48:48"><iframe id="qiita-embed-content__ed687af34014e52a487a48a4cabd0ee6" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__ed687af34014e52a487a48a4cabd0ee6" data-content="https%3A%2F%2Fgithub.com%2Fastomih%2Fsinen%2Ftree%2Fmain%2Fworks" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="50:1-50:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F8d7c6786-f734-9eca-91eb-700aeb813b0b.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=96698a7ea1849070a6e5ec447521de45" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F8d7c6786-f734-9eca-91eb-700aeb813b0b.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=96698a7ea1849070a6e5ec447521de45" alt="スクリーンショット 2025-01-09 21.26.06.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F8d7c6786-f734-9eca-91eb-700aeb813b0b.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=aea8a6a9205dd27d42133e74292dab14 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/8d7c6786-f734-9eca-91eb-700aeb813b0b.png" loading="lazy"></a></p>
+<h2 data-sourcepos="52:1-52:24">
+<span id="editor-experimental" class="fragment"></span><a href="#editor-experimental"><i class="fa fa-link"></i></a>Editor (Experimental)</h2>
+<p data-sourcepos="54:1-54:49"><iframe id="qiita-embed-content__8d863d202f3b395bea5264645b057c9f" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__8d863d202f3b395bea5264645b057c9f" data-content="https%3A%2F%2Fgithub.com%2Fastomih%2Fsinen%2Ftree%2Fmain%2Feditor" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="56:1-56:128"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F460bdb92-c1fa-bcc1-bf02-7d1f3ae556a2.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=19a1bd03de547e522fbce4932c24f14a" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F460bdb92-c1fa-bcc1-bf02-7d1f3ae556a2.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=19a1bd03de547e522fbce4932c24f14a" alt="editor_sample.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F460bdb92-c1fa-bcc1-bf02-7d1f3ae556a2.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=dad37ba50646fd27b2f2566f30361b0c 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/460bdb92-c1fa-bcc1-bf02-7d1f3ae556a2.png" loading="lazy"></a></p>
+<h2 data-sourcepos="58:1-58:6">
+<span id="api" class="fragment"></span><a href="#api"><i class="fa fa-link"></i></a>API</h2>
+<p data-sourcepos="60:1-60:53">Lua APIとC++ APIは、以下より確認が可能。</p>
+<p data-sourcepos="62:1-62:63"><iframe id="qiita-embed-content__6e39f6d4821a04f18d007c2181cde6b6" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__6e39f6d4821a04f18d007c2181cde6b6" data-content="https%3A%2F%2Fgithub.com%2Fastomih%2Fsinen%2Fblob%2Fmain%2Fdocs%2Fdocs%2Flua_api.md" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="64:1-64:54"><iframe id="qiita-embed-content__18354a008833d14481a8b175a44ee541" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__18354a008833d14481a8b175a44ee541" data-content="https%3A%2F%2Fastomih.github.io%2Fsinen%2Fdoxygen%2Fannotated.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<h2 data-sourcepos="66:1-66:9">
+<span id="解説" class="fragment"></span><a href="#%E8%A7%A3%E8%AA%AC"><i class="fa fa-link"></i></a>解説</h2>
+<p data-sourcepos="68:1-68:283">APIやサンプルを見ていただければ分かると思うが、個人的には、クリエイティブコーディングの基盤としてちょうど良いミニマル具合<sup><a href="#fn-1" id="fnref-1">1</a></sup>。というか、まさにこういうものがほしかったという印象を持っている。</p>
+<p data-sourcepos="70:1-70:605"><del>現時点ではまだ、メッシュなどの中間レベルのAPIが存在していないため</del> (現時点でVertexArray等でメッシュ等に対応済みの様子なので、追って追記。) 例えば、球体や立方体を描くにはGLTFなどのモデルのロードが必要で、円や長方形を描くには、画像を読み込むかImGuiなどのGUIを利用するしかないのだけれど、個人的には正直それで十分な気がしていて、Vulkan APIが使えるのでそのあたりは今後簡単に対応・拡張していけるのではないかと感じている。</p>
+<p data-sourcepos="72:1-72:422">3Dを扱う上では、まだライティングに関するAPIが本当に最低限しかないものの、シェーダには対応しているので、これも必要に応じて拡張していけると思うし、3D Example (works) のスクリーンショットを見ていただければわかるように、現時点でもいわゆるUnlit風な描画であれば特に問題なく使っていくことができる。</p>
+<p data-sourcepos="74:1-74:455">OpenGLからVulkanになって以降、ゲームエンジンのような厚いレイヤーのものは多くあるものの、こういうミニマルなものが少なかった印象なので、<a href="https://processing.org/" rel="nofollow noopener" target="_blank">Processing</a>や<a href="https://openframeworks.cc/" rel="nofollow noopener" target="_blank">OpenFrameworks</a>、<a href="https://love2d.org/" rel="nofollow noopener" target="_blank">Love2D</a> <sup><a href="#fn-2" id="fnref-2">2</a></sup> のようなものが欲しかったという層にはまさにクリーンヒットするフレームワークではないだろうか。</p>
+<p data-sourcepos="76:1-76:316"><del>前述のメッシュやライティングについては、個人的に今後コントリビュートしていきたいという思いがあるので、是非今後に期待してほしいと思う。</del> (現時点でメッシュは対応済みの様子なので、使い方について追記していきたい。)</p>
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p data-sourcepos="78:7-78:496">方向性は少し違うものの、ミニマルという意味では、Clojure/LWJGL3/BGFXで書かれた<a href="https://github.com/roman01la/minimax" rel="nofollow noopener" target="_blank">minimax</a>というゲームエンジンと近しいようにも思う。ちなみにminimaxは現時点でMacでしか動かないが、ライブラリ自体はクロスプラットフォーム対応のはずなので、こちらも今後自分自身がコントリビュートしてWin/Linuxでも動くようにしたいなと思っている。 <a href="#fnref-1" class="">↩</a></p>
+</li>
+<li id="fn-2">
+<p data-sourcepos="79:7-79:220">Love2Dに関しては、最近同様のAPIでVulkan実装の3D対応版（<a href="https://lovr.org/" rel="nofollow noopener" target="_blank">LÖVR</a>）がリリースされているので、こちらも比較対象とすると良いと思う。 <a href="https://lovr.org/" class="autolink" rel="nofollow noopener" target="_blank">https://lovr.org/</a> <a href="#fnref-2" class="">↩</a></p>
+</li>
+</ol>
+</section>

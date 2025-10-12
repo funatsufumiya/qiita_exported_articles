@@ -1,0 +1,86 @@
+<p data-sourcepos="1:1-1:154"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Ffd73d9fc-96b9-55a7-dd6d-7d0683195ad6.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=e12b8c9e23d58a1b19ddc8f9ad40bc41" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Ffd73d9fc-96b9-55a7-dd6d-7d0683195ad6.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=e12b8c9e23d58a1b19ddc8f9ad40bc41" alt="ゲームエンジンOSS対応表.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Ffd73d9fc-96b9-55a7-dd6d-7d0683195ad6.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=9cedb2a7e986063ea95220771a212d89 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/fd73d9fc-96b9-55a7-dd6d-7d0683195ad6.png" loading="lazy"></a></p>
+<p data-sourcepos="3:1-3:195">完全なる独断と偏見で、オープンソースのゲームエンジン・VJエンジンと商用エンジンの対応表（似ているものの相関図）を作ってみました。<sup><a href="#fn-5" id="fnref-5">1</a></sup></p>
+<p data-sourcepos="5:1-5:115">2024年5月時点の情報なので、今後対応するOSや言語などは変わっていくと思われます。</p>
+<p data-sourcepos="7:1-7:153">（似たような記事や動画は多くあると思いますが、一応参考になりそうな他の動画を２つほど挙げておきます。）</p>
+<p data-sourcepos="9:1-9:43"><iframe id="qiita-embed-content__0781ce798832273ab72467756625d39a" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__0781ce798832273ab72467756625d39a" data-content="https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DWxaXmB-tPBE" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="11:1-11:43"><iframe id="qiita-embed-content__dfcd600544c4f1f6db7125a75ad0db6f" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__dfcd600544c4f1f6db7125a75ad0db6f" data-content="https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D2ardiWXqdk8" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<div data-sourcepos="13:1-15:3" class="note warn">
+<span class="fa fa-fw fa-exclamation-circle"></span><div>
+<p data-sourcepos="14:1-14:351">冒頭の図における「だいたい対応」というのは、思想や概念、使い勝手などが似ていることを指していて、移行が比較的簡単であることを意味しています。一方で、例えばファイル形式などに互換性があったり、公式サポートがあるわけではないので注意です。</p>
+</div>
+</div>
+<h2 data-sourcepos="17:1-17:20">
+<span id="背景-who-am-i" class="fragment"></span><a href="#%E8%83%8C%E6%99%AF-who-am-i"><i class="fa fa-link"></i></a>背景 (who am i)</h2>
+<p data-sourcepos="19:1-19:189">一応これを作った背景を。元々筆者は複数のゲームエンジンやフレームワークを適材適所で利用して、仕事などで作品等を作ってきました。</p>
+<p data-sourcepos="21:1-21:353">私は最近では<a href="https://bevyengine.org/" rel="nofollow noopener" target="_blank">Bevy Engine</a>を主に使っていますが、開発ステージ的に安定版まではもうあと一歩であるということと、エディターレスであるということもあり、やはり複数のフレームワークやエンジンを適材適所で使うということを続けています。</p>
+<p data-sourcepos="23:1-23:421">長らく<a href="https://unity.com/ja" rel="nofollow noopener" target="_blank">Unity</a>を使っていたこともあり、最近は思想が比較的似ている<a href="https://godotengine.org/" rel="nofollow noopener" target="_blank">Godot</a>を使い始めたりもしていますが、VJ的な作品では<a href="https://derivative.ca/" rel="nofollow noopener" target="_blank">Touch Designer</a>や<a href="https://cycling74.com/products/max" rel="nofollow noopener" target="_blank">Max</a>などが向いている場合もあり、ゲームエンジン等にはそれぞれ向き不向きや哲学があります。</p>
+<p data-sourcepos="25:1-25:345">冒頭の図においては、矢印で繋いだものは比較的思想が似ているものを繋げたつもりです。いずれのエンジンも同等なことができたり、相互利用できたりすること、また似ていると思っていても違う哲学があったりすることを留意いただければと思います。</p>
+<h2 data-sourcepos="27:1-27:24">
+<span id="注意事項補足" class="fragment"></span><a href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A0%85%E8%A3%9C%E8%B6%B3"><i class="fa fa-link"></i></a>注意事項・補足</h2>
+<h3 data-sourcepos="29:1-29:22">
+<span id="vvvv--stride" class="fragment"></span><a href="#vvvv--stride"><i class="fa fa-link"></i></a>VVVV ←→ Stride</h3>
+<p data-sourcepos="31:1-31:364">今回の図にVJエンジンを含めた大きなポイントが<a href="https://visualprogramming.net/" rel="nofollow noopener" target="_blank">VVVV</a>にあります。VVVVは、元来のバージョンである<code>beta</code>と、2020年からスタートした<code>gamma</code>でだいぶ変更点があり、特に<code>gamma</code>では3D描画エンジンとして<a href="https://www.stride3d.net/" rel="nofollow noopener" target="_blank">Stride</a>が利用されています<sup><a href="#fn-2" id="fnref-2">2</a></sup>。</p>
+<p data-sourcepos="33:1-33:239">このことを配慮したのと、<a href="https://tooll.io/" rel="nofollow noopener" target="_blank">TOOLL3</a>をぜひ取り上げたかったということもあり、今回ゲームエンジンとVJエンジンを混ぜることにしました。（TOOLL3については後述。）</p>
+<p data-sourcepos="35:1-35:205">VVVVを商用エンジンに含めるかは迷いましたが、ライセンスとして商用用途は有償で販売されていることもあり、今回は商用エンジン扱いとしています。</p>
+<h3 data-sourcepos="37:1-37:20">
+<span id="ue--stride" class="fragment"></span><a href="#ue--stride"><i class="fa fa-link"></i></a>UE ←→ Stride</h3>
+<p data-sourcepos="39:1-39:220"><a href="https://www.unrealengine.com/ja" rel="nofollow noopener" target="_blank">Unreal Engine</a>についても、ソースは公開されているので厳密にはオープンソースですが、VVVVと同様の理由で商用エンジン扱いとしています。</p>
+<p data-sourcepos="41:1-41:334">Strideが対応関係にあるかについては賛否両論あるかと思いますが、描画エンジンの方向性がフォトリアリスティックであることや、UEもStrideも3Dを基軸としていること（UnityやGodotには2Dモードが別にあること）などを踏まえて、対応関係としました。</p>
+<p data-sourcepos="43:1-43:288">ちなみに、フォトリアリスティックな表現ができるゲームエンジンは例えば<a href="https://wickedengine.net/" rel="nofollow noopener" target="_blank">Wicked Engine</a>などいろいろ選択肢がありますので、あくまで参考として肌感に合ったものを使われると良いと思います。</p>
+<p data-sourcepos="45:1-45:265">（追記: 2024年10月）<a href="https://o3de.org" rel="nofollow noopener" target="_blank">O3DE</a>もStrideと比較的近いゲームエンジンのように思います。UEのようなDeferred Renderingはまだサポートされていませんが、さらに調査して比較してみたいところです。</p>
+<h3 data-sourcepos="47:1-47:10">
+<span id="stride" class="fragment"></span><a href="#stride"><i class="fa fa-link"></i></a>Stride</h3>
+<p data-sourcepos="49:1-49:43"><iframe id="qiita-embed-content__c090be500f60a666bafe72aa67a81da1" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__c090be500f60a666bafe72aa67a81da1" data-content="https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DBiFLOs40BgM" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="51:1-51:408"><a href="https://www.stride3d.net/" rel="nofollow noopener" target="_blank">Stride</a>は、過去にXenkoと呼ばれていたゲームエンジンのようで、特にフォトリアリスティックな表現をするのに向いているエンジンという印象があります。執筆時点で最新版の4.2では、.NET 8 / C# 12への対応もできているとのことで、UE5の代替の大きな選択肢の一つではないでしょうか。</p>
+<p data-sourcepos="53:1-53:245">現時点では開発環境はWindowsのみ対応していますが、クロスプラットフォームに書き出しすることが可能で、エディタ自体をMac/Linuxに対応させようという動きも一応あるようです<sup><a href="#fn-7" id="fnref-7">3</a></sup>。</p>
+<h3 data-sourcepos="55:1-55:22">
+<span id="unity--godot" class="fragment"></span><a href="#unity--godot"><i class="fa fa-link"></i></a>Unity ←→ Godot</h3>
+<p data-sourcepos="57:1-57:299">UnityとGodotは、一方がコンポーネントシステムでありもう一方がノードシステムであることなど、違いは多く存在します。今回はUEやTouch Designerなどと比較して大局をみたときに、類似点が多いことから対応関係としました。</p>
+<p data-sourcepos="59:1-59:475">Godotについてはすでに多くの情報があることもあり、書くとしても別の記事にしたいと思っていますので詳細は割愛します。個人的なGodotの魅力は、言語選択の自由度が高いこと、クロスプラットフォーム対応の選択肢が幅広いこと（描画エンジンが選べるなど）、そして後発ゆえにエディタや構造がシンプルで使いやすいことが挙げられると思います。</p>
+<h3 data-sourcepos="61:1-61:30">
+<span id="openframeworks--bevy" class="fragment"></span><a href="#openframeworks--bevy"><i class="fa fa-link"></i></a>OpenFrameworks ←→ Bevy</h3>
+<p data-sourcepos="63:1-63:179">今回特に扱いに迷ったのが、エディタレスの汎用エンジンである<a href="https://openframeworks.cc/" rel="nofollow noopener" target="_blank">OpenFrameworks</a> (oF)と<a href="https://bevyengine.org/" rel="nofollow noopener" target="_blank">Bevy</a>です。</p>
+<p data-sourcepos="65:1-65:412">正直載せなくてもいいくらいではあったのですが、OpenFrameworksはよくVVVVやTouch Designerと同じ界隈で広く利用されていること、また、BevyはUnity DOTSと思想が似ていること、そして標準エディタがないだけで、描画エンジンや開発フレームワークとしてのポテンシャルが高いことを考慮に入れて表に載せました。</p>
+<p data-sourcepos="67:1-67:407">また今回、BevyをOpenFrameworksの「上位互換」<sup><a href="#fn-6" id="fnref-6">4</a></sup>とあえて書きましたが、あくまでベーススペック上の概観の話であって、開発思想やユーザ層は全く異なりますし、アドオンなどの広がりも方向性も異なっているので、C++とRustという言語の壁はありますがうまく相互利用できる関係にあると思っています。</p>
+<h4 data-sourcepos="69:1-69:53">
+<span id="エディタレス-の意味合いについて" class="fragment"></span><a href="#%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF%E3%83%AC%E3%82%B9-%E3%81%AE%E6%84%8F%E5%91%B3%E5%90%88%E3%81%84%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><i class="fa fa-link"></i></a>"エディタレス" の意味合いについて</h4>
+<p data-sourcepos="71:1-71:251">個人的には、BevyとGodotをうまく今後連携して利用していければと思っていて、<a href="https://github.com/funatsufumiya/bevy_godot4" rel="nofollow noopener" target="_blank">bevy_godot4</a>の存在を念頭において、「一応相互利用可能」と表記しました。</p>
+<p data-sourcepos="73:1-73:495">ただBevy界隈では、<a href="https://github.com/kaosat-dev/Blender_bevy_components_workflow" rel="nofollow noopener" target="_blank">Blender_bevy_components_workflow</a>を使ってBlender (GLTF)をエディタのように使ったり、<a href="https://github.com/Trouv/bevy_ecs_ldtk" rel="nofollow noopener" target="_blank">bevy_ecs_ldtk</a>を使って<a href="https://ldtk.io/" rel="nofollow noopener" target="_blank">LDTK</a>を利用したりすることの方が多いかなという印象で、Unityと連携している事例<sup><a href="#fn-3" id="fnref-3">5</a></sup>もありますが、他のゲームエンジンとの連携はこれからかなと思っています。</p>
+<p data-sourcepos="75:1-75:372">BlenderやLDTK、そして<a href="https://github.com/mvlabat/bevy_egui" rel="nofollow noopener" target="_blank">egui</a>や<a href="https://github.com/ocornut/imgui" rel="nofollow noopener" target="_blank">ImGui</a>なども考慮にいれると、BevyやoFはもはやエディタレスとは呼べないかもしれませんし、エディタがないゆえの開発上の利便性（抽象性やポータビリティ）や選択の自由度があるのは確かです。</p>
+<p data-sourcepos="77:1-77:635">エディタレスのゲームエンジンは、正直挙げればキリがないのですが、<a href="https://processing.org/" rel="nofollow noopener" target="_blank">Proecssing</a>や<a href="https://love2d.org/" rel="nofollow noopener" target="_blank">LÖVE2D</a>、<a href="https://www.openfl.org/" rel="nofollow noopener" target="_blank">OpenFL</a>など、一定層の根強い人気があり、クリエイティブコーディングの楽しさや気軽さ、抽象度の高さゆえの応用性の高さがあります。私はエディタレスのフレームワークは、個人的にUnityやUEとは別の方向性でも発展していくのではないかと感じています。前述のように、うまく相互利用していけるといいなと思っています。</p>
+<h3 data-sourcepos="79:1-79:10">
+<span id="tooll3" class="fragment"></span><a href="#tooll3"><i class="fa fa-link"></i></a>TOOLL3</h3>
+<p data-sourcepos="81:1-81:43"><iframe id="qiita-embed-content__a2f141c8cd7338652c05cf09fc951d3c" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__a2f141c8cd7338652c05cf09fc951d3c" data-content="https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D_zvzX0fZ8sc" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="83:1-83:294"><a href="https://tooll.io/" rel="nofollow noopener" target="_blank">TOOLL3</a>（あるいは単にT3）は個人的に使っていてすごく楽しいと思うツールの一つで、Touch Designerや<a href="https://cycling74.com/products/max" rel="nofollow noopener" target="_blank">Max</a>などに触れたことがある方であれば楽しく使えるのではないかと思います。</p>
+<p data-sourcepos="85:1-85:338">TOOLL3がオープンソースとして今後どんな発展を遂げていくかはわかりませんが、Touch DesignerがGodot同様にOpenGL/Vulkanをベースにしているのに対して、DirectXをベースにしていたり、C#でカスタムできたりと、思想が異なる部分を逆に興味深く感じています。</p>
+<p data-sourcepos="87:1-87:254">MacやLinuxへの対応も検討されている<sup><a href="#fn-1" id="fnref-1">6</a></sup>ようで、DirectXベースの部分が今後どう他のプラットフォームに展開されていくのか、あるいはWindowsのみで発展していくのかを注視したいところです。</p>
+<section class="footnotes">
+<ol>
+<li id="fn-5">
+<p data-sourcepos="92:7-92:223">図やこの記事の内容については自由に転載や改変、翻訳・翻案などしてもらえればと思います。<a href="https://creativecommons.jp/sciencecommons/aboutcc0/" rel="nofollow noopener" target="_blank">CC0</a>扱いとしておきます。 <a href="#fnref-5" class="">↩</a></p>
+</li>
+<li id="fn-2">
+<p data-sourcepos="90:7-90:71"><a href="https://thegraybook.vvvv.org/reference/libraries/graphics-3d.html" class="autolink" rel="nofollow noopener" target="_blank">https://thegraybook.vvvv.org/reference/libraries/graphics-3d.html</a> <a href="#fnref-2" class="">↩</a></p>
+</li>
+<li id="fn-7">
+<p data-sourcepos="94:7-94:50"><a href="https://github.com/stride3d/stride/issues/63" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/stride3d/stride/issues/63</a> <a href="#fnref-7" class="">↩</a></p>
+</li>
+<li id="fn-6">
+<p data-sourcepos="93:7-93:531">BevyをoFの上位互換とした理由のもう一つが、oFやProcessingのRust言語版ともいえる<a href="https://nannou.cc/" rel="nofollow noopener" target="_blank">nannou</a>が、<a href="https://github.com/nannou-org/nannou/issues/953" rel="nofollow noopener" target="_blank">Bevyプラグインとして再開発されようとしている</a>という事情もあります。とはいえ、Bevyの描画エンジンの基盤となっている<a href="https://github.com/gfx-rs/wgpu" rel="nofollow noopener" target="_blank">wgpu</a>にも課題はありますし、ECSも万能ではありませんので、やはり適材適所が大事だと思っています。 <a href="#fnref-6" class="">↩</a></p>
+</li>
+<li id="fn-3">
+<p data-sourcepos="91:7-91:49"><a href="https://www.youtube.com/watch?v=lsc2X3uS8VU" class="autolink" rel="nofollow noopener" target="_blank">https://www.youtube.com/watch?v=lsc2X3uS8VU</a> <a href="#fnref-3" class="">↩</a></p>
+</li>
+<li id="fn-1">
+<p data-sourcepos="89:7-89:44"><a href="https://github.com/tooll3/t3/issues/32" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/tooll3/t3/issues/32</a> <a href="#fnref-1" class="">↩</a></p>
+</li>
+</ol>
+</section>

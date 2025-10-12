@@ -1,0 +1,979 @@
+<div>
+<a href="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2FIm7Iggn.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=4bd4c3725a27a07267fdb2a817cd7b1f" target="_blank" rel="nofollow noopener"><img alt="VST" src="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2FIm7Iggn.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=4bd4c3725a27a07267fdb2a817cd7b1f" width="160px" srcset="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2FIm7Iggn.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=772505e11c0e12bcb7f9d2f0a79f4a94 1x" data-canonical-src="http://imgur.com/Im7Iggn.jpg" loading="lazy"></a>
+<a href="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2Fi0eEgHY.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8af8b33495b01b730d837d3a85fc6db7" target="_blank" rel="nofollow noopener"><img alt="AU" src="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2Fi0eEgHY.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8af8b33495b01b730d837d3a85fc6db7" height="130px" srcset="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2Fi0eEgHY.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=29d044215bb394f6b8de5a362004ee81 1x" data-canonical-src="http://imgur.com/i0eEgHY.jpg" loading="lazy"></a>
+</div>
+<p data-sourcepos="7:1-7:93">VSTとAudioUnitは日本語ドキュメントが少ないので、まとめておきます。</p>
+<h1 data-sourcepos="9:1-9:5">
+<span id="vst" class="fragment"></span><a href="#vst"><i class="fa fa-link"></i></a>VST</h1>
+<a href="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2FIm7Iggn.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=4bd4c3725a27a07267fdb2a817cd7b1f" target="_blank" rel="nofollow noopener"><img alt="VST" src="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2FIm7Iggn.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=4bd4c3725a27a07267fdb2a817cd7b1f" width="160px" srcset="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2FIm7Iggn.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=772505e11c0e12bcb7f9d2f0a79f4a94 1x" data-canonical-src="http://imgur.com/Im7Iggn.jpg" loading="lazy"></a>
+<h2 data-sourcepos="13:1-13:12">
+<span id="vstとは" class="fragment"></span><a href="#vst%E3%81%A8%E3%81%AF"><i class="fa fa-link"></i></a>VSTとは</h2>
+<p data-sourcepos="15:1-15:9">VSTは、</p>
+<p data-sourcepos="17:1-17:51"><em>Steinberg's <strong>V</strong>irtual <strong>S</strong>tudio <strong>T</strong>echnology</em></p>
+<p data-sourcepos="19:1-19:15">の略です。</p>
+<p data-sourcepos="21:1-21:114">名前の通り、Steinberg（スタインバーグ）社が提供している仮想音響技術のことです。</p>
+<p data-sourcepos="23:1-23:296">仕組みは、C++のダイナミックライブラリを使い、 <strong>ホストアプリケーション</strong>と呼ばれるアプリケーションに動的に組み込まれ、リアルタイム／非リアルタイムにフィルタや仮想楽器をレンダリングすることができます。</p>
+<p data-sourcepos="25:1-25:183">クロスプラットフォームな技術ですが、C++をプラットフォームごとにコンパイルする必要があり、特にGUIには注意する必要があります。</p>
+<p data-sourcepos="27:1-27:108">なお、楽器（シンセサイザー）として機能するVSTは、特に <strong>VSTi</strong>と呼ばれます。</p>
+<h2 data-sourcepos="29:1-29:27">
+<span id="sdkのダウンロード" class="fragment"></span><a href="#sdk%E3%81%AE%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89"><i class="fa fa-link"></i></a>SDKのダウンロード</h2>
+<ul data-sourcepos="31:1-33:0">
+<li data-sourcepos="31:1-33:0">Developer Site (Steinberg)<br>
+<a href="http://www.steinberg.net/en/company/developers.html" class="autolink" rel="nofollow noopener" target="_blank">http://www.steinberg.net/en/company/developers.html</a>
+</li>
+</ul>
+<h3 data-sourcepos="34:1-34:34">
+<span id="開発者アカウント登録" class="fragment"></span><a href="#%E9%96%8B%E7%99%BA%E8%80%85%E3%82%A2%E3%82%AB%E3%82%A6%E3%83%B3%E3%83%88%E7%99%BB%E9%8C%B2"><i class="fa fa-link"></i></a>開発者アカウント登録</h3>
+<p data-sourcepos="36:1-36:51">以下のURLで開発者として登録をする。</p>
+<p data-sourcepos="38:1-38:109"><iframe id="qiita-embed-content__2cb4c6a1b25258b266fb73787ff002bd" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__2cb4c6a1b25258b266fb73787ff002bd" data-content="http%3A%2F%2Fwww.steinberg.net%2Fnc%2Fen%2Fcompany%2Fdevelopers%2Fsdk_download_portal%2Fcreate_3rd_party_developer_account.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<blockquote data-sourcepos="40:1-40:134">
+<p data-sourcepos="40:3-40:134">注：登録する時にユーザ名を登録するが、どうもメールアドレスをログインユーザ名として使う？</p>
+</blockquote>
+<h3 data-sourcepos="42:1-42:49">
+<span id="既にアカウントを持っている場合" class="fragment"></span><a href="#%E6%97%A2%E3%81%AB%E3%82%A2%E3%82%AB%E3%82%A6%E3%83%B3%E3%83%88%E3%82%92%E6%8C%81%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E5%A0%B4%E5%90%88"><i class="fa fa-link"></i></a>既にアカウントを持っている場合</h3>
+<p data-sourcepos="44:1-44:48">以下のURLでアカウントを拡張する。</p>
+<p data-sourcepos="46:1-46:110"><iframe id="qiita-embed-content__9072a7562ceb075ae74b3a2e1a083bd6" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__9072a7562ceb075ae74b3a2e1a083bd6" data-content="http%3A%2F%2Fwww.steinberg.net%2Fnc%2Fen%2Fcompany%2Fdevelopers%2Fsdk_download_portal%2Fextend_existing_mysteinberg_account.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<h3 data-sourcepos="48:1-48:40">
+<span id="ダウンロードページに戻る" class="fragment"></span><a href="#%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9A%E3%83%BC%E3%82%B8%E3%81%AB%E6%88%BB%E3%82%8B"><i class="fa fa-link"></i></a>ダウンロードページに戻る</h3>
+<p data-sourcepos="50:1-50:184">以下のサイトに再度アクセスすると、ダウンロード出来るようになる。後は指示に従えばOK。（ちなみにASIO SDKもダウンロードできる。）</p>
+<p data-sourcepos="52:1-52:51"><iframe id="qiita-embed-content__76375bbdd350dcb1adfc86d9d7786894" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__76375bbdd350dcb1adfc86d9d7786894" data-content="http%3A%2F%2Fwww.steinberg.net%2Fen%2Fcompany%2Fdevelopers.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<h2 data-sourcepos="55:1-55:27">
+<span id="sdkを展開してみる" class="fragment"></span><a href="#sdk%E3%82%92%E5%B1%95%E9%96%8B%E3%81%97%E3%81%A6%E3%81%BF%E3%82%8B"><i class="fa fa-link"></i></a>SDKを展開してみる</h2>
+<p data-sourcepos="57:1-57:155">ダウンロードしたzipファイルを展開すると、「VST3 SDK」というフォルダができる。中身は以下のようになっている。</p>
+<div>
+<p data-sourcepos="61:2-124:63"><i><b>base</b></i><br><br>
+―― mac<br><br>
+―― source<br><br>
+―― win<br><br>
+<i><b>bin</b></i><br><br>
+―― Mac OS X<br><br>
+―― Windows 32 bit<br><br>
+―― Windows 64 bit<br><br>
+<i><b>doc</b></i><br><br>
+―― artwork<br><br>
+―― base<br><br>
+―― basemodule<br><br>
+―― doxygfx<br><br>
+―― gfx<br><br>
+―― vstexamples<br><br>
+―― vstinterfaces<br><br>
+―― vstsdk<br><br>
+<i><b>pluginterfaces</b></i><br><br>
+―― base<br><br>
+―― gui<br><br>
+―― test<br><br>
+―― vst<br><br>
+―― vst2.x<br><br>
+<i><b>public.sdk</b></i><br><br>
+―― <b>samples</b><br><br>
+―――― <b>vst</b><br><br>
+―――――― InterAppAudio<br><br>
+―――――― adelay<br><br>
+―――――― again<br><br>
+―――――― common<br><br>
+―――――― hostchecker<br><br>
+―――――― mac<br><br>
+―――――― mda―vst3<br><br>
+―――――― note_expression_synth<br><br>
+―――――― note_expression_text<br><br>
+―――――― pitchnames<br><br>
+―――――― validator<br><br>
+<i><b>vstgui.sf</b></i><br><br>
+―― drawtest<br><br>
+―― libpng<br><br>
+―― vstgui<br><br>
+―― zlib<br><br>
+<i><b>vstgui4</b></i><br><br>
+―― <b>vstgui</b><br><br>
+―――― Documentation<br><br>
+―――― doxygen<br><br>
+―――― <b>ide</b><br><br>
+―――――― codeblocks<br><br>
+―――――― visualstudio<br><br>
+―――――― xcode4<br><br>
+―――― <b>lib</b><br><br>
+―――――― animation<br><br>
+―――――― controls<br><br>
+―――――― <b>platform</b><br><br>
+―――――――― <b>mac</b><br><br>
+―――――――――― carbon<br><br>
+―――――――――― cocoa<br><br>
+―――――――――― ios<br><br>
+―――――――― <b>win32</b><br><br>
+―――――――――― direct2d<br><br>
+―――― plugin―bindings<br><br>
+―――― tests<br><br>
+―――― tutorial<br><br>
+―――― uidescription<br></p>
+</div>
+<h3 data-sourcepos="128:1-128:10">
+<span id="内容" class="fragment"></span><a href="#%E5%86%85%E5%AE%B9"><i class="fa fa-link"></i></a>内容</h3>
+<p data-sourcepos="130:1-130:196">内容を見てみると、サンプルコードやGUI、IDEに関するリソースも提供されています。また、doxygenなどによるドキュメントも入っているようです。</p>
+<h3 data-sourcepos="132:1-132:25">
+<span id="サンプルコード" class="fragment"></span><a href="#%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%E3%82%B3%E3%83%BC%E3%83%89"><i class="fa fa-link"></i></a>サンプルコード</h3>
+<p data-sourcepos="134:1-134:127">上記のサンプルコードから、「pitchnames」というプロジェクトのコードを部分的に紹介します。</p>
+<h4 data-sourcepos="136:1-136:16">
+<span id="pithnamesh" class="fragment"></span><a href="#pithnamesh"><i class="fa fa-link"></i></a>pithnames.h</h4>
+<div class="code-frame" data-lang="cpp" data-sourcepos="138:1-197:3"><div class="highlight"><pre><code><span class="c1">// Project     : VST SDK</span>
+<span class="c1">// Version     : 3.6.0</span>
+<span class="c1">//</span>
+<span class="c1">// Category    : Examples</span>
+<span class="c1">// Filename    : public.sdk/samples/vst/pitchnames/source/pitchnames.h</span>
+<span class="c1">// Created by  : Steinberg, 12/2010</span>
+
+<span class="cm">/* ============ */</span>
+<span class="cm">/* === 中略 === */</span>
+<span class="cm">/* ============ */</span>
+
+<span class="cp"># ifndef __pitchnames__
+# define __pitchnames__
+</span>
+<span class="cp"># include "public.sdk/source/vst/vsteditcontroller.h"
+# include "public.sdk/source/vst/vstaudioeffect.h"
+# include "base/source/fstring.h"
+# include "base/source/tdictionary.h"
+# include "vstgui/plugin-bindings/vst3editor.h"
+</span>
+<span class="k">namespace</span> <span class="n">Steinberg</span> <span class="p">{</span>
+<span class="k">namespace</span> <span class="n">Vst</span> <span class="p">{</span>
+
+<span class="c1">//-----------------------------------------------------------------------------</span>
+<span class="k">class</span> <span class="nc">PitchNamesController</span> <span class="o">:</span> <span class="k">public</span> <span class="n">EditControllerEx1</span><span class="p">,</span> <span class="k">public</span> <span class="n">VSTGUI</span><span class="o">::</span><span class="n">VST3EditorDelegate</span>
+<span class="p">{</span>
+<span class="nl">public:</span>
+	<span class="n">tresult</span> <span class="n">PLUGIN_API</span> <span class="n">initialize</span> <span class="p">(</span><span class="n">FUnknown</span><span class="o">*</span> <span class="n">context</span><span class="p">);</span>
+
+	<span class="k">virtual</span> <span class="n">tresult</span> <span class="n">PLUGIN_API</span> <span class="n">getUnitByBus</span> <span class="p">(</span><span class="n">MediaType</span> <span class="n">type</span><span class="p">,</span> <span class="n">BusDirection</span> <span class="n">dir</span><span class="p">,</span> <span class="n">int32</span> <span class="n">busIndex</span><span class="p">,</span> <span class="n">int32</span> <span class="n">channel</span><span class="p">,</span> <span class="n">UnitID</span><span class="o">&amp;</span> <span class="n">unitId</span> <span class="cm">/*out*/</span><span class="p">);</span>
+
+	<span class="k">virtual</span> <span class="n">IPlugView</span><span class="o">*</span> <span class="n">PLUGIN_API</span> <span class="n">createView</span> <span class="p">(</span><span class="n">FIDString</span> <span class="n">name</span><span class="p">);</span>
+
+	<span class="n">VSTGUI</span><span class="o">::</span><span class="n">CView</span><span class="o">*</span> <span class="n">createCustomView</span> <span class="p">(</span><span class="n">VSTGUI</span><span class="o">::</span><span class="n">UTF8StringPtr</span> <span class="n">name</span><span class="p">,</span> <span class="k">const</span> <span class="n">VSTGUI</span><span class="o">::</span><span class="n">UIAttributes</span><span class="o">&amp;</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">VSTGUI</span><span class="o">::</span><span class="n">IUIDescription</span><span class="o">*</span> <span class="n">description</span><span class="p">,</span> <span class="n">VSTGUI</span><span class="o">::</span><span class="n">VST3Editor</span><span class="o">*</span> <span class="n">editor</span><span class="p">);</span>
+
+	<span class="k">static</span> <span class="n">FUnknown</span><span class="o">*</span> <span class="n">createInstance</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span><span class="n">IEditController</span><span class="o">*</span><span class="p">)</span><span class="k">new</span> <span class="n">PitchNamesController</span> <span class="p">();</span> <span class="p">}</span>
+	<span class="k">static</span> <span class="n">FUID</span> <span class="n">cid</span><span class="p">;</span>
+<span class="k">protected</span><span class="o">:</span>
+	<span class="n">TDictionary</span><span class="o">&lt;</span><span class="n">int16</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">pitchNames</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">//-----------------------------------------------------------------------------</span>
+<span class="k">class</span> <span class="nc">PitchNamesProcessor</span> <span class="o">:</span> <span class="k">public</span> <span class="n">AudioEffect</span>
+<span class="p">{</span>
+<span class="nl">public:</span>
+	<span class="n">PitchNamesProcessor</span> <span class="p">();</span>
+
+	<span class="n">tresult</span> <span class="n">PLUGIN_API</span> <span class="n">initialize</span> <span class="p">(</span><span class="n">FUnknown</span><span class="o">*</span> <span class="n">context</span><span class="p">);</span>
+	<span class="n">tresult</span> <span class="n">PLUGIN_API</span> <span class="n">process</span> <span class="p">(</span><span class="n">ProcessData</span><span class="o">&amp;</span> <span class="n">data</span><span class="p">);</span>
+
+	<span class="k">static</span> <span class="n">FUnknown</span><span class="o">*</span> <span class="n">createInstance</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span><span class="n">IAudioProcessor</span><span class="o">*</span><span class="p">)</span><span class="k">new</span> <span class="n">PitchNamesProcessor</span> <span class="p">();</span> <span class="p">}</span>
+	<span class="k">static</span> <span class="n">FUID</span> <span class="n">cid</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="p">}}</span> <span class="c1">// namespaces</span>
+
+<span class="cp"># endif
+</span>
+</code></pre></div></div>
+<p data-sourcepos="199:1-199:46">まず、 #include を見てみましょう。</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="201:1-207:3"><div class="highlight"><pre><code><span class="cp"># include "public.sdk/source/vst/vsteditcontroller.h"
+# include "public.sdk/source/vst/vstaudioeffect.h"
+# include "base/source/fstring.h"
+# include "base/source/tdictionary.h"
+# include "vstgui/plugin-bindings/vst3editor.h"
+</span></code></pre></div></div>
+<p data-sourcepos="209:1-209:78">単純化すると（イメージのコードです。動きません。）、</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="211:1-217:3"><div class="highlight"><pre><code><span class="n">include</span> <span class="s">"vsteditcontroller"</span><span class="p">;</span>
+<span class="n">include</span> <span class="s">"vstaudioeffect"</span><span class="p">;</span>
+<span class="n">include</span> <span class="s">"base -&gt; source -&gt; fstring"</span><span class="p">;</span>
+<span class="n">include</span> <span class="s">"base -&gt; source -&gt; tdictionary"</span><span class="p">;</span>
+<span class="n">include</span> <span class="s">"vstgui -&gt; vst3editor"</span><span class="p">;</span>
+</code></pre></div></div>
+<p data-sourcepos="219:1-220:162">見る感じ、 <strong>VSTEditController</strong> というものが大事のようですね。<br>
+このPitchNamesというのはエフェクトのようで、 <strong>VSTAudioEffect</strong> をインクルードするとエフェクトが作成できるようですね。</p>
+<p data-sourcepos="222:1-222:195"><strong>PitchNamesController</strong>クラスがGUIで、 <strong>PitchNamesProcessor</strong>が音声を生成しています。特に <strong>process</strong>メソッドが重要です。ここに生成処理を記述します。</p>
+<p data-sourcepos="224:1-224:45">では次に本体を見てみましょう。</p>
+<h4 data-sourcepos="226:1-226:19">
+<span id="pitchnamescpp" class="fragment"></span><a href="#pitchnamescpp"><i class="fa fa-link"></i></a>pitchnames.cpp</h4>
+<div class="code-frame" data-lang="cpp" data-sourcepos="229:1-353:3"><div class="highlight"><pre><code><span class="c1">// Project     : VST SDK</span>
+<span class="c1">// Version     : 3.6.0</span>
+<span class="c1">//</span>
+<span class="c1">// Category    : Examples</span>
+<span class="c1">// Filename    : public.sdk/samples/vst/pitchnames/source/pitchnames.h</span>
+<span class="c1">// Created by  : Steinberg, 12/2010</span>
+
+<span class="cm">/* ============ */</span>
+<span class="cm">/* === 中略 === */</span>
+<span class="cm">/* ============ */</span>
+
+<span class="cp"># include "pitchnames.h"
+# include "pitchnamesdatabrowsersource.h"
+# include "pluginterfaces/base/ustring.h"
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">VSTGUI</span><span class="p">;</span>
+
+<span class="cm">/* ============ */</span>
+<span class="cm">/* === 中略 === */</span>
+<span class="cm">/* ============ */</span>
+
+<span class="k">namespace</span> <span class="n">Steinberg</span> <span class="p">{</span>
+<span class="k">namespace</span> <span class="n">Vst</span> <span class="p">{</span>
+
+<span class="cm">/* ============ */</span>
+<span class="cm">/* === 中略 === */</span>
+<span class="cm">/* ============ */</span>
+
+<span class="n">tresult</span> <span class="n">PLUGIN_API</span> <span class="n">PitchNamesController</span><span class="o">::</span><span class="n">initialize</span> <span class="p">(</span><span class="n">FUnknown</span><span class="o">*</span> <span class="n">context</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="n">tresult</span> <span class="n">result</span> <span class="o">=</span> <span class="n">EditControllerEx1</span><span class="o">::</span><span class="n">initialize</span> <span class="p">(</span><span class="n">context</span><span class="p">);</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="n">kResultOk</span><span class="p">)</span>
+	<span class="p">{</span>
+	<span class="cp">#if MULTI_CHANNEL_SCENARIO
+</span>		<span class="n">addUnit</span> <span class="p">(</span><span class="k">new</span> <span class="n">Unit</span> <span class="p">(</span><span class="n">String</span> <span class="p">(</span><span class="s">"Root"</span><span class="p">),</span> <span class="n">kRootUnitId</span><span class="p">,</span> <span class="n">kNoParentUnitId</span><span class="p">));</span>
+		<span class="n">addUnit</span> <span class="p">(</span><span class="k">new</span> <span class="n">Unit</span> <span class="p">(</span><span class="n">String</span> <span class="p">(</span><span class="s">"Channel 0"</span><span class="p">),</span> <span class="n">kChannel0UnitId</span><span class="p">,</span> <span class="n">kRootUnitId</span><span class="p">,</span> <span class="n">kProgramList0ID</span><span class="p">));</span>
+		<span class="n">addUnit</span> <span class="p">(</span><span class="k">new</span> <span class="n">Unit</span> <span class="p">(</span><span class="n">String</span> <span class="p">(</span><span class="s">"Channel 1"</span><span class="p">),</span> <span class="n">kChannel1UnitId</span><span class="p">,</span> <span class="n">kRootUnitId</span><span class="p">,</span> <span class="n">kProgramList1ID</span><span class="p">));</span>
+
+		<span class="n">ProgramListWithPitchNames</span><span class="o">*</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProgramListWithPitchNames</span> <span class="p">(</span><span class="n">String</span> <span class="p">(</span><span class="s">"ProgramList 0"</span><span class="p">),</span> <span class="n">kProgramList0ID</span><span class="p">,</span> <span class="n">kChannel0UnitId</span><span class="p">);</span>
+		<span class="n">list</span><span class="o">-&gt;</span><span class="n">addProgram</span> <span class="p">(</span><span class="n">String</span> <span class="p">(</span><span class="s">"Init 1"</span><span class="p">));</span>
+		<span class="n">list</span><span class="o">-&gt;</span><span class="n">setPitchName</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">String</span> <span class="p">(</span><span class="s">"Channel 0 First Item"</span><span class="p">));</span>
+		<span class="n">addProgramList</span> <span class="p">(</span><span class="n">list</span><span class="p">);</span>
+		<span class="n">parameters</span><span class="p">.</span><span class="n">addParameter</span> <span class="p">(</span><span class="n">list</span><span class="o">-&gt;</span><span class="n">getParameter</span> <span class="p">());</span>
+
+		<span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProgramListWithPitchNames</span> <span class="p">(</span><span class="n">String</span> <span class="p">(</span><span class="s">"ProgramList 1"</span><span class="p">),</span> <span class="n">kProgramList1ID</span><span class="p">,</span> <span class="n">kChannel1UnitId</span><span class="p">);</span>
+		<span class="n">list</span><span class="o">-&gt;</span><span class="n">addProgram</span> <span class="p">(</span><span class="n">String</span> <span class="p">(</span><span class="s">"Init 1"</span><span class="p">));</span>
+		<span class="n">list</span><span class="o">-&gt;</span><span class="n">setPitchName</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">String</span> <span class="p">(</span><span class="s">"Channel 1 First Item"</span><span class="p">));</span>
+		<span class="n">addProgramList</span> <span class="p">(</span><span class="n">list</span><span class="p">);</span>
+		<span class="n">parameters</span><span class="p">.</span><span class="n">addParameter</span> <span class="p">(</span><span class="n">list</span><span class="o">-&gt;</span><span class="n">getParameter</span> <span class="p">());</span>
+
+<span class="cm">/* ============ */</span>
+<span class="cm">/* === 中略 === */</span>
+<span class="cm">/* ============ */</span>
+
+<span class="p">}</span>
+
+
+<span class="cm">/* ============ */</span>
+<span class="cm">/* === 中略 === */</span>
+<span class="cm">/* ============ */</span>
+
+<span class="c1">//-----------------------------------------------------------------------------</span>
+<span class="n">IPlugView</span><span class="o">*</span> <span class="n">PLUGIN_API</span> <span class="n">PitchNamesController</span><span class="o">::</span><span class="n">createView</span> <span class="p">(</span><span class="n">FIDString</span> <span class="n">name</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">ConstString</span> <span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">==</span> <span class="n">ViewType</span><span class="o">::</span><span class="n">kEditor</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="k">return</span> <span class="k">new</span> <span class="n">VST3Editor</span> <span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s">"PitchNamesEditor"</span><span class="p">,</span> <span class="s">"pitchnames.uidesc"</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">//-----------------------------------------------------------------------------</span>
+<span class="n">CView</span><span class="o">*</span> <span class="n">PitchNamesController</span><span class="o">::</span><span class="n">createCustomView</span> <span class="p">(</span><span class="n">UTF8StringPtr</span> <span class="n">name</span><span class="p">,</span> <span class="k">const</span> <span class="n">UIAttributes</span><span class="o">&amp;</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">IUIDescription</span><span class="o">*</span> <span class="n">description</span><span class="p">,</span> <span class="n">VST3Editor</span><span class="o">*</span> <span class="n">editor</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="cp"># if MULTI_CHANNEL_SCENARIO
+</span>	<span class="k">if</span> <span class="p">(</span><span class="n">ConstString</span> <span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">==</span> <span class="s">"PitchNamesDataBrowser"</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="n">IDataBrowser</span><span class="o">*</span> <span class="n">dataSource</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PitchNamesDataBrowserSource</span> <span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">kChannel0UnitId</span><span class="p">);</span>
+		<span class="k">return</span> <span class="k">new</span> <span class="n">CDataBrowser</span> <span class="p">(</span><span class="n">CRect</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dataSource</span><span class="p">,</span> <span class="n">CDataBrowser</span><span class="o">::</span><span class="n">kDrawRowLines</span><span class="o">|</span><span class="n">CDataBrowser</span><span class="o">::</span><span class="n">kDrawColumnLines</span><span class="o">|</span><span class="n">CDataBrowser</span><span class="o">::</span><span class="n">kDrawHeader</span><span class="o">|</span><span class="n">CDataBrowser</span><span class="o">::</span><span class="n">kVerticalScrollbar</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="cp"># else
+</span>
+<span class="cm">/* ============ */</span>
+<span class="cm">/* === 中略 === */</span>
+<span class="cm">/* ============ */</span>
+
+<span class="p">}</span>
+
+
+<span class="cm">/* ============ */</span>
+<span class="cm">/* === 中略 === */</span>
+<span class="cm">/* ============ */</span>
+
+<span class="c1">//-----------------------------------------------------------------------------</span>
+<span class="n">tresult</span> <span class="n">PLUGIN_API</span> <span class="n">PitchNamesProcessor</span><span class="o">::</span><span class="n">initialize</span> <span class="p">(</span><span class="n">FUnknown</span><span class="o">*</span> <span class="n">context</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="n">tresult</span> <span class="n">result</span> <span class="o">=</span> <span class="n">AudioEffect</span><span class="o">::</span><span class="n">initialize</span> <span class="p">(</span><span class="n">context</span><span class="p">);</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="n">kResultOk</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="n">addAudioOutput</span> <span class="p">(</span><span class="n">USTRING</span><span class="p">(</span><span class="s">"Audio Output"</span><span class="p">),</span> <span class="n">SpeakerArr</span><span class="o">::</span><span class="n">kStereo</span><span class="p">);</span>
+	<span class="cp">#if MULTI_CHANNEL_SCENARIO
+</span>		<span class="n">addEventInput</span> <span class="p">(</span><span class="n">USTRING</span><span class="p">(</span><span class="s">"Event Input"</span><span class="p">),</span> <span class="mi">2</span><span class="p">);</span>
+	<span class="cp">#else
+</span>		<span class="n">addEventInput</span> <span class="p">(</span><span class="n">USTRING</span><span class="p">(</span><span class="s">"Event Input"</span><span class="p">),</span> <span class="mi">1</span><span class="p">);</span>
+	<span class="cp">#endif
+</span>	<span class="p">}</span>
+	<span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">//-----------------------------------------------------------------------------</span>
+<span class="n">tresult</span> <span class="n">PLUGIN_API</span> <span class="n">PitchNamesProcessor</span><span class="o">::</span><span class="n">process</span> <span class="p">(</span><span class="n">ProcessData</span><span class="o">&amp;</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">numSamples</span> <span class="o">&amp;&amp;</span> <span class="n">data</span><span class="p">.</span><span class="n">numOutputs</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="k">for</span> <span class="p">(</span><span class="n">int32</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">data</span><span class="p">.</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">numChannels</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+			<span class="n">memset</span> <span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">channelBuffers32</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="p">.</span><span class="n">numSamples</span> <span class="o">*</span> <span class="k">sizeof</span> <span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+		<span class="n">data</span><span class="p">.</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">silenceFlags</span> <span class="o">=</span> <span class="mh">0x3</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="n">kResultOk</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="p">}}</span> <span class="c1">// namespaces</span>
+
+</code></pre></div></div>
+<p data-sourcepos="355:1-355:27">特に大切な部分は、</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="357:1-368:3"><div class="highlight"><pre><code><span class="n">tresult</span> <span class="n">PLUGIN_API</span> <span class="n">PitchNamesProcessor</span><span class="o">::</span><span class="n">process</span> <span class="p">(</span><span class="n">ProcessData</span><span class="o">&amp;</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">numSamples</span> <span class="o">&amp;&amp;</span> <span class="n">data</span><span class="p">.</span><span class="n">numOutputs</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="k">for</span> <span class="p">(</span><span class="n">int32</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">data</span><span class="p">.</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">numChannels</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+			<span class="n">memset</span> <span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">channelBuffers32</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="p">.</span><span class="n">numSamples</span> <span class="o">*</span> <span class="k">sizeof</span> <span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+		<span class="n">data</span><span class="p">.</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">silenceFlags</span> <span class="o">=</span> <span class="mh">0x3</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="n">kResultOk</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p data-sourcepos="370:1-370:81">ですね。ここで音声生成のアルゴリズムを記述しています。</p>
+<p data-sourcepos="372:1-372:226"><strong>ProcessData&amp; data</strong> が、出力されるデータ列を記述するためのアドレスで、 <strong>data.outputs[0]</strong> が左信号、 <strong>data.outputs[1]</strong> が右信号です。サラウンドになるともっと増えます。</p>
+<p data-sourcepos="374:1-374:60">実際に出力しているのは、以下の１行です。</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="376:1-378:3"><div class="highlight"><pre><code><span class="n">memset</span> <span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">channelBuffers32</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="p">.</span><span class="n">numSamples</span> <span class="o">*</span> <span class="nf">sizeof</span> <span class="p">(</span><span class="kt">float</span><span class="p">));</span>
+</code></pre></div></div>
+<p data-sourcepos="380:1-380:130">memsetは、 *<em>memset(<em>buf, ch, n)</em></em> とすると、「bufからnバイト分だけchをセットする」という関数です。</p>
+<p data-sourcepos="382:1-382:12">つまり、</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="384:1-388:3"><div class="highlight"><pre><code><span class="o">*</span><span class="n">buf</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">channelBuffers32</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="n">ch</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="n">numSamples</span> <span class="o">*</span> <span class="nf">sizeof</span> <span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+</code></pre></div></div>
+<p data-sourcepos="390:1-390:222">とは、 <strong>「出力データの左音声」</strong> の<code>channelBuffers32</code>から、 <strong>「出力データのサンプル数 × 浮動点小数のサイズ」 ** 分だけ 「0」 をセットする</strong> という意味です。</p>
+<p data-sourcepos="392:1-392:115">つまり、<code>channelBuffers32</code>からサンプル数だけ出力データを全て0にするということです。</p>
+<p data-sourcepos="394:1-394:130">もしこれが正弦波（sin関数）ならば、サンプル数だけ<code>sin(n/x)</code>の値をセットすることになります。</p>
+<p data-sourcepos="396:1-396:84">少し分かって貰えたでしょうか。AudioUnitもほぼ同じ要領です。</p>
+<h1 data-sourcepos="399:1-399:18">
+<span id="au-audio-units" class="fragment"></span><a href="#au-audio-units"><i class="fa fa-link"></i></a>AU (Audio Units)</h1>
+<a href="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2Fi0eEgHY.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8af8b33495b01b730d837d3a85fc6db7" target="_blank" rel="nofollow noopener"><img alt="AU" src="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2Fi0eEgHY.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8af8b33495b01b730d837d3a85fc6db7" srcset="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2Fi0eEgHY.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=29d044215bb394f6b8de5a362004ee81 1x" data-canonical-src="http://imgur.com/i0eEgHY.jpg" loading="lazy"></a>
+<h2 data-sourcepos="403:1-403:11">
+<span id="auとは" class="fragment"></span><a href="#au%E3%81%A8%E3%81%AF"><i class="fa fa-link"></i></a>AUとは</h2>
+<p data-sourcepos="405:1-405:90">AU (AudioUnits) とは、Mac OS Xにおける音声処理を仮想化する技術です。</p>
+<p data-sourcepos="407:1-407:80">基本的にはVST/VSTiと変わりませんが、仕組みは異なります。</p>
+<p data-sourcepos="409:1-409:122">VSTがダイナミックライブラリ（dll/dylib）なのに対して、AUはComponentという形式を使います。</p>
+<p data-sourcepos="411:1-411:205">VSTがクロスプラットフォームなのに対し、AUはMacでしか使えません。その代わり、OSに近い低レベルレイヤーにあるので、非常にクオリティが高いです。</p>
+<h2 data-sourcepos="413:1-413:9">
+<span id="前提" class="fragment"></span><a href="#%E5%89%8D%E6%8F%90"><i class="fa fa-link"></i></a>前提</h2>
+<p data-sourcepos="415:1-415:114">まず大前提として、Macが必要です。おそらくMax OS X10.5以降なら大丈夫だと思います。</p>
+<p data-sourcepos="417:1-417:78">ちなみに私はMac OS X 10.9.3/MacbookAir Late 2010を使っています。</p>
+<p data-sourcepos="419:1-419:80">AUに対応しているかを確認するには、ターミナルを開いて、</p>
+<div class="code-frame" data-lang="sh" data-sourcepos="421:1-425:3"><div class="highlight"><pre><code><span class="nb">ls</span> /Library/Audio/Plug-Ins/
+
+<span class="c"># Components/  HAL/  MAS/  VST/  VST3/</span>
+</code></pre></div></div>
+<p data-sourcepos="427:1-427:211">というように、 <strong>Components</strong>フォルダが存在するかを確認して下さい。ちなみにこの <strong>/Library/Audio/Plug-Ins/Components/</strong> にAUプラグインを配置すると認識されます。</p>
+<p data-sourcepos="429:1-429:127">蛇足ですが、 <strong>/Library/Audio/Plug-Ins/VST/</strong> にVSTプラグインを配置すると、VSTとして認識されます。</p>
+<h2 data-sourcepos="431:1-431:39">
+<span id="sdkサンプルコードの準備" class="fragment"></span><a href="#sdk%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E6%BA%96%E5%82%99"><i class="fa fa-link"></i></a>SDK・サンプルコードの準備</h2>
+<p data-sourcepos="433:1-433:155">AUのSDKはMacにプリインストールされています。Macのバージョンによって微妙に違うので、その都度確認して下さい。</p>
+<p data-sourcepos="435:1-436:81">AUのサンプルコードは、Apple Developer Libraryからダウンロードしてください。<br>
+<a href="https://developer.apple.com/library/mac/samplecode/sc2195/Introduction/Intro.html" class="autolink" rel="nofollow noopener" target="_blank">https://developer.apple.com/library/mac/samplecode/sc2195/Introduction/Intro.html</a></p>
+<p data-sourcepos="438:1-438:108">分かりづらいですが、赤い円のところをクリックするとダウンロードできます。</p>
+<p data-sourcepos="440:1-440:44"><a href="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2F6XOp6fw.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=63fddf20db30667e00468abbfe2d6608" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2F6XOp6fw.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=63fddf20db30667e00468abbfe2d6608" alt="instruction" srcset="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2F6XOp6fw.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=7aa8346cb673bf3038ddc34404b9fda4 1x" data-canonical-src="http://imgur.com/6XOp6fw.jpg" loading="lazy"></a></p>
+<h2 data-sourcepos="442:1-442:39">
+<span id="サンプルコードを見てみる" class="fragment"></span><a href="#%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%E3%82%B3%E3%83%BC%E3%83%89%E3%82%92%E8%A6%8B%E3%81%A6%E3%81%BF%E3%82%8B"><i class="fa fa-link"></i></a>サンプルコードを見てみる</h2>
+<p data-sourcepos="444:1-444:123">さっきと順序が逆ですが、ライブラリを理解するためにサンプルコードを見てみましょう。</p>
+<h4 data-sourcepos="446:1-446:15">
+<span id="sinsynthh" class="fragment"></span><a href="#sinsynthh"><i class="fa fa-link"></i></a>SinSynth.h</h4>
+<div class="code-frame" data-lang="cpp" data-sourcepos="448:1-521:3"><div class="highlight"><pre><code><span class="cm">/*
+     File: SinSynth.h
+ Abstract: SinSynth.h
+  Version: 1.0.1
+
+======== 中略 ==========
+
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
+ 
+*/</span>
+
+<span class="cp"># include "AUInstrumentBase.h"
+# include "SinSynthVersion.h"
+</span>
+<span class="k">static</span> <span class="k">const</span> <span class="n">UInt32</span> <span class="n">kNumNotes</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
+
+<span class="k">struct</span> <span class="nc">TestNote</span> <span class="o">:</span> <span class="k">public</span> <span class="n">SynthNote</span>
+<span class="p">{</span>
+	<span class="k">virtual</span>					<span class="o">~</span><span class="n">TestNote</span><span class="p">()</span> <span class="p">{}</span>
+
+	<span class="k">virtual</span> <span class="kt">bool</span>			<span class="nf">Attack</span><span class="p">(</span><span class="k">const</span> <span class="n">MusicDeviceNoteParams</span> <span class="o">&amp;</span><span class="n">inParams</span><span class="p">)</span>
+								<span class="p">{</span> 
+
+<span class="cm">/* ======== 中略 ========== */</span>
+
+									<span class="kt">double</span> <span class="n">sampleRate</span> <span class="o">=</span> <span class="n">SampleRate</span><span class="p">();</span>
+									<span class="n">phase</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">;</span>
+									<span class="n">amp</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">;</span>
+									<span class="n">maxamp</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="n">pow</span><span class="p">(</span><span class="n">inParams</span><span class="p">.</span><span class="n">mVelocity</span><span class="o">/</span><span class="mf">127.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">);</span> 
+									<span class="n">up_slope</span> <span class="o">=</span> <span class="n">maxamp</span> <span class="o">/</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">sampleRate</span><span class="p">);</span>
+									<span class="n">dn_slope</span> <span class="o">=</span> <span class="o">-</span><span class="n">maxamp</span> <span class="o">/</span> <span class="p">(</span><span class="mf">0.9</span> <span class="o">*</span> <span class="n">sampleRate</span><span class="p">);</span>
+									<span class="n">fast_dn_slope</span> <span class="o">=</span> <span class="o">-</span><span class="n">maxamp</span> <span class="o">/</span> <span class="p">(</span><span class="mf">0.005</span> <span class="o">*</span> <span class="n">sampleRate</span><span class="p">);</span>
+									<span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+								<span class="p">}</span>
+	<span class="k">virtual</span> <span class="kt">void</span>			<span class="nf">Kill</span><span class="p">(</span><span class="n">UInt32</span> <span class="n">inFrame</span><span class="p">);</span> <span class="c1">// voice is being stolen.</span>
+	<span class="k">virtual</span> <span class="kt">void</span>			<span class="nf">Release</span><span class="p">(</span><span class="n">UInt32</span> <span class="n">inFrame</span><span class="p">);</span>
+	<span class="k">virtual</span> <span class="kt">void</span>			<span class="nf">FastRelease</span><span class="p">(</span><span class="n">UInt32</span> <span class="n">inFrame</span><span class="p">);</span>
+	<span class="k">virtual</span> <span class="n">Float32</span>			<span class="nf">Amplitude</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">amp</span><span class="p">;</span> <span class="p">}</span> <span class="c1">// used for finding quietest note for voice stealing.</span>
+	<span class="k">virtual</span> <span class="n">OSStatus</span>		<span class="nf">Render</span><span class="p">(</span><span class="n">UInt64</span> <span class="n">inAbsoluteSampleFrame</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">inNumFrames</span><span class="p">,</span> <span class="n">AudioBufferList</span><span class="o">**</span> <span class="n">inBufferList</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">inOutBusCount</span><span class="p">);</span>
+
+	<span class="kt">double</span> <span class="n">phase</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">maxamp</span><span class="p">;</span>
+	<span class="kt">double</span> <span class="n">up_slope</span><span class="p">,</span> <span class="n">dn_slope</span><span class="p">,</span> <span class="n">fast_dn_slope</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">SinSynth</span> <span class="o">:</span> <span class="k">public</span> <span class="n">AUMonotimbralInstrumentBase</span>
+<span class="p">{</span>
+<span class="nl">public:</span>
+								<span class="n">SinSynth</span><span class="p">(</span><span class="n">AudioUnit</span> <span class="n">inComponentInstance</span><span class="p">);</span>
+	<span class="k">virtual</span>						<span class="o">~</span><span class="n">SinSynth</span><span class="p">();</span>
+				
+	<span class="k">virtual</span> <span class="n">OSStatus</span>			<span class="n">Initialize</span><span class="p">();</span>
+	<span class="k">virtual</span> <span class="kt">void</span>				<span class="n">Cleanup</span><span class="p">();</span>
+	<span class="k">virtual</span> <span class="n">OSStatus</span>			<span class="n">Version</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">kSinSynthVersion</span><span class="p">;</span> <span class="p">}</span>
+
+	<span class="k">virtual</span> <span class="n">AUElement</span><span class="o">*</span>			<span class="nf">CreateElement</span><span class="p">(</span>			<span class="n">AudioUnitScope</span>					<span class="n">scope</span><span class="p">,</span>
+											  <span class="n">AudioUnitElement</span>				<span class="n">element</span><span class="p">);</span>
+
+	<span class="k">virtual</span> <span class="n">OSStatus</span>			<span class="nf">GetParameterInfo</span><span class="p">(</span>		<span class="n">AudioUnitScope</span>					<span class="n">inScope</span><span class="p">,</span>
+														<span class="n">AudioUnitParameterID</span>			<span class="n">inParameterID</span><span class="p">,</span>
+														<span class="n">AudioUnitParameterInfo</span> <span class="o">&amp;</span>		<span class="n">outParameterInfo</span><span class="p">);</span>
+
+	<span class="n">MidiControls</span><span class="o">*</span>				<span class="nf">GetControls</span><span class="p">(</span> <span class="n">MusicDeviceGroupID</span> <span class="n">inChannel</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="n">SynthGroupElement</span> <span class="o">*</span><span class="n">group</span> <span class="o">=</span> <span class="n">GetElForGroupID</span><span class="p">(</span><span class="n">inChannel</span><span class="p">);</span>
+		<span class="k">return</span> <span class="p">(</span><span class="n">MidiControls</span> <span class="o">*</span><span class="p">)</span> <span class="n">group</span><span class="o">-&gt;</span><span class="n">GetMIDIControlHandler</span><span class="p">();</span>
+	<span class="p">}</span>
+	
+<span class="k">private</span><span class="o">:</span>
+	
+	<span class="n">TestNote</span> <span class="n">mTestNotes</span><span class="p">[</span><span class="n">kNumNotes</span><span class="p">];</span>
+<span class="p">};</span>
+
+</code></pre></div></div>
+<p data-sourcepos="523:1-523:188">よく見てみると、 <strong>AUInstrumentBase</strong>というクラスをベースにしているのがわかります。SinSynthはシンセサイザーだということがわかりますね。</p>
+<p data-sourcepos="525:1-525:94">ここでちょっと、AUInstrumentBaseがどういうものなのか見てみましょう。</p>
+<p data-sourcepos="527:1-527:112">AUInstrumentBaseは、 <em>/CoreAudio/AudioUnits/AUPublic/AUInstrumentBase/AUInstrumentBase.h</em>に存在します。</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="529:1-697:3"><div class="highlight"><pre><code><span class="cm">/*
+     File: AUInstrumentBase.h 
+ Abstract:  Part of CoreAudio Utility Classes  
+  Version: 1.0.4 
+  
+=========== 中略 ===========
+  
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
+  
+*/</span>
+<span class="cp"># ifndef __AUInstrumentBase__
+# define __AUInstrumentBase__
+</span> 
+<span class="cp"># include &lt;vector&gt;
+# include &lt;stdexcept&gt;
+# include &lt;AudioUnit/AudioUnit.h&gt;
+# include &lt;CoreAudio/CoreAudio.h&gt;
+# include &lt;libkern/OSAtomic.h&gt;
+# include "MusicDeviceBase.h"
+# include "LockFreeFIFO.h"
+# include "SynthEvent.h"
+# include "SynthNote.h"
+# include "SynthElement.h"
+</span> 
+<span class="c1">/////////////////////////////////</span>
+ 
+<span class="k">typedef</span> <span class="n">LockFreeFIFOWithFree</span><span class="o">&lt;</span><span class="n">SynthEvent</span><span class="o">&gt;</span> <span class="n">SynthEventQueue</span><span class="p">;</span>
+ 
+<span class="k">class</span> <span class="nc">AUInstrumentBase</span> <span class="o">:</span> <span class="k">public</span> <span class="n">MusicDeviceBase</span>
+<span class="p">{</span>
+<span class="nl">public:</span>
+   
+   <span class="cm">/* =========== 中略 =========== */</span>
+ 
+    <span class="k">virtual</span> <span class="n">OSStatus</span>            <span class="n">Initialize</span><span class="p">();</span>
+    
+    <span class="cm">/*! @method Parts */</span>
+    <span class="n">AUScope</span> <span class="o">&amp;</span>                   <span class="n">Parts</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">mPartScope</span><span class="p">;</span> <span class="p">}</span>
+ 
+    <span class="cm">/*! @method GetPart */</span>
+    <span class="n">AUElement</span> <span class="o">*</span>                 <span class="nf">GetPart</span><span class="p">(</span> <span class="n">AudioUnitElement</span> <span class="n">inElement</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">mPartScope</span><span class="p">.</span><span class="n">SafeGetElement</span><span class="p">(</span><span class="n">inElement</span><span class="p">);</span>
+    <span class="p">}</span>
+ 
+    <span class="k">virtual</span> <span class="n">AUScope</span> <span class="o">*</span>           <span class="nf">GetScopeExtended</span> <span class="p">(</span><span class="n">AudioUnitScope</span> <span class="n">inScope</span><span class="p">);</span>
+ 
+    <span class="k">virtual</span> <span class="n">AUElement</span> <span class="o">*</span>         <span class="nf">CreateElement</span><span class="p">(</span>          <span class="n">AudioUnitScope</span>                  <span class="n">inScope</span><span class="p">,</span>
+                                                        <span class="n">AudioUnitElement</span>                <span class="n">inElement</span><span class="p">);</span>
+ 
+    <span class="k">virtual</span> <span class="kt">void</span>                <span class="nf">CreateExtendedElements</span><span class="p">();</span>
+ 
+    <span class="k">virtual</span> <span class="kt">void</span>                <span class="nf">Cleanup</span><span class="p">();</span>
+    
+
+    <span class="cm">/* =========== 中略 =========== */</span>
+
+ 
+    <span class="k">virtual</span> <span class="n">OSStatus</span>            <span class="nf">Render</span><span class="p">(</span>                 <span class="n">AudioUnitRenderActionFlags</span> <span class="o">&amp;</span>    <span class="n">ioActionFlags</span><span class="p">,</span>
+                                                        <span class="k">const</span> <span class="n">AudioTimeStamp</span> <span class="o">&amp;</span>          <span class="n">inTimeStamp</span><span class="p">,</span>
+                                                        <span class="n">UInt32</span>                          <span class="n">inNumberFrames</span><span class="p">);</span>
+
+    <span class="k">virtual</span> <span class="n">OSStatus</span>            <span class="nf">StartNote</span><span class="p">(</span>      <span class="n">MusicDeviceInstrumentID</span>     <span class="n">inInstrument</span><span class="p">,</span> 
+                                                <span class="n">MusicDeviceGroupID</span>          <span class="n">inGroupID</span><span class="p">,</span> 
+                                                <span class="n">NoteInstanceID</span> <span class="o">*</span>            <span class="n">outNoteInstanceID</span><span class="p">,</span> 
+                                                <span class="n">UInt32</span>                      <span class="n">inOffsetSampleFrame</span><span class="p">,</span> 
+                                                <span class="k">const</span> <span class="n">MusicDeviceNoteParams</span> <span class="o">&amp;</span><span class="n">inParams</span><span class="p">);</span>
+ 
+    <span class="k">virtual</span> <span class="n">OSStatus</span>            <span class="nf">StopNote</span><span class="p">(</span>       <span class="n">MusicDeviceGroupID</span>          <span class="n">inGroupID</span><span class="p">,</span> 
+                                                <span class="n">NoteInstanceID</span>              <span class="n">inNoteInstanceID</span><span class="p">,</span> 
+                                                <span class="n">UInt32</span>                      <span class="n">inOffsetSampleFrame</span><span class="p">);</span>
+   
+    <span class="cm">/* =========== 中略 =========== */</span>
+
+    
+    <span class="kt">void</span>                <span class="nf">SetNotes</span><span class="p">(</span><span class="n">UInt32</span> <span class="n">inNumNotes</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">inMaxActiveNotes</span><span class="p">,</span> <span class="n">SynthNote</span><span class="o">*</span> <span class="n">inNotes</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">inNoteSize</span><span class="p">);</span>
+    
+    <span class="kt">void</span>                <span class="nf">PerformEvents</span><span class="p">(</span>   <span class="k">const</span> <span class="n">AudioTimeStamp</span> <span class="o">&amp;</span>         <span class="n">inTimeStamp</span><span class="p">);</span>
+    <span class="n">OSStatus</span>            <span class="nf">SendPedalEvent</span><span class="p">(</span><span class="n">MusicDeviceGroupID</span> <span class="n">inGroupID</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">inEventType</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">inOffsetSampleFrame</span><span class="p">);</span>
+    <span class="k">virtual</span> <span class="n">SynthNote</span><span class="o">*</span>  <span class="nf">VoiceStealing</span><span class="p">(</span><span class="n">UInt32</span> <span class="n">inFrame</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">inKillIt</span><span class="p">);</span>
+    <span class="n">UInt32</span>              <span class="n">MaxActiveNotes</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">mMaxActiveNotes</span><span class="p">;</span> <span class="p">}</span>
+    <span class="n">UInt32</span>              <span class="n">NumActiveNotes</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">mNumActiveNotes</span><span class="p">;</span> <span class="p">}</span>
+    <span class="kt">void</span>                <span class="nf">IncNumActiveNotes</span><span class="p">()</span> <span class="p">{</span> <span class="o">++</span><span class="n">mNumActiveNotes</span><span class="p">;</span> <span class="p">}</span>
+    <span class="kt">void</span>                <span class="nf">DecNumActiveNotes</span><span class="p">()</span> <span class="p">{</span> <span class="o">--</span><span class="n">mNumActiveNotes</span><span class="p">;</span> <span class="p">}</span>
+    <span class="n">UInt32</span>              <span class="nf">CountActiveNotes</span><span class="p">();</span>
+    
+    <span class="n">SynthPartElement</span> <span class="o">*</span>  <span class="nf">GetPartElement</span> <span class="p">(</span><span class="n">AudioUnitElement</span> <span class="n">inPartElement</span><span class="p">);</span>
+    
+            <span class="c1">// this call throws if there's no assigned element for the group ID</span>
+    <span class="k">virtual</span> <span class="n">SynthGroupElement</span> <span class="o">*</span> <span class="nf">GetElForGroupID</span> <span class="p">(</span><span class="n">MusicDeviceGroupID</span> <span class="n">inGroupID</span><span class="p">);</span>
+    <span class="k">virtual</span> <span class="n">SynthGroupElement</span> <span class="o">*</span> <span class="nf">GetElForNoteID</span> <span class="p">(</span><span class="n">NoteInstanceID</span> <span class="n">inNoteID</span><span class="p">);</span>
+ 
+    <span class="n">SInt64</span> <span class="n">mAbsoluteSampleFrame</span><span class="p">;</span>
+ 
+    
+<span class="k">private</span><span class="o">:</span>
+                
+    <span class="n">SInt32</span> <span class="n">mNoteIDCounter</span><span class="p">;</span>
+    
+    <span class="n">SynthEventQueue</span> <span class="n">mEventQueue</span><span class="p">;</span>
+    
+    <span class="n">UInt32</span> <span class="n">mNumNotes</span><span class="p">;</span>
+    <span class="n">UInt32</span> <span class="n">mNumActiveNotes</span><span class="p">;</span>
+    <span class="n">UInt32</span> <span class="n">mMaxActiveNotes</span><span class="p">;</span>
+    <span class="n">SynthNote</span><span class="o">*</span> <span class="n">mNotes</span><span class="p">;</span>  
+    <span class="n">SynthNoteList</span> <span class="n">mFreeNotes</span><span class="p">;</span>
+    <span class="n">UInt32</span> <span class="n">mNoteSize</span><span class="p">;</span>
+    
+    <span class="n">AUScope</span>         <span class="n">mPartScope</span><span class="p">;</span>
+    <span class="k">const</span> <span class="n">UInt32</span>    <span class="n">mInitNumPartEls</span><span class="p">;</span>
+<span class="p">};</span>
+ 
+<span class="c1">////////////////////////////////////////////////////////////////////////////////////////////////////////////</span>
+ 
+<span class="k">class</span> <span class="nc">AUMonotimbralInstrumentBase</span> <span class="o">:</span> <span class="k">public</span> <span class="n">AUInstrumentBase</span>
+<span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">AUMonotimbralInstrumentBase</span><span class="p">(</span>
+                            <span class="n">AudioComponentInstance</span>          <span class="n">inInstance</span><span class="p">,</span> 
+                            <span class="n">UInt32</span>                          <span class="n">numInputs</span><span class="p">,</span>
+                            <span class="n">UInt32</span>                          <span class="n">numOutputs</span><span class="p">,</span>
+                            <span class="n">UInt32</span>                          <span class="n">numGroups</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span>
+                            <span class="n">UInt32</span>                          <span class="n">numParts</span> <span class="o">=</span> <span class="mi">1</span><span class="p">);</span>
+                                        
+    <span class="k">virtual</span> <span class="n">OSStatus</span>            <span class="n">RealTimeStartNote</span><span class="p">(</span>          <span class="n">SynthGroupElement</span>           <span class="o">*</span><span class="n">inGroup</span><span class="p">,</span> 
+                                                            <span class="n">NoteInstanceID</span>              <span class="n">inNoteInstanceID</span><span class="p">,</span> 
+                                                            <span class="n">UInt32</span>                      <span class="n">inOffsetSampleFrame</span><span class="p">,</span> 
+                                                            <span class="k">const</span> <span class="n">MusicDeviceNoteParams</span> <span class="o">&amp;</span><span class="n">inParams</span><span class="p">);</span>
+<span class="p">};</span>
+ 
+<span class="c1">////////////////////////////////////////////////////////////////////////////////////////////////////////////</span>
+ 
+<span class="c1">// this is a work in progress! The mono-timbral one is finished though!</span>
+<span class="k">class</span> <span class="nc">AUMultitimbralInstrumentBase</span> <span class="o">:</span> <span class="k">public</span> <span class="n">AUInstrumentBase</span>
+<span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">AUMultitimbralInstrumentBase</span><span class="p">(</span>
+                            <span class="n">AudioComponentInstance</span>          <span class="n">inInstance</span><span class="p">,</span> 
+                            <span class="n">UInt32</span>                          <span class="n">numInputs</span><span class="p">,</span>
+                            <span class="n">UInt32</span>                          <span class="n">numOutputs</span><span class="p">,</span>
+                            <span class="n">UInt32</span>                          <span class="n">numGroups</span><span class="p">,</span>
+                            <span class="n">UInt32</span>                          <span class="n">numParts</span><span class="p">);</span>
+                            
+    <span class="k">virtual</span> <span class="n">OSStatus</span>            <span class="n">GetPropertyInfo</span><span class="p">(</span>        <span class="n">AudioUnitPropertyID</span>             <span class="n">inID</span><span class="p">,</span>
+                                                        <span class="n">AudioUnitScope</span>                  <span class="n">inScope</span><span class="p">,</span>
+                                                        <span class="n">AudioUnitElement</span>                <span class="n">inElement</span><span class="p">,</span>
+                                                        <span class="n">UInt32</span> <span class="o">&amp;</span>                        <span class="n">outDataSize</span><span class="p">,</span>
+                                                        <span class="n">Boolean</span> <span class="o">&amp;</span>                       <span class="n">outWritable</span><span class="p">);</span>
+ 
+    <span class="k">virtual</span> <span class="n">OSStatus</span>            <span class="n">GetProperty</span><span class="p">(</span>            <span class="n">AudioUnitPropertyID</span>             <span class="n">inID</span><span class="p">,</span>
+                                                        <span class="n">AudioUnitScope</span>                  <span class="n">inScope</span><span class="p">,</span>
+                                                        <span class="n">AudioUnitElement</span>                <span class="n">inElement</span><span class="p">,</span>
+                                                        <span class="kt">void</span> <span class="o">*</span>                          <span class="n">outData</span><span class="p">);</span>
+ 
+    <span class="k">virtual</span> <span class="n">OSStatus</span>            <span class="n">SetProperty</span><span class="p">(</span>            <span class="n">AudioUnitPropertyID</span>             <span class="n">inID</span><span class="p">,</span>
+                                                        <span class="n">AudioUnitScope</span>                  <span class="n">inScope</span><span class="p">,</span>
+                                                        <span class="n">AudioUnitElement</span>                <span class="n">inElement</span><span class="p">,</span>
+                                                        <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span>                    <span class="n">inData</span><span class="p">,</span>
+                                                        <span class="n">UInt32</span>                          <span class="n">inDataSize</span><span class="p">);</span>
+ 
+<span class="nl">private:</span>
+ 
+<span class="p">};</span>
+ 
+<span class="c1">////////////////////////////////////////////////////////////////////////////////////////////////////////////</span>
+ 
+<span class="cp"># endif
+</span></code></pre></div></div>
+<h4 data-sourcepos="699:1-699:17">
+<span id="sinsynthcpp" class="fragment"></span><a href="#sinsynthcpp"><i class="fa fa-link"></i></a>SinSynth.cpp</h4>
+<div class="code-frame" data-lang="cpp" data-sourcepos="701:1-923:3"><div class="highlight"><pre><code><span class="cm">/*
+     File: SinSynth.cpp
+ Abstract: SinSynth.h
+  Version: 1.0.1
+ 
+========= 中略 =========
+ 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
+ 
+*/</span>
+
+<span class="cm">/* ========= 中略 ========= */</span>
+
+<span class="cp"># include "SinSynth.h"
+</span> 
+<span class="k">static</span> <span class="k">const</span> <span class="n">UInt32</span> <span class="n">kMaxActiveNotes</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+
+<span class="c1">/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////</span>
+
+<span class="k">const</span> <span class="kt">double</span> <span class="n">twopi</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="mf">3.14159265358979</span><span class="p">;</span>
+
+<span class="kr">inline</span> <span class="kt">double</span> <span class="nf">pow5</span><span class="p">(</span><span class="kt">double</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="kt">double</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="p">;</span> <span class="k">return</span> <span class="n">x2</span><span class="o">*</span><span class="n">x2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="cp"># pragma mark SinSynth Methods
+</span>
+<span class="c1">//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="c1">//COMPONENT_ENTRY(SinSynth)</span>
+<span class="n">AUDIOCOMPONENT_ENTRY</span><span class="p">(</span><span class="n">AUMusicDeviceFactory</span><span class="p">,</span> <span class="n">SinSynth</span><span class="p">)</span>
+
+<span class="k">static</span> <span class="k">const</span> <span class="n">AudioUnitParameterID</span> <span class="n">kGlobalVolumeParam</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">const</span> <span class="n">CFStringRef</span> <span class="n">kGlobalVolumeName</span> <span class="o">=</span> <span class="n">CFSTR</span><span class="p">(</span><span class="s">"global volume"</span><span class="p">);</span>
+
+<span class="c1">//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="c1">//	SinSynth::SinSynth</span>
+<span class="c1">//</span>
+<span class="c1">// This synth has No inputs, One output</span>
+<span class="c1">//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="n">SinSynth</span><span class="o">::</span><span class="n">SinSynth</span><span class="p">(</span><span class="n">AudioUnit</span> <span class="n">inComponentInstance</span><span class="p">)</span>
+	<span class="o">:</span> <span class="n">AUMonotimbralInstrumentBase</span><span class="p">(</span><span class="n">inComponentInstance</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="n">CreateElements</span><span class="p">();</span>
+	
+	<span class="n">Globals</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">UseIndexedParameters</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// we're only defining one param</span>
+	<span class="n">Globals</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">SetParameter</span> <span class="p">(</span><span class="n">kGlobalVolumeParam</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="c1">//	SinSynth::~SinSynth</span>
+<span class="c1">//</span>
+<span class="c1">//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="n">SinSynth</span><span class="o">::~</span><span class="n">SinSynth</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+
+<span class="cm">/* ========= 中略 ========= */</span>
+
+<span class="n">OSStatus</span> <span class="n">SinSynth</span><span class="o">::</span><span class="n">Initialize</span><span class="p">()</span>
+<span class="p">{</span>
+
+<span class="cm">/* ========= 中略 ========= */</span>
+
+	<span class="n">AUMonotimbralInstrumentBase</span><span class="o">::</span><span class="n">Initialize</span><span class="p">();</span>
+
+<span class="cm">/* ========= 中略 ========= */</span>
+	
+	<span class="k">return</span> <span class="n">noErr</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">AUElement</span><span class="o">*</span> <span class="n">SinSynth</span><span class="o">::</span><span class="n">CreateElement</span><span class="p">(</span>	<span class="n">AudioUnitScope</span>					<span class="n">scope</span><span class="p">,</span>
+									<span class="n">AudioUnitElement</span>				<span class="n">element</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">switch</span> <span class="p">(</span><span class="n">scope</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="k">case</span> <span class="n">kAudioUnitScope_Group</span> <span class="p">:</span>
+			<span class="k">return</span> <span class="k">new</span> <span class="n">SynthGroupElement</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="k">new</span> <span class="n">MidiControls</span><span class="p">);</span>
+		<span class="k">case</span> <span class="n">kAudioUnitScope_Part</span> <span class="p">:</span>
+			<span class="k">return</span> <span class="k">new</span> <span class="n">SynthPartElement</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">element</span><span class="p">);</span>
+		<span class="k">default</span> <span class="o">:</span>
+			<span class="k">return</span> <span class="n">AUBase</span><span class="o">::</span><span class="n">CreateElement</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">element</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">OSStatus</span>			<span class="n">SinSynth</span><span class="o">::</span><span class="n">GetParameterInfo</span><span class="p">(</span>		<span class="n">AudioUnitScope</span>					<span class="n">inScope</span><span class="p">,</span>
+														<span class="n">AudioUnitParameterID</span>			<span class="n">inParameterID</span><span class="p">,</span>
+														<span class="n">AudioUnitParameterInfo</span> <span class="o">&amp;</span>		<span class="n">outParameterInfo</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">inParameterID</span> <span class="o">!=</span> <span class="n">kGlobalVolumeParam</span><span class="p">)</span> <span class="k">return</span> <span class="n">kAudioUnitErr_InvalidParameter</span><span class="p">;</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">inScope</span> <span class="o">!=</span> <span class="n">kAudioUnitScope_Global</span><span class="p">)</span> <span class="k">return</span> <span class="n">kAudioUnitErr_InvalidScope</span><span class="p">;</span>
+
+	<span class="n">outParameterInfo</span><span class="p">.</span><span class="n">flags</span> <span class="o">=</span> <span class="n">SetAudioUnitParameterDisplayType</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">kAudioUnitParameterFlag_DisplaySquareRoot</span><span class="p">);</span>
+    <span class="n">outParameterInfo</span><span class="p">.</span><span class="n">flags</span> <span class="o">+=</span> <span class="n">kAudioUnitParameterFlag_IsWritable</span><span class="p">;</span>
+	<span class="n">outParameterInfo</span><span class="p">.</span><span class="n">flags</span> <span class="o">+=</span> <span class="n">kAudioUnitParameterFlag_IsReadable</span><span class="p">;</span>
+
+	<span class="n">AUBase</span><span class="o">::</span><span class="n">FillInParameterName</span> <span class="p">(</span><span class="n">outParameterInfo</span><span class="p">,</span> <span class="n">kGlobalVolumeName</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+	<span class="n">outParameterInfo</span><span class="p">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">kAudioUnitParameterUnit_LinearGain</span><span class="p">;</span>
+	<span class="n">outParameterInfo</span><span class="p">.</span><span class="n">minValue</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="n">outParameterInfo</span><span class="p">.</span><span class="n">maxValue</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
+	<span class="n">outParameterInfo</span><span class="p">.</span><span class="n">defaultValue</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
+	<span class="k">return</span> <span class="n">noErr</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="cm">/* ========= 中略 ========= */</span>
+
+<span class="c1">//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="kt">void</span>			<span class="n">TestNote</span><span class="o">::</span><span class="n">Release</span><span class="p">(</span><span class="n">UInt32</span> <span class="n">inFrame</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="n">SynthNote</span><span class="o">::</span><span class="n">Release</span><span class="p">(</span><span class="n">inFrame</span><span class="p">);</span>
+
+<span class="cm">/* ========= 中略 ========= */</span>
+
+<span class="p">}</span>
+
+<span class="kt">void</span>			<span class="n">TestNote</span><span class="o">::</span><span class="n">FastRelease</span><span class="p">(</span><span class="n">UInt32</span> <span class="n">inFrame</span><span class="p">)</span> <span class="c1">// voice is being stolen.</span>
+<span class="p">{</span>
+	<span class="n">SynthNote</span><span class="o">::</span><span class="n">Release</span><span class="p">(</span><span class="n">inFrame</span><span class="p">);</span>
+
+<span class="cm">/* ========= 中略 ========= */</span>
+
+<span class="p">}</span>
+
+<span class="kt">void</span>			<span class="n">TestNote</span><span class="o">::</span><span class="n">Kill</span><span class="p">(</span><span class="n">UInt32</span> <span class="n">inFrame</span><span class="p">)</span> <span class="c1">// voice is being stolen.</span>
+<span class="p">{</span>
+	<span class="n">SynthNote</span><span class="o">::</span><span class="n">Kill</span><span class="p">(</span><span class="n">inFrame</span><span class="p">);</span>
+
+<span class="cm">/* ========= 中略 ========= */</span>
+
+<span class="p">}</span>
+
+<span class="n">OSStatus</span>		<span class="n">TestNote</span><span class="o">::</span><span class="n">Render</span><span class="p">(</span><span class="n">UInt64</span> <span class="n">inAbsoluteSampleFrame</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">inNumFrames</span><span class="p">,</span> <span class="n">AudioBufferList</span><span class="o">**</span> <span class="n">inBufferList</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">inOutBusCount</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="kt">float</span> <span class="o">*</span><span class="n">left</span><span class="p">,</span> <span class="o">*</span><span class="n">right</span><span class="p">;</span>
+
+<span class="cm">/* ========= 中略 ========= */</span>
+
+	<span class="kt">float</span> <span class="n">globalVol</span> <span class="o">=</span> <span class="n">GetGlobalParameter</span><span class="p">(</span><span class="n">kGlobalVolumeParam</span><span class="p">);</span>
+	
+	<span class="c1">// TestNote only writes into the first bus regardless of what is handed to us.</span>
+	<span class="k">const</span> <span class="kt">int</span> <span class="n">bus0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="kt">int</span> <span class="n">numChans</span> <span class="o">=</span> <span class="n">inBufferList</span><span class="p">[</span><span class="n">bus0</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">mNumberBuffers</span><span class="p">;</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">numChans</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+	
+	<span class="n">left</span> <span class="o">=</span> <span class="p">(</span><span class="kt">float</span><span class="o">*</span><span class="p">)</span><span class="n">inBufferList</span><span class="p">[</span><span class="n">bus0</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">mBuffers</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">mData</span><span class="p">;</span>
+	<span class="n">right</span> <span class="o">=</span> <span class="n">numChans</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">?</span> <span class="p">(</span><span class="kt">float</span><span class="o">*</span><span class="p">)</span><span class="n">inBufferList</span><span class="p">[</span><span class="n">bus0</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">mBuffers</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">mData</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+
+	<span class="kt">double</span> <span class="n">sampleRate</span> <span class="o">=</span> <span class="n">SampleRate</span><span class="p">();</span>
+	<span class="kt">double</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">Frequency</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="n">twopi</span><span class="o">/</span><span class="n">sampleRate</span><span class="p">);</span>
+
+	
+<span class="cm">/* ========= 中略 ========= */</span>
+
+	<span class="k">switch</span> <span class="p">(</span><span class="n">GetState</span><span class="p">())</span>
+	<span class="p">{</span>
+		<span class="k">case</span> <span class="n">kNoteState_Attacked</span> <span class="p">:</span>
+		<span class="k">case</span> <span class="n">kNoteState_Sostenutoed</span> <span class="p">:</span>
+		<span class="k">case</span> <span class="n">kNoteState_ReleasedButSostenutoed</span> <span class="p">:</span>
+		<span class="k">case</span> <span class="n">kNoteState_ReleasedButSustained</span> <span class="p">:</span>
+			<span class="p">{</span>
+				<span class="k">for</span> <span class="p">(</span><span class="n">UInt32</span> <span class="n">frame</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">frame</span><span class="o">&lt;</span><span class="n">inNumFrames</span><span class="p">;</span> <span class="o">++</span><span class="n">frame</span><span class="p">)</span>
+				<span class="p">{</span>
+					<span class="k">if</span> <span class="p">(</span><span class="n">amp</span> <span class="o">&lt;</span> <span class="n">maxamp</span><span class="p">)</span> <span class="n">amp</span> <span class="o">+=</span> <span class="n">up_slope</span><span class="p">;</span>
+					<span class="kt">float</span> <span class="n">out</span> <span class="o">=</span> <span class="n">pow5</span><span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">phase</span><span class="p">))</span> <span class="o">*</span> <span class="n">amp</span> <span class="o">*</span> <span class="n">globalVol</span><span class="p">;</span>
+					<span class="n">phase</span> <span class="o">+=</span> <span class="n">freq</span><span class="p">;</span>
+					<span class="k">if</span> <span class="p">(</span><span class="n">phase</span> <span class="o">&gt;</span> <span class="n">twopi</span><span class="p">)</span> <span class="n">phase</span> <span class="o">-=</span> <span class="n">twopi</span><span class="p">;</span>
+					<span class="n">left</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span> <span class="o">+=</span> <span class="n">out</span><span class="p">;</span>
+					<span class="k">if</span> <span class="p">(</span><span class="n">right</span><span class="p">)</span> <span class="n">right</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span> <span class="o">+=</span> <span class="n">out</span><span class="p">;</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+			<span class="k">break</span><span class="p">;</span>
+			
+		<span class="k">case</span> <span class="n">kNoteState_Released</span> <span class="p">:</span>
+			<span class="p">{</span>
+				<span class="n">UInt32</span> <span class="n">endFrame</span> <span class="o">=</span> <span class="mh">0xFFFFFFFF</span><span class="p">;</span>
+				<span class="k">for</span> <span class="p">(</span><span class="n">UInt32</span> <span class="n">frame</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">frame</span><span class="o">&lt;</span><span class="n">inNumFrames</span><span class="p">;</span> <span class="o">++</span><span class="n">frame</span><span class="p">)</span>
+				<span class="p">{</span>
+					<span class="k">if</span> <span class="p">(</span><span class="n">amp</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="n">amp</span> <span class="o">+=</span> <span class="n">dn_slope</span><span class="p">;</span>
+					<span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">endFrame</span> <span class="o">==</span> <span class="mh">0xFFFFFFFF</span><span class="p">)</span> <span class="n">endFrame</span> <span class="o">=</span> <span class="n">frame</span><span class="p">;</span>
+					<span class="kt">float</span> <span class="n">out</span> <span class="o">=</span> <span class="n">pow5</span><span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">phase</span><span class="p">))</span> <span class="o">*</span> <span class="n">amp</span> <span class="o">*</span> <span class="n">globalVol</span><span class="p">;</span>
+					<span class="n">phase</span> <span class="o">+=</span> <span class="n">freq</span><span class="p">;</span>
+					<span class="n">left</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span> <span class="o">+=</span> <span class="n">out</span><span class="p">;</span>
+					<span class="k">if</span> <span class="p">(</span><span class="n">right</span><span class="p">)</span> <span class="n">right</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span> <span class="o">+=</span> <span class="n">out</span><span class="p">;</span>
+				<span class="p">}</span>
+				<span class="k">if</span> <span class="p">(</span><span class="n">endFrame</span> <span class="o">!=</span> <span class="mh">0xFFFFFFFF</span><span class="p">)</span> <span class="p">{</span>
+
+<span class="cm">/* ========= 中略 ========= */</span>
+
+					<span class="n">NoteEnded</span><span class="p">(</span><span class="n">endFrame</span><span class="p">);</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+			<span class="k">break</span><span class="p">;</span>
+			
+		<span class="k">case</span> <span class="n">kNoteState_FastReleased</span> <span class="p">:</span>
+			<span class="p">{</span>
+				<span class="n">UInt32</span> <span class="n">endFrame</span> <span class="o">=</span> <span class="mh">0xFFFFFFFF</span><span class="p">;</span>
+				<span class="k">for</span> <span class="p">(</span><span class="n">UInt32</span> <span class="n">frame</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">frame</span><span class="o">&lt;</span><span class="n">inNumFrames</span><span class="p">;</span> <span class="o">++</span><span class="n">frame</span><span class="p">)</span>
+				<span class="p">{</span>
+					<span class="k">if</span> <span class="p">(</span><span class="n">amp</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="n">amp</span> <span class="o">+=</span> <span class="n">fast_dn_slope</span><span class="p">;</span>
+					<span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">endFrame</span> <span class="o">==</span> <span class="mh">0xFFFFFFFF</span><span class="p">)</span> <span class="n">endFrame</span> <span class="o">=</span> <span class="n">frame</span><span class="p">;</span>
+					<span class="kt">float</span> <span class="n">out</span> <span class="o">=</span> <span class="n">pow5</span><span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">phase</span><span class="p">))</span> <span class="o">*</span> <span class="n">amp</span> <span class="o">*</span> <span class="n">globalVol</span><span class="p">;</span>
+					<span class="n">phase</span> <span class="o">+=</span> <span class="n">freq</span><span class="p">;</span>
+					<span class="n">left</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span> <span class="o">+=</span> <span class="n">out</span><span class="p">;</span>
+					<span class="k">if</span> <span class="p">(</span><span class="n">right</span><span class="p">)</span> <span class="n">right</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span> <span class="o">+=</span> <span class="n">out</span><span class="p">;</span>
+				<span class="p">}</span>
+				<span class="k">if</span> <span class="p">(</span><span class="n">endFrame</span> <span class="o">!=</span> <span class="mh">0xFFFFFFFF</span><span class="p">)</span> <span class="p">{</span>
+
+<span class="cm">/* ========= 中略 ========= */</span>
+					
+					<span class="n">NoteEnded</span><span class="p">(</span><span class="n">endFrame</span><span class="p">);</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+			<span class="k">break</span><span class="p">;</span>
+		<span class="k">default</span> <span class="o">:</span>
+			<span class="k">break</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="n">noErr</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+</code></pre></div></div>
+<p data-sourcepos="925:1-925:191">よく見ると、シンセサイザーとして必要な機能が定義されているのがわかりますね。どうやら、 <strong>Render</strong>という関数で音を生成するようです。</p>
+<p data-sourcepos="927:1-927:65">SetNoteなどはMIDIの信号を送信するのでしょうね。</p>
+<p data-sourcepos="929:1-929:61">ここで、さらに #include に注目してください。</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="931:1-942:3"><div class="highlight"><pre><code><span class="cp"># include &lt;vector&gt;
+# include &lt;stdexcept&gt;
+# include &lt;AudioUnit/AudioUnit.h&gt;
+# include &lt;CoreAudio/CoreAudio.h&gt;
+# include &lt;libkern/OSAtomic.h&gt;
+# include "MusicDeviceBase.h"
+# include "LockFreeFIFO.h"
+# include "SynthEvent.h"
+# include "SynthNote.h"
+# include "SynthElement.h"
+</span></code></pre></div></div>
+<p data-sourcepos="944:1-944:95">ここを見ると分かるのですが、AUに必要なクラス群がよく分かります。</p>
+<ul data-sourcepos="946:1-948:0">
+<li data-sourcepos="946:1-946:81">AudioUnit/AudioUnit.h は必須です。これがないと始まりません。</li>
+<li data-sourcepos="947:1-948:0">CoreAudio/CoreAudio.h Macの音声を操る、最も重要なフレームワークです。</li>
+</ul>
+<p data-sourcepos="949:1-949:63">つまり、この２つが一番重要だと分かります。</p>
+<h2 data-sourcepos="951:1-951:35">
+<span id="auのクラス構成について" class="fragment"></span><a href="#au%E3%81%AE%E3%82%AF%E3%83%A9%E3%82%B9%E6%A7%8B%E6%88%90%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><i class="fa fa-link"></i></a>AUのクラス構成について</h2>
+<ul data-sourcepos="953:1-955:0">
+<li data-sourcepos="953:1-955:0">Appendix: Audio Unit Class Hierarchy<br>
+<a href="https://developer.apple.com/library/mac/documentation/musicaudio/Conceptual/AudioUnitProgrammingGuide/AudioUnitClassHierarchy/AudioUnitClassHierarchy.html" class="autolink" rel="nofollow noopener" target="_blank">https://developer.apple.com/library/mac/documentation/musicaudio/Conceptual/AudioUnitProgrammingGuide/AudioUnitClassHierarchy/AudioUnitClassHierarchy.html</a>
+</li>
+</ul>
+<p data-sourcepos="956:1-956:39">に詳しく解説されています。</p>
+<a href="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2FOsvMHgK.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=2bbf3849273bbdd50c5d0216dad877fd" target="_blank" rel="nofollow noopener"><img alt="Hierarchy" src="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2FOsvMHgK.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=2bbf3849273bbdd50c5d0216dad877fd" srcset="https://qiita-user-contents.imgix.net/http%3A%2F%2Fimgur.com%2FOsvMHgK.jpg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=91aca7964d5e6c78dbbbe050746aff16 1x" data-canonical-src="http://imgur.com/OsvMHgK.jpg" loading="lazy"></a>
+<p data-sourcepos="960:1-960:45">テキスト化したものが以下です。</p>
+<div class="code-frame" data-lang="tex" data-sourcepos="962:1-1001:3"><div class="highlight"><pre><code>
+    |-- AUElementCreator
+|&lt;--|
+|   |-- ComponentBase
+|
+|--&gt; AUBase -- AUScope -- AUElement
+|                         |
+|                         |----- AUOElement
+|                         |  |
+|                         |  |--- AUInputElement
+|                         |  |
+|                         |  |--- AUOutputElement
+|-- AUOutputBase          |
+|                         |--- SynthElement
+|                           |
+|                           |--- SynthPartElement
+|                           |
+|                           |--- SynthGroupElement
+|                             |--- SynthNoteList ...
+|                               |--- SynthNote ...
+|
+|-- AUEffectBase -- AUKernelBase ...
+|    |
+|    |   AUMIDIBase
+|    |   |  |
+|    |   |  | 
+|    |   |  --<span class="p">_</span>
+|    |---|----- AUMIDIEffectBase
+|        |
+|        |--<span class="p">_</span> 
+|------------ MusicDeviceBase
+               |
+               |-- [[AUInstrumentBase]]
+                    |
+                    |-- AUMonotimbralInstrumentBase
+                    |
+                    |-- AUMultitimbralIntrumentBase
+
+</code></pre></div></div>
+<p data-sourcepos="1003:1-1003:61">括弧をつけたところが <strong>AUInstrumentBase</strong> です。</p>
+<p data-sourcepos="1005:1-1005:84">なんかよくわかりませんがそういうことにしておきましょう。</p>
+<p data-sourcepos="1007:1-1007:111">とにかく、 <strong>CoreAudio</strong> と <strong>AudioUnit</strong> は重要だということを覚えておいてください。</p>
+<p data-sourcepos="1009:1-1009:83">詳しくは他のサイトや、Apple Developer Networkを活用して下さい。</p>
+<h1 data-sourcepos="1011:1-1011:11">
+<span id="まとめ" class="fragment"></span><a href="#%E3%81%BE%E3%81%A8%E3%82%81"><i class="fa fa-link"></i></a>まとめ</h1>
+<p data-sourcepos="1013:1-1013:99">今回は、VSTとAudioUnitの入門として書きました。いかがでしたでしょうか。</p>
+<p data-sourcepos="1015:1-1015:71">これを参考に、少しでもVSTやAUが増えれば幸いです。</p>
+<h1 data-sourcepos="1017:1-1017:23">
+<span id="参考になる文献" class="fragment"></span><a href="#%E5%8F%82%E8%80%83%E3%81%AB%E3%81%AA%E3%82%8B%E6%96%87%E7%8C%AE"><i class="fa fa-link"></i></a>参考になる文献</h1>
+<h3 data-sourcepos="1019:1-1019:7">
+<span id="vst-1" class="fragment"></span><a href="#vst-1"><i class="fa fa-link"></i></a>VST</h3>
+<ul data-sourcepos="1021:1-1029:0">
+<li data-sourcepos="1021:1-1023:0">
+<p data-sourcepos="1021:3-1022:40">VSTの作り方<br>
+<a href="http://www.g200kg.com/jp/docs/makingvst/" class="autolink" rel="nofollow noopener" target="_blank">http://www.g200kg.com/jp/docs/makingvst/</a></p>
+</li>
+<li data-sourcepos="1024:1-1026:0">
+<p data-sourcepos="1024:3-1025:32">C++で音作り<br>
+<a href="http://www39.atwiki.jp/vst_prog/" class="autolink" rel="nofollow noopener" target="_blank">http://www39.atwiki.jp/vst_prog/</a></p>
+</li>
+<li data-sourcepos="1027:1-1029:0">
+<p data-sourcepos="1027:3-1028:40">VSTプラグインを自作する<br>
+<a href="http://gyabo.sakura.ne.jp/tips/vst0.html" class="autolink" rel="nofollow noopener" target="_blank">http://gyabo.sakura.ne.jp/tips/vst0.html</a></p>
+</li>
+</ul>
+<h3 data-sourcepos="1030:1-1030:14">
+<span id="audiounits" class="fragment"></span><a href="#audiounits"><i class="fa fa-link"></i></a>AudioUnits</h3>
+<ul data-sourcepos="1032:1-1037:0">
+<li data-sourcepos="1032:1-1034:0">
+<p data-sourcepos="1032:3-1033:48">ダウンロード可能な Audio Unit 関連のサンプルコード11個<br>
+<a href="http://d.hatena.ne.jp/shu223/20130221/1361394373" class="autolink" rel="nofollow noopener" target="_blank">http://d.hatena.ne.jp/shu223/20130221/1361394373</a></p>
+</li>
+<li data-sourcepos="1035:1-1037:0">
+<p data-sourcepos="1035:3-1036:89">Getting Started With Audio Unit - My Codex Leicester<br>
+<a href="http://nagano.monalisa-au.org/archives/category/getting-started-with-audio-unit?order=ASC" class="autolink" rel="nofollow noopener" target="_blank">http://nagano.monalisa-au.org/archives/category/getting-started-with-audio-unit?order=ASC</a></p>
+</li>
+</ul>
+<h3 data-sourcepos="1038:1-1038:37">
+<span id="音響生成プログラミング" class="fragment"></span><a href="#%E9%9F%B3%E9%9F%BF%E7%94%9F%E6%88%90%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0"><i class="fa fa-link"></i></a>音響生成プログラミング</h3>
+<ul data-sourcepos="1040:1-1050:30">
+<li data-sourcepos="1040:1-1042:0">
+<p data-sourcepos="1040:3-1041:46">C言語で始める音のプログラミング<br>
+<a href="http://floor13.sakura.ne.jp/book03/book03.html" class="autolink" rel="nofollow noopener" target="_blank">http://floor13.sakura.ne.jp/book03/book03.html</a></p>
+</li>
+<li data-sourcepos="1043:1-1045:0">
+<p data-sourcepos="1043:3-1044:40">モバイルとシンセで音楽作りな話<br>
+<a href="https://pfjksynth.wordpress.com/2013/03/" class="autolink" rel="nofollow noopener" target="_blank">https://pfjksynth.wordpress.com/2013/03/</a></p>
+</li>
+<li data-sourcepos="1046:1-1048:0">
+<p data-sourcepos="1046:3-1047:21">PDコミュニティサイト（音声生成とフィルタの基本がわかる）<br>
+<a href="http://puredata.info/" class="autolink" rel="nofollow noopener" target="_blank">http://puredata.info/</a></p>
+</li>
+<li data-sourcepos="1049:1-1050:30">
+<p data-sourcepos="1049:3-1050:30">ChucK （リアルタイム音響生成プログラミング言語）<br>
+<a href="http://chuck.cs.princeton.edu/" class="autolink" rel="nofollow noopener" target="_blank">http://chuck.cs.princeton.edu/</a></p>
+</li>
+</ul>

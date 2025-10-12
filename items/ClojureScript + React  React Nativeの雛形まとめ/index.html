@@ -1,0 +1,82 @@
+<p data-sourcepos="1:1-1:170">ポイントとして、shadow-cljsを使うか、figwheelを使うかで分かれる。またReact Nativeの場合はExpoを使うか使わないかでも分かれる。</p>
+<h2 data-sourcepos="3:1-3:8">
+<span id="react" class="fragment"></span><a href="#react"><i class="fa fa-link"></i></a>React</h2>
+<h3 data-sourcepos="5:1-5:15">
+<span id="shadow-cljs" class="fragment"></span><a href="#shadow-cljs"><i class="fa fa-link"></i></a>shadow-cljs</h3>
+<p data-sourcepos="7:1-7:46"><iframe id="qiita-embed-content__5a752adbe5209710acb19c26fe6a54d8" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__5a752adbe5209710acb19c26fe6a54d8" data-content="https%3A%2F%2Fgithub.com%2Ffilipesilva%2Fcreate-cljs-app" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="9:1-9:67">丁寧な日本語の解説記事があってわかりやすい。</p>
+<p data-sourcepos="11:1-11:58"><iframe id="qiita-embed-content__bee6c27a2c5904c1b88d8e62922b633c" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__bee6c27a2c5904c1b88d8e62922b633c" data-content="https%3A%2F%2Fqiita.com%2Flagenorhynque%2Fitems%2F7c049f3c3b967ee777ac" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<h4 data-sourcepos="13:1-13:18">
+<span id="-使い方" class="fragment"></span><a href="#-%E4%BD%BF%E3%81%84%E6%96%B9"><i class="fa fa-link"></i></a>◎ 使い方</h4>
+<div class="code-frame" data-lang="bash" data-sourcepos="15:1-20:3"><div class="highlight"><pre><code><span class="nv">$ </span>npx create-cljs-app hello_react
+<span class="nv">$ </span><span class="nb">cd </span>hello_react
+<span class="nv">$ </span>npm <span class="nb">install</span>
+<span class="nv">$ </span>npx shadow-cljs watch app
+</code></pre></div></div>
+<h3 data-sourcepos="22:1-22:12">
+<span id="figwheel" class="fragment"></span><a href="#figwheel"><i class="fa fa-link"></i></a>figwheel</h3>
+<p data-sourcepos="24:1-24:44"><iframe id="qiita-embed-content__3934a35eae8489a3c769f0aa33148ec8" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__3934a35eae8489a3c769f0aa33148ec8" data-content="https%3A%2F%2Fgithub.com%2Fbhauman%2Ffigwheel-template" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<h4 data-sourcepos="26:1-26:18">
+<span id="-使い方-1" class="fragment"></span><a href="#-%E4%BD%BF%E3%81%84%E6%96%B9-1"><i class="fa fa-link"></i></a>◎ 使い方</h4>
+<div class="code-frame" data-lang="bash" data-sourcepos="28:1-33:3"><div class="highlight"><pre><code><span class="nv">$ </span>lein new figwheel hello_react <span class="nt">--</span> <span class="nt">--reagent</span>
+<span class="nv">$ </span><span class="nb">cd </span>hello_react
+<span class="nv">$ </span>npm <span class="nb">install</span>
+<span class="nv">$ </span>lein figwheel
+</code></pre></div></div>
+<h2 data-sourcepos="35:1-35:15">
+<span id="react-native" class="fragment"></span><a href="#react-native"><i class="fa fa-link"></i></a>React Native</h2>
+<h3 data-sourcepos="37:1-37:22">
+<span id="shadow-cljs--expo" class="fragment"></span><a href="#shadow-cljs--expo"><i class="fa fa-link"></i></a>shadow-cljs + Expo</h3>
+<p data-sourcepos="39:1-39:35"><iframe id="qiita-embed-content__a13dc08b14668296012c73bf9e0f1333" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__a13dc08b14668296012c73bf9e0f1333" data-content="https%3A%2F%2Fgithub.com%2FPEZ%2Frn-rf-shadow" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="41:1-41:111">雛形生成コマンドではなく、サンプルプロジェクト。READMEがとてもわかりやすい。</p>
+<h4 data-sourcepos="43:1-43:18">
+<span id="-使い方-2" class="fragment"></span><a href="#-%E4%BD%BF%E3%81%84%E6%96%B9-2"><i class="fa fa-link"></i></a>◎ 使い方</h4>
+<div class="code-frame" data-lang="bash" data-sourcepos="45:1-52:3"><div class="highlight"><pre><code><span class="nv">$ </span>git clone https://github.com/PEZ/rn-rf-shadow
+<span class="nv">$ </span><span class="nb">cd </span>rn-rf-shadow
+<span class="nv">$ </span>npm <span class="nb">install</span>
+<span class="nv">$ </span>npx shadow-cljs watch app
+<span class="c"># 最初のコンパイルが終わるのを待ち、別のタブを開いて</span>
+<span class="nv">$ </span>npm start
+</code></pre></div></div>
+<h3 data-sourcepos="54:1-54:30">
+<span id="shadow-cljs--react-native" class="fragment"></span><a href="#shadow-cljs--react-native"><i class="fa fa-link"></i></a>shadow-cljs + react-native</h3>
+<p data-sourcepos="56:1-56:54"><iframe id="qiita-embed-content__13977114995a4fe98e6203ffd23818ad" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__13977114995a4fe98e6203ffd23818ad" data-content="https%3A%2F%2Fgithub.com%2Ftomthought%2Freact-native-init-shadow" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="58:1-58:51">スター数が少ないのが少し気になる。</p>
+<h4 data-sourcepos="60:1-60:18">
+<span id="-使い方-3" class="fragment"></span><a href="#-%E4%BD%BF%E3%81%84%E6%96%B9-3"><i class="fa fa-link"></i></a>◎ 使い方</h4>
+<div class="code-frame" data-lang="bash" data-sourcepos="62:1-70:3"><div class="highlight"><pre><code><span class="nv">$ </span>npx react-native-init-shadow MyAwesomeProject
+<span class="nv">$ </span><span class="nb">cd </span>MyAwesomeProject
+<span class="nv">$ </span>npm <span class="nb">install</span>
+<span class="nv">$ </span>npx pod-install
+<span class="nv">$ </span>npx shadow-cljs watch dev
+<span class="nv">$ </span>npx react-native run-ios <span class="c"># or: npx react-native run-android  # or: npx react-native run-web</span>
+
+</code></pre></div></div>
+<h3 data-sourcepos="72:1-72:12">
+<span id="figwheel-1" class="fragment"></span><a href="#figwheel-1"><i class="fa fa-link"></i></a>figwheel</h3>
+<p data-sourcepos="74:1-74:55"><iframe id="qiita-embed-content__d56955271c8821ec0e757adb594f00c6" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__d56955271c8821ec0e757adb594f00c6" data-content="https%3A%2F%2Fgithub.com%2Fbhauman%2Freact-native-figwheel-bridge" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<h4 data-sourcepos="76:1-76:18">
+<span id="-使い方-4" class="fragment"></span><a href="#-%E4%BD%BF%E3%81%84%E6%96%B9-4"><i class="fa fa-link"></i></a>◎ 使い方</h4>
+<p data-sourcepos="78:1-78:49">react-nativeとExpoが初期化時に選べる。</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="80:1-90:3"><div class="highlight"><pre><code><span class="c"># react-nativeの場合</span>
+<span class="nv">$ </span>npx react-native init MyAwesomeProject
+<span class="nv">$ </span><span class="nb">cd </span>MyAwesomeProject
+<span class="nv">$ </span>npx react-native run-ios <span class="c"># or: npx react-native run-android  # or: npx react-native run-web</span>
+
+<span class="c"># expoの場合</span>
+<span class="nv">$ </span>npx expo init MyAwesomeProject
+<span class="nv">$ </span><span class="nb">cd </span>MyAwesomeProject
+<span class="nv">$ </span>yarn ios <span class="c"># or: yarn android # or: yarn web</span>
+</code></pre></div></div>

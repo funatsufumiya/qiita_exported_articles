@@ -1,0 +1,64 @@
+<p data-sourcepos="1:1-1:295">最近自分が積極的にウォッチしている、<a href="https://github.com/RavEngine/RavEngine" rel="nofollow noopener" target="_blank">RavEngine</a>というゲームエンジンと、その描画基盤の<a href="https://github.com/RavEngine/RGL/" rel="nofollow noopener" target="_blank">RGL</a>について、自分の思考整理も兼ねて情報をまとめておきたいと思う。</p>
+<p data-sourcepos="3:1-3:165">ただし、自分はコントリビューターでも何でもないため、おそらく多くの語弊や誤解があることを先に注意しておきたい。</p>
+<h2 data-sourcepos="5:1-5:18">
+<span id="動画や画像" class="fragment"></span><a href="#%E5%8B%95%E7%94%BB%E3%82%84%E7%94%BB%E5%83%8F"><i class="fa fa-link"></i></a>動画や画像</h2>
+<p data-sourcepos="7:1-7:182">文字よりも動画のほうがわかりやすいという方は、以下の<a href="https://www.youtube.com/watch?v=J84grfCVIIA" rel="nofollow noopener" target="_blank">紹介動画</a>がわかりやすい（ただし英語）。</p>
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/J84grfCVIIA?si=L7KXRVftYDr01nLn" frameborder="0" allowfullscreen></iframe>
+<p data-sourcepos="12:1-12:102">また、いくつかRavEngineサンプルのスクリーンショットを先に掲載しておく。</p>
+<p data-sourcepos="14:1-14:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fb6ce892e-4d6e-6683-097f-7cd225d525f5.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=3f9ee474daa7c946ef5239841afa8e83" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fb6ce892e-4d6e-6683-097f-7cd225d525f5.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=3f9ee474daa7c946ef5239841afa8e83" alt="スクリーンショット 2025-01-08 18.07.16.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fb6ce892e-4d6e-6683-097f-7cd225d525f5.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=214604a9da41bccd0cc0416436849643 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/b6ce892e-4d6e-6683-097f-7cd225d525f5.png" loading="lazy"></a></p>
+<p data-sourcepos="16:1-16:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F5f08c878-7ed5-8d00-863a-266fd2e2be43.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=6a27e0cf40f35c3ffaf006096831df44" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F5f08c878-7ed5-8d00-863a-266fd2e2be43.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=6a27e0cf40f35c3ffaf006096831df44" alt="スクリーンショット 2025-01-08 18.06.49.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F5f08c878-7ed5-8d00-863a-266fd2e2be43.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=5aea8f5f6a0a360257d4faca4314d5dc 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/5f08c878-7ed5-8d00-863a-266fd2e2be43.png" loading="lazy"></a></p>
+<h2 data-sourcepos="18:1-18:6">
+<span id="rgl" class="fragment"></span><a href="#rgl"><i class="fa fa-link"></i></a>RGL</h2>
+<p data-sourcepos="20:1-20:33"><iframe id="qiita-embed-content__3c210b638624c27b78d549a708307ad0" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__3c210b638624c27b78d549a708307ad0" data-content="https%3A%2F%2Fgithub.com%2FRavEngine%2FRGL%2F" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="22:1-22:178">RGLは、MetalライクなAPIを基調に、DirectX12 (以下DX12) やVulkanにも対応範囲を拡大させ、クロスプラットフォームな描画基盤となるもの。</p>
+<p data-sourcepos="24:1-24:233">主にRavEngine向けに作られているものの、RavEngineとは独立していて、例えば<a href="https://github.com/bkaradzic/bgfx" rel="nofollow noopener" target="_blank">BGFX</a>のように自分の独自のフレームワークに組み込んで使うことも可能。</p>
+<p data-sourcepos="26:1-26:218">特にBGFX等と比較した印象では、実装がスッキリしていて読みやすく、シェーダ言語についてもデフォルトでマクロのないプレーンなGLSLが使えるというのは魅力。</p>
+<p data-sourcepos="28:1-28:390">実装がシンプルなのは、OpenGLやDirectX11などをバッサリと切り捨てている<sup><a href="#fn-1" id="fnref-1">1</a></sup>ためだと考えられる。そのおかげもあってか、後述のRavEngineも含めて、DX12/Metal/Vulkanのラッパーとして考えたときにレイヤーが非常に薄く、考え方によっては自分でもカスタムできるかもしれないという魅力がある。</p>
+<p data-sourcepos="30:1-30:442">前述の通りBGFXなど似たような描画基盤は複数存在するものの、それらのなかでも特筆して実装がシンプルな印象で、ゲームエンジンの基盤に留まらず、自分自身でフルスクラッチのコードを書いていく際にも使えるのではないかという感覚がある。これはおそらく、RavEngineを拡張していく際にも有利に働くのではないだろうか。</p>
+<h2 data-sourcepos="32:1-32:12">
+<span id="ravengine" class="fragment"></span><a href="#ravengine"><i class="fa fa-link"></i></a>RavEngine</h2>
+<p data-sourcepos="34:1-34:38"><iframe id="qiita-embed-content__39994f9c90dd12988c0029fdc025ce19" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__39994f9c90dd12988c0029fdc025ce19" data-content="https%3A%2F%2Fgithub.com%2FRavEngine%2FRavEngine" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="36:1-36:192">前述のRGLに加えて、ECS (Entity Component System) や、PBR (Physically Based Rendering) のサポートなど、ゲームエンジンとしての上位レイヤーを加えたもの。</p>
+<p data-sourcepos="38:1-38:152">語弊を恐れずに書くならば、運営規模は全然違うものの、<a href="https://bevyengine.org/" rel="nofollow noopener" target="_blank">Bevy Engine</a>のC++版という印象がある。</p>
+<p data-sourcepos="40:1-40:275">Bevyとの違いを書くとすれば、Bevyは基本的には<a href="https://github.com/gfx-rs/wgpu" rel="nofollow noopener" target="_blank">wgpu</a>というFirefox由来の描画基盤を使っているのに対し、RavEngineは前述のRGLを基盤としていることから、この違いが鮮明となっている。</p>
+<p data-sourcepos="42:1-42:393">ただしBevyは、<a href="https://store.steampowered.com/app/2198150/Tiny_Glade/" rel="nofollow noopener" target="_blank">Tiny Glade</a>というBevyで作られた有名なゲームが、<a href="https://crates.io/crates/bevy_render" rel="nofollow noopener" target="_blank">bevy_render</a>を使わずに別のVulkanレンダラ(<a href="https://github.com/ash-rs/ash" rel="nofollow noopener" target="_blank">ash</a>)を使っていることでも知られているように、上位レイヤーと下位レイヤーを独立させている。</p>
+<p data-sourcepos="44:1-44:324">一方でRavEngineはRGLに実装を依存させていることが、個人的には逆にシンプルだと感じる。C++には既に多くのECS実装など上位レイヤーの代替候補は多くあるなかで独自にECSを実装しているのは、並列処理などの目的があってのことと推察する。</p>
+<p data-sourcepos="46:1-46:570">また、RGLと同じく、基本的に薄いレイヤーで構成されている。Bevyをはじめとして、最近のゲームエンジンは非常に厚いレイヤーでフレームワークが構成されていることが多く、その分だけどんな環境でも安定動作したり、抽象化されている安心感はあるものの、時には自分で下位レイヤーもいじりたいと思うことがある。これは特に、DX12/Metal/Vulkanの最新機能などをすぐ使いたいときなどに有利に働くのではないかと思う。</p>
+<h2 data-sourcepos="48:1-48:24">
+<span id="ビルドシステム" class="fragment"></span><a href="#%E3%83%93%E3%83%AB%E3%83%89%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0"><i class="fa fa-link"></i></a>ビルドシステム</h2>
+<p data-sourcepos="50:1-50:236">RavEngine/RGLは、CMakeをビルドシステムに採用している。最近のフレームワークはビルドシステムが多様にあるなかで、標準的なCMakeが選ばれていることは個人的には評価したい。</p>
+<p data-sourcepos="52:1-52:137">その恩恵というべきか、他の既存のCMakeを使ったプロジェクトに組み込むのはさほど難しくない印象。</p>
+<p data-sourcepos="54:1-54:528">課題としては、基本設定通りにすると依存ライブラリのすべてをビルドさせ<sup><a href="#fn-1" id="fnref-1-2">1</a></sup>、スタティックリンクさせてしまうので、ビルド時間が長くなり、メモリも多く必要となる。（<a href="https://github.com/RavEngine/RavEngine?tab=readme-ov-file#system-requirements-for-developers" rel="nofollow noopener" target="_blank">READMEの要求スペック</a>が高いのはこのため）。これについては対応策は多くあると思うので、CMakeなどをどう活用していくか次第ではないかと思う。</p>
+<p data-sourcepos="56:1-56:305">（Bevyが使っているRust/Cargoのエコシステムでも、必要なライブラリは基本的に一から全てビルドするので、ビルドの速さの違いや、賛否両論はあるかもしれないけれど、安定してビルドできるという面では良いかもしれない。）</p>
+<h2 data-sourcepos="58:1-58:21">
+<span id="コミュニティ" class="fragment"></span><a href="#%E3%82%B3%E3%83%9F%E3%83%A5%E3%83%8B%E3%83%86%E3%82%A3"><i class="fa fa-link"></i></a>コミュニティ</h2>
+<p data-sourcepos="60:1-60:195">コミュニティについては現時点ではさほど大きくない印象で、<a href="https://github.com/RavEngine/RavEngine/discussions" rel="nofollow noopener" target="_blank">GitHub Discussions</a>を中心に利用している様子。</p>
+<p data-sourcepos="62:1-62:242">プラグインシステムなどについてはまだ未調査なものの、ECS自体がかなり拡張性を持っていることや、一般的なCMakeなどを使っていることから、拡張性は高いのではないかと思う。</p>
+<p data-sourcepos="64:1-64:499">ECSについて一般的にいわれていることとして、プラグインなどはそのフレームワークの専用の実装になりがちで、RavEngineは特にRGLに依存していたり、ECSが独自実装であることから、プラグイン等については<a href="https://bevyengine.org/assets/#assets" rel="nofollow noopener" target="_blank">Bevy Assets</a>のような感じで何かしらまとめてあったり、GitHubのタグ（トピック）があると嬉しいような気もする。（詳しくは今後調査。）</p>
+<h2 data-sourcepos="66:1-66:12">
+<span id="まとめ" class="fragment"></span><a href="#%E3%81%BE%E3%81%A8%E3%82%81"><i class="fa fa-link"></i></a>まとめ</h2>
+<p data-sourcepos="68:1-68:252">まだまだアーリーステージなプロダクトという印象はあるものの、現時点で非常に斬新でシンプルな実装が際立つので、個人的には現時点でも積極的に使っていきたいという印象を持つ。</p>
+<p data-sourcepos="70:1-70:213">ただし、OpenGLやDirectX11などの旧来のAPIはサポートされていないので、動作環境はかなり限られている（新しいPCやスマホに限定される）ことに注意したい<sup><a href="#fn-2" id="fnref-2">2</a></sup>。</p>
+<p data-sourcepos="72:1-72:233">サンプル等のビルドについては、いくつかハマりどころがあるので、それについては<a href="https://qiita.com/funatsufumiya/items/632d27454bdf51dace9b" id="reference-f2fc92784326aff27c33">別の記事</a>などでまとめていければと思う。</p>
+<h2 data-sourcepos="74:1-74:30">
+<span id="追記-sdl3との関連性" class="fragment"></span><a href="#%E8%BF%BD%E8%A8%98-sdl3%E3%81%A8%E3%81%AE%E9%96%A2%E9%80%A3%E6%80%A7"><i class="fa fa-link"></i></a>追記: SDL3との関連性</h2>
+<p data-sourcepos="76:1-76:173">執筆時点で、<a href="https://wiki.libsdl.org/SDL3/FrontPage" rel="nofollow noopener" target="_blank">SDL3</a>の正式リリースが間近になっていることもあり、SDL3について追記しておきたい。</p>
+<p data-sourcepos="78:1-78:283">SDL3の<a href="https://wiki.libsdl.org/SDL3/CategoryGPU" rel="nofollow noopener" target="_blank">新しいGPU API</a>は、RGLの向かっている方向性と（シェーダ言語の扱いを除いて）とてもよく似ていると私は感じている。（先取りしているという見方もできるかもしれない。）</p>
+<p data-sourcepos="80:1-80:265">おそらく<a href="">作者</a>もそれは意識していると思われ、（SDL GPUではないものの）作者自身が<a href="https://github.com/Ravbug/sdl3-sample" rel="nofollow noopener" target="_blank">sdl3-sample</a>を更新していたり、RavEngine自体にもSDL3が一部既に使われていたりする。</p>
+<p data-sourcepos="82:1-82:284">SDL GPUについて作者自身がどう考えているかは情報が少なくてわからないが、今後SDL3が正式リリースされると、また動向が変わってくる可能性があるため、しばらくは破壊的変更などに注意が必要かもしれない。</p>
+<p data-sourcepos="84:1-84:302">（ただ、SDL3は最初のリリースではWebGPUなどをサポートしていなかったり、シェーダ言語に対する方向性の違いがあったりするので、RGLはおそらくそのまま開発が継続し、SDL3はうまく取り込んでいく可能性が大きいと予想。）</p>
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/UFuWGECc8w0?si=lbI195fkrtb7ks6h" frameborder="0" allowfullscreen></iframe>
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p data-sourcepos="90:7-90:560">余談として、RavEngineのCMakeのビルド過程で、関連ライブラリをまとめてビルドすることから、依存関係にあるSDLやOpenXRにより "OpenGL Support" というログがビルド途中に表示される。これによって自分はてっきりOpenGLサポートも実験的に含まれているのかと一瞬勘違いしたけれど、そうではない。OpenGLは切り捨てられているので、実験的なEmscriptenサポートでもWebGLはサポートされず、対応するのはWebGPUとなっている。 <a href="#fnref-1" class="">↩</a> <a href="#fnref-1-2" class="">↩<sup>2</sup></a></p>
+</li>
+<li id="fn-2">
+<p data-sourcepos="91:7-91:359">執筆時点での<a href="https://github.com/RavEngine/RavEngine?tab=readme-ov-file#system-requirements-for-developers" rel="nofollow noopener" target="_blank">最低動作環境</a>は、<code>DX12, VK 1.3, or Metal 3</code> とあるので、仮にVulkanやMetalが動く環境だとしても、現時点で最新のSDKや機能が動作しなければサポートされないので、十分な注意が必要。 <a href="#fnref-2" class="">↩</a></p>
+</li>
+</ol>
+</section>

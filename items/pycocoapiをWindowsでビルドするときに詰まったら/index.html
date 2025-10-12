@@ -1,0 +1,91 @@
+<p data-sourcepos="1:1-1:98">Windowsで普通に <code>pip install pycocoapi</code> としようとして色々詰まったのでメモ。</p>
+<p data-sourcepos="3:1-3:339">（以下の内容は主に <a href="https://github.com/cocodataset/cocoapi/issues/51" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/cocodataset/cocoapi/issues/51</a> にあるトラブルシューティング＋α。Qiitaにある<a href="https://qiita.com/kekekekenta/items/ca9d5d1f197c373656ec" id="reference-b2d6d6cdf89b3dd4dd50">他の記事</a>も参照したけど、コンパイラフラッグが足りなくてビルドがコケたので、いろいろ足した。）</p>
+<h2 data-sourcepos="5:1-5:45">
+<span id="基本はgitでクローンしてビルド" class="fragment"></span><a href="#%E5%9F%BA%E6%9C%AC%E3%81%AFgit%E3%81%A7%E3%82%AF%E3%83%AD%E3%83%BC%E3%83%B3%E3%81%97%E3%81%A6%E3%83%93%E3%83%AB%E3%83%89"><i class="fa fa-link"></i></a>基本はgitでクローンしてビルド</h2>
+<p data-sourcepos="7:1-7:90">そもそもgitが入ってないときは<a href="https://gitforwindows.org/" rel="nofollow noopener" target="_blank">git for windows</a>。</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="9:1-11:3"><div class="highlight"><pre><code>git clone https://github.com/cocodataset/cocoapi.git
+</code></pre></div></div>
+<p data-sourcepos="13:1-13:66">で、ビルドしようとして多分間違いなくコケる。</p>
+<div class="code-frame" data-lang="text" data-sourcepos="15:1-20:3"><div class="highlight"><pre><code>cd cocoapi\PythonAPI
+python setup.py build_ext install
+
+# 以下エラーメッセージがいろいろ
+</code></pre></div></div>
+<p data-sourcepos="22:1-22:105">ので、ここからはエラーメッセージの内容に応じてトラブルシューティング。</p>
+<h2 data-sourcepos="24:1-24:22">
+<span id="1-clexe-がない" class="fragment"></span><a href="#1-clexe-%E3%81%8C%E3%81%AA%E3%81%84"><i class="fa fa-link"></i></a>1. cl.exe がない</h2>
+<p data-sourcepos="26:1-26:136"><code>error: command 'cl.exe' failed: No such file or directory</code> みたいなエラーメッセージが出たら、cl.exeがPATHにない。</p>
+<p data-sourcepos="28:1-28:277">一番簡単な解決法は、Visual Studioをインストールして、<strong>開発者コマンドプロンプト</strong>を使う。（インストールの仕方はいろんな記事があるので<a href="https://arakan-pgm-ai.hatenablog.com/entry/2018/12/13/000000" rel="nofollow noopener" target="_blank">そちらを参照</a>。)</p>
+<p data-sourcepos="30:1-30:155">ちなみに開発者コマンドプロンプトにはいろんな種類があるが、今回は<strong>x64 Native Toolsコマンドプロンプト</strong>を使う。</p>
+<p data-sourcepos="32:1-32:124">起動するには、Visual Studioをインストールした上で、検索バーで<code>x64 Native</code>と打てば出てくる。</p>
+<p data-sourcepos="34:1-34:155"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F18ea582b-bc0c-00a4-5abb-187c9bbe5060.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=2f7fddd231768a4ae90f6f3ce05202f1" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F18ea582b-bc0c-00a4-5abb-187c9bbe5060.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=2f7fddd231768a4ae90f6f3ce05202f1" alt="SnapCrab_NoName_2020-3-30_12-36-21_No-00.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F18ea582b-bc0c-00a4-5abb-187c9bbe5060.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=412067c7d08de37ad55cfdf68feaf969 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/18ea582b-bc0c-00a4-5abb-187c9bbe5060.png" loading="lazy"></a></p>
+<h2 data-sourcepos="37:1-37:29">
+<span id="2-wno-cpp-が使えない" class="fragment"></span><a href="#2-wno-cpp-%E3%81%8C%E4%BD%BF%E3%81%88%E3%81%AA%E3%81%84"><i class="fa fa-link"></i></a>2. Wno-cpp が使えない</h2>
+<p data-sourcepos="39:1-39:80">さて、VS2017用 x64 Native Toolsコマンドプロンプトを起動して、</p>
+<div class="code-frame" data-lang="text" data-sourcepos="41:1-44:3"><div class="highlight"><pre><code>cd cocoapi\PythonAPI # cocoapiをgitでクローンしたパス
+python setup.py build_ext install
+</code></pre></div></div>
+<p data-sourcepos="46:1-46:231">を実行すると、<code>invalid numeric argument '/Wno-cpp'</code> みたいなエラーメッセージが出る。（ちなみにそれ以前にpythonがないというエラーが出る場合は、pythonのPATHが通っていない。）</p>
+<p data-sourcepos="48:1-48:128">なので、<code>cocoapi\PythonAPI\setup.py</code>の14行目あたりにある、<code>extra_compile_args</code>を以下のように空にする。</p>
+<div class="code-frame" data-lang="python" data-sourcepos="50:1-53:3"><div class="highlight"><pre><code><span class="n">extra_compile_args</span><span class="o">=</span><span class="p">[],</span>
+<span class="c1"># extra_compile_args=['-Wno-cpp', '-Wno-unused-function', '-std=c99'],
+</span></code></pre></div></div>
+<p data-sourcepos="55:1-55:36">書き換えたら再度トライ。</p>
+<h2 data-sourcepos="57:1-57:50">
+<span id="3-mathh-がないbasetsdh-がない等々" class="fragment"></span><a href="#3-mathh-%E3%81%8C%E3%81%AA%E3%81%84basetsdh-%E3%81%8C%E3%81%AA%E3%81%84%E7%AD%89%E3%80%85"><i class="fa fa-link"></i></a>3. math.h がない、basetsd.h がない等々</h2>
+<p data-sourcepos="59:1-59:162">今度はヘッダファイルが足りないと言われるので、さらに<code>cocoapi\PythonAPI\setup.py</code>の<code>include_dirs</code>を以下のように書き換える。</p>
+<div class="code-frame" data-lang="python" data-sourcepos="61:1-64:3"><div class="highlight"><pre><code><span class="n">include_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="p">.</span><span class="nf">get_include</span><span class="p">(),</span> <span class="sh">'</span><span class="s">../common</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">C:/Program Files (x86)/Windows Kits/10/Include/10.0.17763.0/ucrt</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">C:/Program Files (x86)/Windows Kits/10/Include/10.0.17763.0/winrt</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">C:/Program Files (x86)/Windows Kits/10/Include/10.0.17763.0/um</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">C:/Program Files (x86)/Windows Kits/10/Include/10.0.17763.0/shared</span><span class="sh">'</span><span class="p">],</span>
+<span class="c1"># include_dirs = [np.get_include(), '../common'],
+</span></code></pre></div></div>
+<ul data-sourcepos="66:1-68:0">
+<li data-sourcepos="66:1-66:256">※1： <code>10.0.17763.0</code> の部分はWindowsのバージョンによって異なるので、エクスプローラーで <code>C:\Program Files (x86)\Windows Kits\10\Include</code> の中身を確認して存在するバージョンに書き換える必要がある。</li>
+<li data-sourcepos="67:1-68:0">※2： もし <code>C:\Program Files (x86)\Windows Kits</code> の中身が存在しない場合は、Visual Studio InstallerからWindows 10 SDKを追加する必要がある。</li>
+</ul>
+<h2 data-sourcepos="69:1-69:28">
+<span id="4-kernel32lib-がない" class="fragment"></span><a href="#4-kernel32lib-%E3%81%8C%E3%81%AA%E3%81%84"><i class="fa fa-link"></i></a>4. kernel32.lib がない</h2>
+<p data-sourcepos="71:1-71:117">さて今度はリンカフラッグが足りないので、<code>include_dirs</code>の次の行に以下を<strong>書き足す</strong>。</p>
+<div class="code-frame" data-lang="python" data-sourcepos="73:1-75:3"><div class="highlight"><pre><code><span class="n">library_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="sh">'</span><span class="s">C:/Program Files (x86)/Windows Kits/10/Lib/10.0.17763.0/um/x64</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">C:/Program Files (x86)/Windows Kits/10/Lib/10.0.17763.0/ucrt/x64</span><span class="sh">'</span><span class="p">],</span>
+</code></pre></div></div>
+<p data-sourcepos="77:1-77:228">※ <code>10.0.17763.0</code>の部分に関しては先程と同様。（もしx64コマンドプロンプトじゃなくてx86コマンドプロンプトを使ってる場合は、x64をx86に書き換える必要があると思う。）</p>
+<p data-sourcepos="79:1-79:53">ちなみに最終的なsetup.pyはこんな感じ。</p>
+<div class="code-frame" data-lang="python" data-sourcepos="81:1-110:3"><div class="highlight"><pre><code><span class="kn">from</span> <span class="n">setuptools</span> <span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">Extension</span>
+<span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+
+<span class="c1"># To compile and install locally run "python setup.py build_ext --inplace"
+# To install library to Python site-packages run "python setup.py build_ext install"
+</span>
+<span class="n">ext_modules</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="nc">Extension</span><span class="p">(</span>
+        <span class="sh">'</span><span class="s">pycocotools._mask</span><span class="sh">'</span><span class="p">,</span>
+        <span class="n">sources</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">../common/maskApi.c</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">pycocotools/_mask.pyx</span><span class="sh">'</span><span class="p">],</span>
+        <span class="n">include_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="p">.</span><span class="nf">get_include</span><span class="p">(),</span> <span class="sh">'</span><span class="s">../common</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">C:/Program Files (x86)/Windows Kits/10/Include/10.0.17763.0/ucrt</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">C:/Program Files (x86)/Windows Kits/10/Include/10.0.17763.0/winrt</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">C:/Program Files (x86)/Windows Kits/10/Include/10.0.17763.0/um</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">C:/Program Files (x86)/Windows Kits/10/Include/10.0.17763.0/shared</span><span class="sh">'</span><span class="p">],</span>
+        <span class="n">library_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="sh">'</span><span class="s">C:/Program Files (x86)/Windows Kits/10/Lib/10.0.17763.0/um/x64</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">C:/Program Files (x86)/Windows Kits/10/Lib/10.0.17763.0/ucrt/x64</span><span class="sh">'</span><span class="p">],</span>
+        <span class="n">extra_compile_args</span><span class="o">=</span><span class="p">[],</span>
+    <span class="p">)</span>
+<span class="p">]</span>
+
+<span class="nf">setup</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="sh">'</span><span class="s">pycocotools</span><span class="sh">'</span><span class="p">,</span>
+    <span class="n">packages</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">pycocotools</span><span class="sh">'</span><span class="p">],</span>
+    <span class="n">package_dir</span> <span class="o">=</span> <span class="p">{</span><span class="sh">'</span><span class="s">pycocotools</span><span class="sh">'</span><span class="p">:</span> <span class="sh">'</span><span class="s">pycocotools</span><span class="sh">'</span><span class="p">},</span>
+    <span class="n">install_requires</span><span class="o">=</span><span class="p">[</span>
+        <span class="sh">'</span><span class="s">setuptools&gt;=18.0</span><span class="sh">'</span><span class="p">,</span>
+        <span class="sh">'</span><span class="s">cython&gt;=0.27.3</span><span class="sh">'</span><span class="p">,</span>
+        <span class="sh">'</span><span class="s">matplotlib&gt;=2.1.0</span><span class="sh">'</span>
+    <span class="p">],</span>
+    <span class="n">version</span><span class="o">=</span><span class="sh">'</span><span class="s">2.0</span><span class="sh">'</span><span class="p">,</span>
+    <span class="n">ext_modules</span><span class="o">=</span> <span class="n">ext_modules</span>
+<span class="p">)</span>
+</code></pre></div></div>
+<h2 data-sourcepos="112:1-112:22">
+<span id="5-rcexe-がない" class="fragment"></span><a href="#5-rcexe-%E3%81%8C%E3%81%AA%E3%81%84"><i class="fa fa-link"></i></a>5. rc.exe がない</h2>
+<p data-sourcepos="114:1-114:212">これが最後の砦。<code>C:\Program Files (x86)\Windows Kits\10\bin\x64</code> をPATHに追加して、もう一度x64 Native Toolsコマンドプロンプトを開き直し、同じコマンドを実行すればOK。</p>
+<p data-sourcepos="116:1-116:177">( もしPATHにこのフォルダを追加したくない場合は、中にある <code>rc.exe</code> と <code>rcdll.dll</code> だけをコピーしてPATHの通ったフォルダに置けばOK。)</p>
+<h2 data-sourcepos="118:1-118:33">
+<span id="6-やっとビルドが通る" class="fragment"></span><a href="#6-%E3%82%84%E3%81%A3%E3%81%A8%E3%83%93%E3%83%AB%E3%83%89%E3%81%8C%E9%80%9A%E3%82%8B"><i class="fa fa-link"></i></a>6. やっとビルドが通る</h2>
+<p data-sourcepos="120:1-120:117">あぁ長い道のりだった。ちゃんとインストールできてるかは以下のコマンドでわかる。</p>
+<div class="code-frame" data-lang="text" data-sourcepos="122:1-126:3"><div class="highlight"><pre><code>python
+&gt;&gt;&gt; from pycocotools.coco import COCO
+&gt;&gt;&gt; 
+</code></pre></div></div>
+<p data-sourcepos="128:1-128:32">エラーが出なければOK。</p>

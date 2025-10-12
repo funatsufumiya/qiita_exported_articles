@@ -1,0 +1,869 @@
+<p data-sourcepos="1:1-1:220">(英語版も書きました: <a href="https://dev.to/funatsufumiya/comparison-of-c-low-level-graphics-cross-platform-frameworks-and-libraries-58e5" rel="nofollow noopener" target="_blank">Comparison of C++ Low-Level Graphics, Cross-Platform Frameworks and Libraries</a>)</p>
+<p data-sourcepos="3:1-3:177">最近OpenGLばっかり書いていて、ふと、MetalやDirectXでも動くクロスプラットフォームなアプリも書きたいなと思ったので調べてみた。</p>
+<p data-sourcepos="5:1-5:51">今回調べてみたライブラリの特徴は、</p>
+<ul data-sourcepos="7:1-11:0">
+<li data-sourcepos="7:1-7:68">
+<strong>C++で実装</strong>されている ( C++14/17 など詳細は別記 )</li>
+<li data-sourcepos="8:1-8:92">
+<strong>低レベルグラフィックスAPI</strong>に対応 ( Vulkan、DirectX11/12、Metal など )</li>
+<li data-sourcepos="9:1-9:87">
+<strong>クロスプラットフォーム</strong>で動く ( Win/Mac/Linux、iOS/Android など )</li>
+<li data-sourcepos="10:1-11:0">UnityやUE4に比べて、<strong>軽量もしくは拡張性・組み込み性が高く</strong>、フレームワークやライブラリとして自由に使えるもの。</li>
+</ul>
+<p data-sourcepos="12:1-12:270">なお、今回は低レベルグラフィックスAPIへの対応を重視しているので、ゲームエンジンとしての比較は他記事を参照。今回紹介するライブラリをベースにした、独自のゲームエンジンが多数存在する。</p>
+<p data-sourcepos="14:1-14:166"><strong>追記:</strong> 本文が結構長くなったので、目次として <a href="#%E3%81%BE%E3%81%A8%E3%82%81">まとめ</a> の表をここに記載。（リンクは各見出しに飛びます。）</p>
+<table data-sourcepos="16:1-24:88">
+<thead>
+<tr data-sourcepos="16:1-16:48">
+<th data-sourcepos="16:2-16:2"></th>
+<th data-sourcepos="16:4-16:32">良い点 <img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy">
+</th>
+<th data-sourcepos="16:34-16:47">悪い点 <img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy">
+</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="18:1-18:93">
+<td data-sourcepos="18:2-18:41"><a href="#llgl-low-level-graphics-library">LLGL</a></td>
+<td data-sourcepos="18:43-18:63">豊富なAPIに対応</td>
+<td data-sourcepos="18:65-18:92">個別対処・難易度 高</td>
+</tr>
+<tr data-sourcepos="19:1-19:82">
+<td data-sourcepos="19:2-19:24"><a href="#the-forge">The Forge</a></td>
+<td data-sourcepos="19:26-19:52">対応端末数・完成度</td>
+<td data-sourcepos="19:54-19:81">個別対処・難易度 高</td>
+</tr>
+<tr data-sourcepos="20:1-20:83">
+<td data-sourcepos="20:2-20:36"><a href="#diligent-engine">Diligent Engine</a></td>
+<td data-sourcepos="20:38-20:67">同一ソースで複数対応</td>
+<td data-sourcepos="20:69-20:82">Metal非対応</td>
+</tr>
+<tr data-sourcepos="21:1-21:89">
+<td data-sourcepos="21:2-21:14"><a href="#bgfx">bgfx</a></td>
+<td data-sourcepos="21:16-21:54">同一ソースで複数対応・簡単</td>
+<td data-sourcepos="21:56-21:88">テッセレーション対応△</td>
+</tr>
+<tr data-sourcepos="22:1-22:93">
+<td data-sourcepos="22:2-22:39"><a href="#oryol--sokol_gfx">oryol / sokol_gfx</a></td>
+<td data-sourcepos="22:41-22:64">組み込み・Web向き</td>
+<td data-sourcepos="22:66-22:92">計算シェーダ非対応</td>
+</tr>
+<tr data-sourcepos="23:1-23:75">
+<td data-sourcepos="23:2-23:28"><a href="#methane-kit">Methane Kit</a></td>
+<td data-sourcepos="23:30-23:52">Windows / Mac に特化</td>
+<td data-sourcepos="23:54-23:74">モバイル非対応</td>
+</tr>
+<tr data-sourcepos="24:1-24:88">
+<td data-sourcepos="24:2-24:30"><a href="#bsframework">bs::framework</a></td>
+<td data-sourcepos="24:32-24:58">ゲームエンジン基盤</td>
+<td data-sourcepos="24:60-24:87">Windows以外は開発途上</td>
+</tr>
+</tbody>
+</table>
+<h2 data-sourcepos="26:1-26:36">
+<span id="llgl-low-level-graphics-library" class="fragment"></span><a href="#llgl-low-level-graphics-library"><i class="fa fa-link"></i></a>LLGL (Low Level Graphics Library)</h2>
+<p data-sourcepos="28:1-28:35"><iframe id="qiita-embed-content__99ee8fc90cdd17a2b75ea2241c93325e" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__99ee8fc90cdd17a2b75ea2241c93325e" data-content="https%3A%2F%2Fgithub.com%2FLukasBanana%2FLLGL" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="30:1-30:156"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F2a2992f1-535c-9cea-bb82-86b9e37cbdb7.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=6db698c8d08abfc815f37123e2037756" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F2a2992f1-535c-9cea-bb82-86b9e37cbdb7.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=6db698c8d08abfc815f37123e2037756" alt="4506fdd3-2291-2b76-1390-89142d4c64f8-min.jpg" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F2a2992f1-535c-9cea-bb82-86b9e37cbdb7.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=52f4448629a5825606204c5aa5fca6fe 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/2a2992f1-535c-9cea-bb82-86b9e37cbdb7.jpeg" loading="lazy"></a></p>
+<ul data-sourcepos="33:1-36:0">
+<li data-sourcepos="33:1-34:0">
+<p data-sourcepos="33:3-33:35">ライセンス: <strong>BSD-3 clause</strong></p>
+</li>
+<li data-sourcepos="35:1-36:0">
+<p data-sourcepos="35:3-35:33">対応プラットフォーム:</p>
+</li>
+</ul>
+<table data-sourcepos="37:1-43:46">
+<thead>
+<tr data-sourcepos="37:1-37:53">
+<th data-sourcepos="37:2-37:3"></th>
+<th data-sourcepos="37:5-37:13">DirectX</th>
+<th data-sourcepos="37:15-37:21">Metal</th>
+<th data-sourcepos="37:23-37:30">Vulkan</th>
+<th data-sourcepos="37:32-37:39">OpenGL</th>
+<th data-sourcepos="37:41-37:51">OpenGL ES</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="39:1-39:82">
+<td data-sourcepos="39:2-39:10">Windows</td>
+<td data-sourcepos="39:12-39:31"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="39:33-39:35">-</td>
+<td data-sourcepos="39:37-39:56"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="39:58-39:77"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="39:79-39:81">-</td>
+</tr>
+<tr data-sourcepos="40:1-40:61">
+<td data-sourcepos="40:2-40:6">Mac</td>
+<td data-sourcepos="40:8-40:10">-</td>
+<td data-sourcepos="40:12-40:31"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="40:33-40:35">-</td>
+<td data-sourcepos="40:37-40:56"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="40:58-40:60">-</td>
+</tr>
+<tr data-sourcepos="41:1-41:63">
+<td data-sourcepos="41:2-41:8">Linux</td>
+<td data-sourcepos="41:10-41:12">-</td>
+<td data-sourcepos="41:14-41:16">-</td>
+<td data-sourcepos="41:18-41:37"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="41:39-41:58"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="41:60-41:62">-</td>
+</tr>
+<tr data-sourcepos="42:1-42:50">
+<td data-sourcepos="42:2-42:10">Android</td>
+<td data-sourcepos="42:12-42:14">-</td>
+<td data-sourcepos="42:16-42:18">-</td>
+<td data-sourcepos="42:20-42:24"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="42:26-42:28">-</td>
+<td data-sourcepos="42:30-42:49"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+</tr>
+<tr data-sourcepos="43:1-43:46">
+<td data-sourcepos="43:2-43:6">iOS</td>
+<td data-sourcepos="43:8-43:10">-</td>
+<td data-sourcepos="43:12-43:31"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="43:33-43:35">-</td>
+<td data-sourcepos="43:37-43:39">-</td>
+<td data-sourcepos="43:41-43:45"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+</tr>
+</tbody>
+</table>
+<ul data-sourcepos="45:1-46:0">
+<li data-sourcepos="45:1-46:0">シェーダ対応:</li>
+</ul>
+<table data-sourcepos="47:1-49:127">
+<thead>
+<tr data-sourcepos="47:1-47:69">
+<th data-sourcepos="47:2-47:9">Vertex</th>
+<th data-sourcepos="47:11-47:20">Fragment</th>
+<th data-sourcepos="47:22-47:30">Compute</th>
+<th data-sourcepos="47:32-47:41">Geometry</th>
+<th data-sourcepos="47:43-47:53">Hull (TC)</th>
+<th data-sourcepos="47:55-47:67">Domain (TE)</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="49:1-49:127">
+<td data-sourcepos="49:2-49:21"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="49:23-49:42"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="49:44-49:63"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="49:65-49:84"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="49:86-49:105"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="49:107-49:126"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+</tr>
+</tbody>
+</table>
+<p data-sourcepos="51:1-51:135">※ シェーダはクロスコンパイル式ではなく、<strong>プラットフォーム別</strong>に準備が必要（glsl/hlsl/metal/spv）</p>
+<ul data-sourcepos="53:1-54:0">
+<li data-sourcepos="53:1-54:0">所感:</li>
+</ul>
+<p data-sourcepos="55:1-56:148">依存ライブラリが少なく、ビルドは短時間で簡単 (cmake)。<br>
+DirectX / Metal / Vulkan / OpenGL (ES) に対応していて、各種シェーダも全て使えるので、<strong>最も網羅的に使える</strong>印象。</p>
+<p data-sourcepos="58:1-58:500">低レベルアクセスについては、共通するAPIは最低限だけ提供して、それぞれのプラットフォームに必要な処理はマクロ等で切り替えて<strong>個別のプラットフォームごとに対応する</strong>スタイル。そのため性能要求に応えやすくメンテしやすいが、<strong>必要な知識と難易度は高め</strong>。（とはいえ、APIのラッピングと共通化は行ってくれているので、可読性とメンテナンス性は高い。）</p>
+<p data-sourcepos="60:1-60:308">シェーダも個別に準備する必要があるが、他のライブラリのように自分で <code>spirv-cross</code> や <code>shaderc</code> を利用してクロスコンパイルすれば問題ない。逆に捉えれば、API同様、各プラットフォームごとに特化した処理を書くことができる。</p>
+<h2 data-sourcepos="62:1-62:12">
+<span id="the-forge" class="fragment"></span><a href="#the-forge"><i class="fa fa-link"></i></a>The Forge</h2>
+<p data-sourcepos="64:1-64:39"><iframe id="qiita-embed-content__0bd12a9a3706e2b7179afaf61e0e3cad" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__0bd12a9a3706e2b7179afaf61e0e3cad" data-content="https%3A%2F%2Fgithub.com%2FConfettiFX%2FThe-Forge" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="66:1-66:156"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F8b1ff4eb-4c7f-bc84-b484-4855b512d5bb.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=96885580fcf6548f99b4c6f6208c84a4" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F8b1ff4eb-4c7f-bc84-b484-4855b512d5bb.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=96885580fcf6548f99b4c6f6208c84a4" alt="a7491fa8-f2cd-3c28-b809-5bbb3cf4922a-min.jpg" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F8b1ff4eb-4c7f-bc84-b484-4855b512d5bb.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=a10ab394199d07f7988de1c7004f059e 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/8b1ff4eb-4c7f-bc84-b484-4855b512d5bb.jpeg" loading="lazy"></a></p>
+<ul data-sourcepos="69:1-72:0">
+<li data-sourcepos="69:1-70:0">
+<p data-sourcepos="69:3-69:33">ライセンス: <strong>Apache-2.0</strong></p>
+</li>
+<li data-sourcepos="71:1-72:0">
+<p data-sourcepos="71:3-71:33">対応プラットフォーム:</p>
+</li>
+</ul>
+<table data-sourcepos="73:1-79:46">
+<thead>
+<tr data-sourcepos="73:1-73:53">
+<th data-sourcepos="73:2-73:3"></th>
+<th data-sourcepos="73:5-73:13">DirectX</th>
+<th data-sourcepos="73:15-73:21">Metal</th>
+<th data-sourcepos="73:23-73:30">Vulkan</th>
+<th data-sourcepos="73:32-73:39">OpenGL</th>
+<th data-sourcepos="73:41-73:51">OpenGL ES</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="75:1-75:67">
+<td data-sourcepos="75:2-75:10">Windows</td>
+<td data-sourcepos="75:12-75:31"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="75:33-75:35">-</td>
+<td data-sourcepos="75:37-75:56"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="75:58-75:62"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="75:64-75:66">-</td>
+</tr>
+<tr data-sourcepos="76:1-76:46">
+<td data-sourcepos="76:2-76:6">Mac</td>
+<td data-sourcepos="76:8-76:10">-</td>
+<td data-sourcepos="76:12-76:31"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="76:33-76:35">-</td>
+<td data-sourcepos="76:37-76:41"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="76:43-76:45">-</td>
+</tr>
+<tr data-sourcepos="77:1-77:48">
+<td data-sourcepos="77:2-77:8">Linux</td>
+<td data-sourcepos="77:10-77:12">-</td>
+<td data-sourcepos="77:14-77:16">-</td>
+<td data-sourcepos="77:18-77:37"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="77:39-77:43"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="77:45-77:47">-</td>
+</tr>
+<tr data-sourcepos="78:1-78:50">
+<td data-sourcepos="78:2-78:10">Android</td>
+<td data-sourcepos="78:12-78:14">-</td>
+<td data-sourcepos="78:16-78:18">-</td>
+<td data-sourcepos="78:20-78:39"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="78:41-78:43">-</td>
+<td data-sourcepos="78:45-78:49"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+</tr>
+<tr data-sourcepos="79:1-79:46">
+<td data-sourcepos="79:2-79:6">iOS</td>
+<td data-sourcepos="79:8-79:10">-</td>
+<td data-sourcepos="79:12-79:31"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="79:33-79:35">-</td>
+<td data-sourcepos="79:37-79:39">-</td>
+<td data-sourcepos="79:41-79:45"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+</tr>
+</tbody>
+</table>
+<p data-sourcepos="81:1-81:55">※ <strong>XBOX, PS4, Switch, Stadia にも公式対応</strong>。</p>
+<ul data-sourcepos="83:1-84:0">
+<li data-sourcepos="83:1-84:0">シェーダ対応:</li>
+</ul>
+<table data-sourcepos="85:1-87:127">
+<thead>
+<tr data-sourcepos="85:1-85:69">
+<th data-sourcepos="85:2-85:9">Vertex</th>
+<th data-sourcepos="85:11-85:20">Fragment</th>
+<th data-sourcepos="85:22-85:30">Compute</th>
+<th data-sourcepos="85:32-85:41">Geometry</th>
+<th data-sourcepos="85:43-85:53">Hull (TC)</th>
+<th data-sourcepos="85:55-85:67">Domain (TE)</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="87:1-87:127">
+<td data-sourcepos="87:2-87:21"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="87:23-87:42"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="87:44-87:63"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="87:65-87:84"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="87:86-87:105"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="87:107-87:126"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+</tr>
+</tbody>
+</table>
+<p data-sourcepos="89:1-89:135">※ シェーダはクロスコンパイル式ではなく、<strong>プラットフォーム別</strong>に準備が必要（glsl/hlsl/metal/spv）</p>
+<ul data-sourcepos="91:1-92:0">
+<li data-sourcepos="91:1-92:0">所感:</li>
+</ul>
+<p data-sourcepos="93:1-93:290">かなり<strong>完成度の高い</strong>フレームワークで、<strong>ゲームエンジンのレンダリング基盤</strong>としての使用を強く意識して作られている。ただし、<strong>OpenGL (ES)には非対応</strong>なので、古いモバイル機器やRaspberry Piなどでは使えない。</p>
+<p data-sourcepos="95:1-95:171">非常に作り込まれている印象で、CIや単体テストを多用していることからも<strong>安定性の高さ</strong>が伺える。実際の導入実績も多い。</p>
+<p data-sourcepos="97:1-97:236">使い勝手は前述の<a href="#llgl-low-level-graphics-library">LLGL</a>に近く、<strong>個別のプラットフォームに対する知識は必要</strong>だが、高い要求性能に応えることができるフレームワークだと感じる。</p>
+<h2 data-sourcepos="100:1-100:18">
+<span id="diligent-engine" class="fragment"></span><a href="#diligent-engine"><i class="fa fa-link"></i></a>Diligent Engine</h2>
+<p data-sourcepos="102:1-102:50"><iframe id="qiita-embed-content__814206ebb4110f2490262d8e4cc34ad9" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__814206ebb4110f2490262d8e4cc34ad9" data-content="https%3A%2F%2Fgithub.com%2FDiligentGraphics%2FDiligentEngine" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="104:1-104:156"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Faf1b0343-7a3e-d48b-b6ca-d9e7f0d0f890.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=9e917b79f90c9bf0c90dbe1391f525dd" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Faf1b0343-7a3e-d48b-b6ca-d9e7f0d0f890.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=9e917b79f90c9bf0c90dbe1391f525dd" alt="ef1bf02d-23cd-8910-78a7-01d3bbf60458-min.jpg" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Faf1b0343-7a3e-d48b-b6ca-d9e7f0d0f890.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=2451a4c0be47a77d464de7e4fd864e6d 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/af1b0343-7a3e-d48b-b6ca-d9e7f0d0f890.jpeg" loading="lazy"></a></p>
+<ul data-sourcepos="106:1-109:0">
+<li data-sourcepos="106:1-107:0">
+<p data-sourcepos="106:3-106:33">ライセンス: <strong>Apache-2.0</strong></p>
+</li>
+<li data-sourcepos="108:1-109:0">
+<p data-sourcepos="108:3-108:33">対応プラットフォーム:</p>
+</li>
+</ul>
+<table data-sourcepos="110:1-116:74">
+<thead>
+<tr data-sourcepos="110:1-110:53">
+<th data-sourcepos="110:2-110:3"></th>
+<th data-sourcepos="110:5-110:13">DirectX</th>
+<th data-sourcepos="110:15-110:21">Metal</th>
+<th data-sourcepos="110:23-110:30">Vulkan</th>
+<th data-sourcepos="110:32-110:39">OpenGL</th>
+<th data-sourcepos="110:41-110:51">OpenGL ES</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="112:1-112:82">
+<td data-sourcepos="112:2-112:10">Windows</td>
+<td data-sourcepos="112:12-112:31"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="112:33-112:35">-</td>
+<td data-sourcepos="112:37-112:56"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="112:58-112:77"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="112:79-112:81">-</td>
+</tr>
+<tr data-sourcepos="113:1-113:74">
+<td data-sourcepos="113:2-113:6">Mac</td>
+<td data-sourcepos="113:8-113:10">-</td>
+<td data-sourcepos="113:12-113:16"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="113:18-113:48">
+<img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"> (MoltenVK)</td>
+<td data-sourcepos="113:50-113:69"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="113:71-113:73">-</td>
+</tr>
+<tr data-sourcepos="114:1-114:63">
+<td data-sourcepos="114:2-114:8">Linux</td>
+<td data-sourcepos="114:10-114:12">-</td>
+<td data-sourcepos="114:14-114:16">-</td>
+<td data-sourcepos="114:18-114:37"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="114:39-114:58"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="114:60-114:62">-</td>
+</tr>
+<tr data-sourcepos="115:1-115:50">
+<td data-sourcepos="115:2-115:10">Android</td>
+<td data-sourcepos="115:12-115:14">-</td>
+<td data-sourcepos="115:16-115:18">-</td>
+<td data-sourcepos="115:20-115:24"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="115:26-115:28">-</td>
+<td data-sourcepos="115:30-115:49"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+</tr>
+<tr data-sourcepos="116:1-116:74">
+<td data-sourcepos="116:2-116:6">iOS</td>
+<td data-sourcepos="116:8-116:10">-</td>
+<td data-sourcepos="116:12-116:16"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="116:18-116:48">
+<img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"> (MoltenVK)</td>
+<td data-sourcepos="116:50-116:52">-</td>
+<td data-sourcepos="116:54-116:73"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+</tr>
+</tbody>
+</table>
+<ul data-sourcepos="118:1-119:0">
+<li data-sourcepos="118:1-119:0">シェーダ対応:</li>
+</ul>
+<table data-sourcepos="120:1-122:134">
+<thead>
+<tr data-sourcepos="120:1-120:69">
+<th data-sourcepos="120:2-120:9">Vertex</th>
+<th data-sourcepos="120:11-120:20">Fragment</th>
+<th data-sourcepos="120:22-120:30">Compute</th>
+<th data-sourcepos="120:32-120:41">Geometry</th>
+<th data-sourcepos="120:43-120:53">Hull (TC)</th>
+<th data-sourcepos="120:55-120:67">Domain (TE)</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="122:1-122:134">
+<td data-sourcepos="122:2-122:21"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="122:23-122:42"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="122:44-122:70">
+<img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"> (※2)</td>
+<td data-sourcepos="122:72-122:91"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="122:93-122:112"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="122:114-122:133"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+</tr>
+</tbody>
+</table>
+<p data-sourcepos="124:1-125:113">※1 HLSLをクロスコンパイルさせる方式。<br>
+※2 OpenGL4.3未満ではコンピュートシェーダ使用不可のため、MacのOpenGLでは使えない。</p>
+<ul data-sourcepos="127:1-128:0">
+<li data-sourcepos="127:1-128:0">所感:</li>
+</ul>
+<p data-sourcepos="129:1-129:185">依存ライブラリが少なく、ビルドは短時間で簡単 (cmake) <sup><a href="#fn-%E6%B3%A81" id="fnref-%E6%B3%A81">1</a></sup>。名前にエンジンと付いてはいるが、<strong>軽量で使いやすい</strong>フレームワーク。</p>
+<p data-sourcepos="131:1-131:178">APIとシェーダは各プラットフォームで<strong>完全に共通化</strong>されており、同じソースコードで各プラットフォームに対応できるのが特徴。</p>
+<p data-sourcepos="133:1-133:395">ただし、<strong>Metalに対応していない</strong>のがすごく残念…。そのため、<strong>MacのOpenGLではコンピュートシェーダが使えない</strong>。その点を除けば、後述の bgfx と同様の軽量フレームワークとして、使い勝手が良いと感じる。（bgfxと比べると、後発だけあってAPIがモダンで実装効率もよく、拡張性が高い。）</p>
+<h2 data-sourcepos="135:1-135:7">
+<span id="bgfx" class="fragment"></span><a href="#bgfx"><i class="fa fa-link"></i></a>bgfx</h2>
+<p data-sourcepos="137:1-137:33"><iframe id="qiita-embed-content__62332e5a306b17ce6d93aa879d990b3a" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__62332e5a306b17ce6d93aa879d990b3a" data-content="https%3A%2F%2Fgithub.com%2Fbkaradzic%2Fbgfx" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="139:1-139:156"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F732622f0-dab1-5402-6902-433a3cd330c8.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=09575807ca085dd196cc8fefd4b73b07" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F732622f0-dab1-5402-6902-433a3cd330c8.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=09575807ca085dd196cc8fefd4b73b07" alt="762db1a0-0944-f7d2-9b2d-4b9dccd73c6f-min.jpg" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F732622f0-dab1-5402-6902-433a3cd330c8.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=847552587901b0364736bec3d8e0d5bd 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/732622f0-dab1-5402-6902-433a3cd330c8.jpeg" loading="lazy"></a></p>
+<ul data-sourcepos="142:1-145:0">
+<li data-sourcepos="142:1-143:0">
+<p data-sourcepos="142:3-142:35">ライセンス: <strong>BSD-2 clause</strong></p>
+</li>
+<li data-sourcepos="144:1-145:0">
+<p data-sourcepos="144:3-144:33">対応プラットフォーム:</p>
+</li>
+</ul>
+<table data-sourcepos="146:1-152:70">
+<thead>
+<tr data-sourcepos="146:1-146:53">
+<th data-sourcepos="146:2-146:3"></th>
+<th data-sourcepos="146:5-146:13">DirectX</th>
+<th data-sourcepos="146:15-146:21">Metal</th>
+<th data-sourcepos="146:23-146:30">Vulkan</th>
+<th data-sourcepos="146:32-146:39">OpenGL</th>
+<th data-sourcepos="146:41-146:51">OpenGL ES</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="148:1-148:82">
+<td data-sourcepos="148:2-148:10">Windows</td>
+<td data-sourcepos="148:12-148:31"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="148:33-148:35">-</td>
+<td data-sourcepos="148:37-148:56"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="148:58-148:77"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="148:79-148:81">-</td>
+</tr>
+<tr data-sourcepos="149:1-149:70">
+<td data-sourcepos="149:2-149:6">Mac</td>
+<td data-sourcepos="149:8-149:10">-</td>
+<td data-sourcepos="149:12-149:31"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="149:33-149:44"><img alt=":question:" class="emoji" height="20" src="../../img/95_g.png" title=":question:" width="20" loading="lazy"></td>
+<td data-sourcepos="149:46-149:65"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="149:67-149:69">-</td>
+</tr>
+<tr data-sourcepos="150:1-150:63">
+<td data-sourcepos="150:2-150:8">Linux</td>
+<td data-sourcepos="150:10-150:12">-</td>
+<td data-sourcepos="150:14-150:16">-</td>
+<td data-sourcepos="150:18-150:37"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="150:39-150:58"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="150:60-150:62">-</td>
+</tr>
+<tr data-sourcepos="151:1-151:57">
+<td data-sourcepos="151:2-151:10">Android</td>
+<td data-sourcepos="151:12-151:14">-</td>
+<td data-sourcepos="151:16-151:18">-</td>
+<td data-sourcepos="151:20-151:31"><img alt=":question:" class="emoji" height="20" src="../../img/95_g.png" title=":question:" width="20" loading="lazy"></td>
+<td data-sourcepos="151:33-151:35">-</td>
+<td data-sourcepos="151:37-151:56"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+</tr>
+<tr data-sourcepos="152:1-152:70">
+<td data-sourcepos="152:2-152:6">iOS</td>
+<td data-sourcepos="152:8-152:10">-</td>
+<td data-sourcepos="152:12-152:31"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="152:33-152:44"><img alt=":question:" class="emoji" height="20" src="../../img/95_g.png" title=":question:" width="20" loading="lazy"></td>
+<td data-sourcepos="152:46-152:48">-</td>
+<td data-sourcepos="152:50-152:69"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+</tr>
+</tbody>
+</table>
+<p data-sourcepos="154:1-154:80">※ <strong>WebGLに対応</strong>。Emscriptenやasm.js、Raspberry Piなどにも対応。</p>
+<ul data-sourcepos="156:1-157:0">
+<li data-sourcepos="156:1-157:0">シェーダ対応:</li>
+</ul>
+<table data-sourcepos="158:1-160:96">
+<thead>
+<tr data-sourcepos="158:1-158:69">
+<th data-sourcepos="158:2-158:9">Vertex</th>
+<th data-sourcepos="158:11-158:20">Fragment</th>
+<th data-sourcepos="158:22-158:30">Compute</th>
+<th data-sourcepos="158:32-158:41">Geometry</th>
+<th data-sourcepos="158:43-158:53">Hull (TC)</th>
+<th data-sourcepos="158:55-158:67">Domain (TE)</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="160:1-160:96">
+<td data-sourcepos="160:2-160:21"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="160:23-160:42"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="160:44-160:63"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="160:65-160:69"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="160:71-160:82">
+<img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"> (※2)</td>
+<td data-sourcepos="160:84-160:95">
+<img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"> (※2)</td>
+</tr>
+</tbody>
+</table>
+<p data-sourcepos="162:1-163:192">※1 GLSLのサブセットの独自言語を、クロスコンパイルさせる方式。<br>
+※2 DirectXとOpenGLについては、hull/domainシェーダーに対応させる<a href="https://github.com/LSBOSS/bgfx" rel="nofollow noopener" target="_blank">非公式フォーク</a>あり。メンテナンスされていないが…。</p>
+<ul data-sourcepos="165:1-166:0">
+<li data-sourcepos="165:1-166:0">所感:</li>
+</ul>
+<p data-sourcepos="167:1-167:209">2015年から開発されていて、導入実績と実装例、質問投稿などがすごく豊富。コンパイルも簡単で、cmake以外にもGENieという独自のビルドマネージャー搭載。</p>
+<p data-sourcepos="169:1-169:503"><strong>同じソースでマルチプラットフォームで動作</strong>するのが特徴。<strong>APIがとてもシンプル</strong>で使いやすく、拡張性が高い。一方で、<strong>テッセレーション系シェーダに非対応</strong>なのが残念だが、コンピュートシェーダでテッセレーションに対応させることは可能 (公式Exampleも存在) 。Diligent Engineと違ってMetalに対応しており、<strong>MacやiOSでもコンピュートシェーダが使える</strong>のは大きい。</p>
+<p data-sourcepos="171:1-171:244">シェーダーにはGLSLに似た独自言語が使えるが、専用のヘッダファイルなどを定義する必要がある。ちょっと独特だが、各プラットフォームで共通のシェーダーが使えるのは嬉しい。</p>
+<p data-sourcepos="173:1-173:502">開発方針として、同一ソースにおける、各プラットフォームでの<strong>互換性が重視</strong>されているため、テッセレーションの件も含め、コマンドバッファなどに<strong>一部制限</strong>がある。また、今回紹介しているライブラリの中では最も登場時期が早いため<strong>API設計がやや古く</strong>、Dilligent Engineと比べると実装効率の面などで劣る点もあるが、今も活発に更新されているので改善に期待。</p>
+<h2 data-sourcepos="175:1-175:20">
+<span id="oryol--sokol_gfx" class="fragment"></span><a href="#oryol--sokol_gfx"><i class="fa fa-link"></i></a>oryol / sokol_gfx</h2>
+<p data-sourcepos="177:1-178:31"><a href="https://github.com/floooh/oryol" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/floooh/oryol</a><br>
+<a href="https://github.com/floooh/sokol" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/floooh/sokol</a></p>
+<p data-sourcepos="180:1-180:156"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fb2e6ba87-4fe2-5552-fe93-37c5c0a07abb.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=c660db346571dddf41effd5f564d71f6" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fb2e6ba87-4fe2-5552-fe93-37c5c0a07abb.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=c660db346571dddf41effd5f564d71f6" alt="ed19ec55-2d89-29e9-cfc8-b0adbfc78f3c-min.jpg" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fb2e6ba87-4fe2-5552-fe93-37c5c0a07abb.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=ddaf1fc043801f654358ea880c9fade8 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/b2e6ba87-4fe2-5552-fe93-37c5c0a07abb.jpeg" loading="lazy"></a></p>
+<ul data-sourcepos="182:1-185:0">
+<li data-sourcepos="182:1-183:0">
+<p data-sourcepos="182:3-182:53">ライセンス: <strong>MIT</strong> (oryol)、<strong>zlib</strong> (sokol)</p>
+</li>
+<li data-sourcepos="184:1-185:0">
+<p data-sourcepos="184:3-184:33">対応プラットフォーム:</p>
+</li>
+</ul>
+<table data-sourcepos="186:1-192:63">
+<thead>
+<tr data-sourcepos="186:1-186:53">
+<th data-sourcepos="186:2-186:3"></th>
+<th data-sourcepos="186:5-186:13">DirectX</th>
+<th data-sourcepos="186:15-186:21">Metal</th>
+<th data-sourcepos="186:23-186:30">Vulkan</th>
+<th data-sourcepos="186:32-186:39">OpenGL</th>
+<th data-sourcepos="186:41-186:51">OpenGL ES</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="188:1-188:67">
+<td data-sourcepos="188:2-188:10">Windows</td>
+<td data-sourcepos="188:12-188:31"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="188:33-188:35">-</td>
+<td data-sourcepos="188:37-188:41"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="188:43-188:62"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="188:64-188:66">-</td>
+</tr>
+<tr data-sourcepos="189:1-189:63">
+<td data-sourcepos="189:2-189:6">Mac</td>
+<td data-sourcepos="189:8-189:10">-</td>
+<td data-sourcepos="189:12-189:31"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="189:33-189:37"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="189:39-189:58"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="189:60-189:62">-</td>
+</tr>
+<tr data-sourcepos="190:1-190:48">
+<td data-sourcepos="190:2-190:8">Linux</td>
+<td data-sourcepos="190:10-190:12">-</td>
+<td data-sourcepos="190:14-190:16">-</td>
+<td data-sourcepos="190:18-190:22"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="190:24-190:43"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="190:45-190:47">-</td>
+</tr>
+<tr data-sourcepos="191:1-191:50">
+<td data-sourcepos="191:2-191:10">Android</td>
+<td data-sourcepos="191:12-191:14">-</td>
+<td data-sourcepos="191:16-191:18">-</td>
+<td data-sourcepos="191:20-191:24"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="191:26-191:28">-</td>
+<td data-sourcepos="191:30-191:49"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+</tr>
+<tr data-sourcepos="192:1-192:63">
+<td data-sourcepos="192:2-192:6">iOS</td>
+<td data-sourcepos="192:8-192:10">-</td>
+<td data-sourcepos="192:12-192:31"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="192:33-192:37"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="192:39-192:41">-</td>
+<td data-sourcepos="192:43-192:62"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+</tr>
+</tbody>
+</table>
+<p data-sourcepos="194:1-195:47">※ WebGLにも対応<br>
+※ Raspberrry Piにも正式対応 (OpenGL ES)</p>
+<ul data-sourcepos="197:1-198:0">
+<li data-sourcepos="197:1-198:0">シェーダ対応:</li>
+</ul>
+<table data-sourcepos="199:1-201:67">
+<thead>
+<tr data-sourcepos="199:1-199:69">
+<th data-sourcepos="199:2-199:9">Vertex</th>
+<th data-sourcepos="199:11-199:20">Fragment</th>
+<th data-sourcepos="199:22-199:30">Compute</th>
+<th data-sourcepos="199:32-199:41">Geometry</th>
+<th data-sourcepos="199:43-199:53">Hull (TC)</th>
+<th data-sourcepos="199:55-199:67">Domain (TE)</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="201:1-201:67">
+<td data-sourcepos="201:2-201:21"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="201:23-201:42"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="201:44-201:48"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="201:50-201:54"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="201:56-201:60"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="201:62-201:66"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+</tr>
+</tbody>
+</table>
+<p data-sourcepos="203:1-203:128">※1 oryolは、GLSLに似た独自言語を、クロスコンパイルさせる方式。sokol_gfxは個別に準備が必要。</p>
+<ul data-sourcepos="205:1-206:0">
+<li data-sourcepos="205:1-206:0">所感:</li>
+</ul>
+<p data-sourcepos="207:1-207:346">oryol と sokol_gfx は、どちらも同じ作者が制作したライブラリで、sokol_gfxが <strong>C言語用のシングルヘッダーライブラリ</strong> であるのに対し、oryolは <strong>C++用の軽量ライブラリ</strong>。C++11未満でも使えるよう配慮されており、<strong>組み込み用途を強く意識</strong>しているのが特徴。</p>
+<p data-sourcepos="209:1-209:282"><strong>非常に軽量なライブラリ</strong>でありながら、必要な機能は十分備えている。さらに<strong>WebGLに対応</strong>しており、asm.js/wasmによってウェブサイト用にコンパイルして使うことができ、その際のファイルサイズも小さい。</p>
+<p data-sourcepos="211:1-211:193"><strong>コンピュートシェーダーが使えない</strong>のだけが残念だが、作者は別のアドオン的なライブラリとしての制作を検討している模様。今後に期待。</p>
+<h2 data-sourcepos="213:1-213:14">
+<span id="methane-kit" class="fragment"></span><a href="#methane-kit"><i class="fa fa-link"></i></a>Methane Kit</h2>
+<p data-sourcepos="215:1-215:38"><iframe id="qiita-embed-content__e22c27622933f3336928548f026e74b5" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__e22c27622933f3336928548f026e74b5" data-content="https%3A%2F%2Fgithub.com%2Fegorodet%2FMethaneKit" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="217:1-217:156"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F9adec764-bc24-2e4c-19fb-97e1162e1553.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=b63a931e08268664f569ccedc0ea9e6b" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F9adec764-bc24-2e4c-19fb-97e1162e1553.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=b63a931e08268664f569ccedc0ea9e6b" alt="087fc62c-afc9-b0fa-daf2-2aeb42ff3f60-min.jpg" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F9adec764-bc24-2e4c-19fb-97e1162e1553.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=a55d9b221fec909cc7f63e178c5c4592 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/9adec764-bc24-2e4c-19fb-97e1162e1553.jpeg" loading="lazy"></a></p>
+<ul data-sourcepos="219:1-222:0">
+<li data-sourcepos="219:1-220:0">
+<p data-sourcepos="219:3-219:33">ライセンス: <strong>Apache-2.0</strong></p>
+</li>
+<li data-sourcepos="221:1-222:0">
+<p data-sourcepos="221:3-221:33">対応プラットフォーム:</p>
+</li>
+</ul>
+<table data-sourcepos="223:1-229:33">
+<thead>
+<tr data-sourcepos="223:1-223:53">
+<th data-sourcepos="223:2-223:3"></th>
+<th data-sourcepos="223:5-223:13">DirectX</th>
+<th data-sourcepos="223:15-223:21">Metal</th>
+<th data-sourcepos="223:23-223:30">Vulkan</th>
+<th data-sourcepos="223:32-223:39">OpenGL</th>
+<th data-sourcepos="223:41-223:51">OpenGL ES</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="225:1-225:52">
+<td data-sourcepos="225:2-225:10">Windows</td>
+<td data-sourcepos="225:12-225:31"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="225:33-225:35">-</td>
+<td data-sourcepos="225:37-225:41"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="225:43-225:47"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="225:49-225:51">-</td>
+</tr>
+<tr data-sourcepos="226:1-226:48">
+<td data-sourcepos="226:2-226:6">Mac</td>
+<td data-sourcepos="226:8-226:10">-</td>
+<td data-sourcepos="226:12-226:31"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="226:33-226:37"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="226:39-226:43"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="226:45-226:47">-</td>
+</tr>
+<tr data-sourcepos="227:1-227:55">
+<td data-sourcepos="227:2-227:8">Linux</td>
+<td data-sourcepos="227:10-227:12">-</td>
+<td data-sourcepos="227:14-227:16">-</td>
+<td data-sourcepos="227:18-227:44">
+<img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"> (※1)</td>
+<td data-sourcepos="227:46-227:50"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="227:52-227:54">-</td>
+</tr>
+<tr data-sourcepos="228:1-228:35">
+<td data-sourcepos="228:2-228:10">Android</td>
+<td data-sourcepos="228:12-228:14">-</td>
+<td data-sourcepos="228:16-228:18">-</td>
+<td data-sourcepos="228:20-228:24"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="228:26-228:28">-</td>
+<td data-sourcepos="228:30-228:34"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+</tr>
+<tr data-sourcepos="229:1-229:33">
+<td data-sourcepos="229:2-229:6">iOS</td>
+<td data-sourcepos="229:8-229:10">-</td>
+<td data-sourcepos="229:12-229:16"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="229:18-229:22"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="229:24-229:26">-</td>
+<td data-sourcepos="229:28-229:32"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+</tr>
+</tbody>
+</table>
+<p data-sourcepos="231:1-231:45">※1 Linux/Vulkan 版は現在開発途中。</p>
+<ul data-sourcepos="233:1-234:0">
+<li data-sourcepos="233:1-234:0">シェーダ対応:</li>
+</ul>
+<table data-sourcepos="235:1-237:67">
+<thead>
+<tr data-sourcepos="235:1-235:69">
+<th data-sourcepos="235:2-235:9">Vertex</th>
+<th data-sourcepos="235:11-235:20">Fragment</th>
+<th data-sourcepos="235:22-235:30">Compute</th>
+<th data-sourcepos="235:32-235:41">Geometry</th>
+<th data-sourcepos="235:43-235:53">Hull (TC)</th>
+<th data-sourcepos="235:55-235:67">Domain (TE)</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="237:1-237:67">
+<td data-sourcepos="237:2-237:21"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="237:23-237:42"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="237:44-237:48"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="237:50-237:54"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="237:56-237:60"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="237:62-237:66"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+</tr>
+</tbody>
+</table>
+<p data-sourcepos="239:1-239:60">※ HLSL 5.1を、クロスコンパイルさせる方式。</p>
+<ul data-sourcepos="241:1-242:0">
+<li data-sourcepos="241:1-242:0">所感:</li>
+</ul>
+<p data-sourcepos="243:1-243:290">C++17を基準に作られた、<strong>デスクトップに特化</strong>したライブラリで、<strong>Windows/Macでの互換性・再現性の高さ</strong>が特徴。Windows/Macともに同じコード・シェーダーで書くことができる。最近になってLinux/Vulkan版が発表された。</p>
+<p data-sourcepos="245:1-245:79">GitHubに公開されてまだ1年で、活発に更新が行われている。</p>
+<h2 data-sourcepos="248:1-248:16">
+<span id="bsframework" class="fragment"></span><a href="#bsframework"><i class="fa fa-link"></i></a>bs::framework</h2>
+<p data-sourcepos="250:1-250:34"><iframe id="qiita-embed-content__5627970b03ed7267460eddb38eb21cf1" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__5627970b03ed7267460eddb38eb21cf1" data-content="https%3A%2F%2Fgithub.com%2FGameFoundry%2Fbsf" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="252:1-252:156"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F7cde6879-5e94-efbf-ca01-307e630cc603.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=77649cdf757cd7499d2f81840efec625" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F7cde6879-5e94-efbf-ca01-307e630cc603.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=77649cdf757cd7499d2f81840efec625" alt="3997370c-2403-14ef-35c6-d97f135fc2b1-min.jpg" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F7cde6879-5e94-efbf-ca01-307e630cc603.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=7f637c27aa02fa9b708ad4c897523db0 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/7cde6879-5e94-efbf-ca01-307e630cc603.jpeg" loading="lazy"></a></p>
+<ul data-sourcepos="254:1-257:0">
+<li data-sourcepos="254:1-255:0">
+<p data-sourcepos="254:3-254:26">ライセンス: <strong>MIT</strong></p>
+</li>
+<li data-sourcepos="256:1-257:0">
+<p data-sourcepos="256:3-256:33">対応プラットフォーム:</p>
+</li>
+</ul>
+<table data-sourcepos="258:1-264:40">
+<thead>
+<tr data-sourcepos="258:1-258:53">
+<th data-sourcepos="258:2-258:3"></th>
+<th data-sourcepos="258:5-258:13">DirectX</th>
+<th data-sourcepos="258:15-258:21">Metal</th>
+<th data-sourcepos="258:23-258:30">Vulkan</th>
+<th data-sourcepos="258:32-258:39">OpenGL</th>
+<th data-sourcepos="258:41-258:51">OpenGL ES</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="260:1-260:82">
+<td data-sourcepos="260:2-260:10">Windows</td>
+<td data-sourcepos="260:12-260:31"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="260:33-260:35">-</td>
+<td data-sourcepos="260:37-260:56"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="260:58-260:77"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="260:79-260:81">-</td>
+</tr>
+<tr data-sourcepos="261:1-261:62">
+<td data-sourcepos="261:2-261:6">Mac</td>
+<td data-sourcepos="261:8-261:10">-</td>
+<td data-sourcepos="261:12-261:16"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="261:18-261:29">
+<img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"> (※1)</td>
+<td data-sourcepos="261:31-261:57">
+<img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"> (※2)</td>
+<td data-sourcepos="261:59-261:61">-</td>
+</tr>
+<tr data-sourcepos="262:1-262:63">
+<td data-sourcepos="262:2-262:8">Linux</td>
+<td data-sourcepos="262:10-262:12">-</td>
+<td data-sourcepos="262:14-262:16">-</td>
+<td data-sourcepos="262:18-262:37"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="262:39-262:58"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="262:60-262:62">-</td>
+</tr>
+<tr data-sourcepos="263:1-263:35">
+<td data-sourcepos="263:2-263:10">Android</td>
+<td data-sourcepos="263:12-263:14">-</td>
+<td data-sourcepos="263:16-263:18">-</td>
+<td data-sourcepos="263:20-263:24"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="263:26-263:28">-</td>
+<td data-sourcepos="263:30-263:34"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+</tr>
+<tr data-sourcepos="264:1-264:40">
+<td data-sourcepos="264:2-264:6">iOS</td>
+<td data-sourcepos="264:8-264:10">-</td>
+<td data-sourcepos="264:12-264:16"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+<td data-sourcepos="264:18-264:29">
+<img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"> (※1)</td>
+<td data-sourcepos="264:31-264:33">-</td>
+<td data-sourcepos="264:35-264:39"><img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy"></td>
+</tr>
+</tbody>
+</table>
+<p data-sourcepos="266:1-267:50">※1 MoltenVK経由での実装の議論は、執筆時点で進行中。<br>
+※2 執筆時点でMac版の動作に難あり。</p>
+<ul data-sourcepos="269:1-270:0">
+<li data-sourcepos="269:1-270:0">シェーダ対応:</li>
+</ul>
+<table data-sourcepos="271:1-273:134">
+<thead>
+<tr data-sourcepos="271:1-271:69">
+<th data-sourcepos="271:2-271:9">Vertex</th>
+<th data-sourcepos="271:11-271:20">Fragment</th>
+<th data-sourcepos="271:22-271:30">Compute</th>
+<th data-sourcepos="271:32-271:41">Geometry</th>
+<th data-sourcepos="271:43-271:53">Hull (TC)</th>
+<th data-sourcepos="271:55-271:67">Domain (TE)</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="273:1-273:134">
+<td data-sourcepos="273:2-273:21"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="273:23-273:42"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="273:44-273:70">
+<img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"> (※2)</td>
+<td data-sourcepos="273:72-273:91"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="273:93-273:112"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+<td data-sourcepos="273:114-273:133"><img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy"></td>
+</tr>
+</tbody>
+</table>
+<p data-sourcepos="275:1-276:98">※1 HLSLのサブセットである独自言語 (BSL) を、クロスコンパイルさせる方式。<br>
+※2 MacでMetal/Vulkan非対応のため、Macではコンピュートシェーダ利用不可。</p>
+<ul data-sourcepos="278:1-279:0">
+<li data-sourcepos="278:1-279:0">所感:</li>
+</ul>
+<p data-sourcepos="280:1-280:426">今回の他のライブラリに比べて、これだけ少し規模感が異なり、<strong>ゲームエンジンとしての機能を統合的に提供するフレームワーク</strong>。<a href="https://www.banshee3d.com/" rel="nofollow noopener" target="_blank">Banshee 3D Engine</a>の作者が作っていて、ゲームエンジンの基盤として意識して作られている模様。初期バージョンがリリースされてからまだ１年で、未だベータ版。</p>
+<p data-sourcepos="282:1-282:347">C++14を基準に作られており、UnityやUE4のようなシーン・コンポーネントシステムや物理演算、各種ファイル読み込み機能、アニメーション機能、音声再生等、低レベルグラフィックAPIだけにとどまらず、１つのフレームワークで<strong>幅広い機能</strong>を提供している。</p>
+<p data-sourcepos="284:1-284:241">ドキュメントは比較的豊富だが、全体的に<strong>開発途上で、安定性に欠ける</strong>。<strong>モバイル未対応</strong>なのと<strong>Metal非対応</strong>なのも辛い。現状ではWindows版のみ安定動作している印象<sup><a href="#fn-%E6%B3%A82" id="fnref-%E6%B3%A82">2</a></sup>。</p>
+<h2 data-sourcepos="286:1-286:12">
+<span id="その他" class="fragment"></span><a href="#%E3%81%9D%E3%81%AE%E4%BB%96"><i class="fa fa-link"></i></a>その他</h2>
+<ul data-sourcepos="288:1-293:0">
+<li data-sourcepos="288:1-288:105">Acid (<a href="https://github.com/EQMG/Acid" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/EQMG/Acid</a>) ・・・ Vulkan / MoltenVK に特化したゲームエンジン。</li>
+<li data-sourcepos="289:1-289:125">magnum (<a href="https://github.com/mosra/magnum" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/mosra/magnum</a>) ・・・ OpenGL / WebGL に対応。Vulkanへの対応が検討されている。</li>
+<li data-sourcepos="290:1-290:295">Rizz (<a href="https://github.com/septag/rizz" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/septag/rizz</a>) ・・・ 描画にsokol_gfxを利用した、C言語ベースの軽量フレームワーク。特筆すべきは、<a href="https://github.com/septag/glslcc" rel="nofollow noopener" target="_blank">glslcc</a>を利用しているのと、DirectXで実験的にコンピュートシェーダが使える。</li>
+<li data-sourcepos="291:1-291:185">filament (<a href="https://github.com/google/filament" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/google/filament</a>) ・・・ The Forgeやbgfxのような、google製レンダリングエンジン。Vulkan / Metal / OpenGL(ES) / WebGL をサポート。</li>
+<li data-sourcepos="292:1-293:0">LinaGX (<a href="https://github.com/inanevin/LinaGX" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/inanevin/LinaGX</a>) ・・・ 詳細は未確認も、Windows / Mac / Android / iOS をサポートしている様子。</li>
+</ul>
+<p data-sourcepos="294:1-294:480"><strong>注意:</strong> 今回はテーマの都合上、OpenGL系の <a href="https://openframeworks.cc/" rel="nofollow noopener" target="_blank">openFrameworks</a> や <a href="https://libcinder.org/" rel="nofollow noopener" target="_blank">Cinder</a> などは意図的に除外したが、実はそれぞれVulkanでの実装 (<a href="https://github.com/openframeworks-vk/openFrameworks" rel="nofollow noopener" target="_blank">openFrameworks-vk</a>, <a href="https://github.com/cinder/Cinder/tree/vulkan" rel="nofollow noopener" target="_blank">Cinder-Vulkan</a>) も一応存在する。ただ、いずれも実験的で、メンテナンスされているかというと微妙な感じ。</p>
+<p data-sourcepos="296:1-296:173">ちなみにOpenGL系のフレームワークについては <a href="https://github.com/terkelg/awesome-creative-coding" rel="nofollow noopener" target="_blank">awesome-creative-coding</a> などの記事がおすすめ。</p>
+<h2 data-sourcepos="298:1-298:57">
+<span id="その他c以外で類似のフレームワーク" class="fragment"></span><a href="#%E3%81%9D%E3%81%AE%E4%BB%96c%E4%BB%A5%E5%A4%96%E3%81%A7%E9%A1%9E%E4%BC%BC%E3%81%AE%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0%E3%83%AF%E3%83%BC%E3%82%AF"><i class="fa fa-link"></i></a>その他、C++以外で類似のフレームワーク</h2>
+<ul data-sourcepos="300:1-304:0">
+<li data-sourcepos="300:1-300:218">gfx-rs (<a href="https://github.com/gfx-rs/gfx" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/gfx-rs/gfx</a>) ・・・ Rust言語で実装され、今回のテーマでは最も完成度の高いフレームワークの一つ。C言語APIを通してC++から使うこともできる？</li>
+<li data-sourcepos="301:1-301:210">rendy (<a href="https://github.com/omni-viral/rendy" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/omni-viral/rendy</a>) ・・・ 同じくRust言語で、gfx-rsをベースにさらに自作レンダラーを作りやすくしたフレームワーク。The Forgeライクなもの？</li>
+<li data-sourcepos="302:1-302:71">veldrid (<a href="https://github.com/mellinoe/veldrid" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/mellinoe/veldrid</a>) ・・・ .NET実装。</li>
+<li data-sourcepos="303:1-304:0">Kha (<a href="https://github.com/Kode/Kha" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/Kode/Kha</a>) ・・・ Haxe実装。かなり対応端末と対応APIが多く、利用も簡単そう。C++にクロスコンパイルすればC++と一緒に利用できるのでは。</li>
+</ul>
+<h2 data-sourcepos="305:1-305:12">
+<span id="まとめ" class="fragment"></span><a href="#%E3%81%BE%E3%81%A8%E3%82%81"><i class="fa fa-link"></i></a>まとめ</h2>
+<p data-sourcepos="307:1-307:96">書いてみると意外と分量が多くなった。簡潔に比較すると以下の通り。</p>
+<table data-sourcepos="309:1-317:88">
+<thead>
+<tr data-sourcepos="309:1-309:48">
+<th data-sourcepos="309:2-309:2"></th>
+<th data-sourcepos="309:4-309:32">良い点 <img alt=":white_check_mark:" class="emoji" height="20" src="../../img/94_g.png" title=":white_check_mark:" width="20" loading="lazy">
+</th>
+<th data-sourcepos="309:34-309:47">悪い点 <img alt=":x:" class="emoji" height="20" src="../../img/96_g.png" title=":x:" width="20" loading="lazy">
+</th>
+</tr>
+</thead>
+<tbody>
+<tr data-sourcepos="311:1-311:93">
+<td data-sourcepos="311:2-311:41"><a href="#llgl-low-level-graphics-library">LLGL</a></td>
+<td data-sourcepos="311:43-311:63">豊富なAPIに対応</td>
+<td data-sourcepos="311:65-311:92">個別対処・難易度 高</td>
+</tr>
+<tr data-sourcepos="312:1-312:82">
+<td data-sourcepos="312:2-312:24"><a href="#the-forge">The Forge</a></td>
+<td data-sourcepos="312:26-312:52">対応端末数・完成度</td>
+<td data-sourcepos="312:54-312:81">個別対処・難易度 高</td>
+</tr>
+<tr data-sourcepos="313:1-313:83">
+<td data-sourcepos="313:2-313:36"><a href="#diligent-engine">Diligent Engine</a></td>
+<td data-sourcepos="313:38-313:67">同一ソースで複数対応</td>
+<td data-sourcepos="313:69-313:82">Metal非対応</td>
+</tr>
+<tr data-sourcepos="314:1-314:89">
+<td data-sourcepos="314:2-314:14"><a href="#bgfx">bgfx</a></td>
+<td data-sourcepos="314:16-314:54">同一ソースで複数対応・簡単</td>
+<td data-sourcepos="314:56-314:88">テッセレーション対応△</td>
+</tr>
+<tr data-sourcepos="315:1-315:93">
+<td data-sourcepos="315:2-315:39"><a href="#oryol--sokol_gfx">oryol / sokol_gfx</a></td>
+<td data-sourcepos="315:41-315:64">組み込み・Web向き</td>
+<td data-sourcepos="315:66-315:92">計算シェーダ非対応</td>
+</tr>
+<tr data-sourcepos="316:1-316:75">
+<td data-sourcepos="316:2-316:28"><a href="#methane-kit">Methane Kit</a></td>
+<td data-sourcepos="316:30-316:52">Windows / Mac に特化</td>
+<td data-sourcepos="316:54-316:74">モバイル非対応</td>
+</tr>
+<tr data-sourcepos="317:1-317:88">
+<td data-sourcepos="317:2-317:30"><a href="#bsframework">bs::framework</a></td>
+<td data-sourcepos="317:32-317:58">ゲームエンジン基盤</td>
+<td data-sourcepos="317:60-317:87">Windows以外は開発途上</td>
+</tr>
+</tbody>
+</table>
+<p data-sourcepos="319:1-319:105">もし自分が実践で使うとしたら、今のところ簡単さと互換性で bgfx かなぁ…。</p>
+<p data-sourcepos="321:1-321:261">要求性能が高いところでは LLGL か The Forge という感じだけど、この２つはもはや新しいゲームエンジンを作成する基盤として使えるレベル。ある意味で Unity / UE4 との比較になってくる気がする。</p>
+<h2 data-sourcepos="323:1-323:15">
+<span id="参考記事" class="fragment"></span><a href="#%E5%8F%82%E8%80%83%E8%A8%98%E4%BA%8B"><i class="fa fa-link"></i></a>参考記事</h2>
+<ul data-sourcepos="325:1-326:0">
+<li data-sourcepos="325:1-326:0">awesome-vulkan (<a href="https://github.com/vinjn/awesome-vulkan#Libraries" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/vinjn/awesome-vulkan#Libraries</a>)</li>
+</ul>
+<section class="footnotes">
+<ol>
+<li id="fn-%E6%B3%A81">
+<p data-sourcepos="327:10-327:229">執筆時点では、Windows用のスクリプトが準備されていないので、ビルド時・テスト時には、Mac/Linux用のシェルスクリプトを参考にしながらコマンドを打つ必要あり。 <a href="#fnref-%E6%B3%A81" class="">↩</a></p>
+</li>
+<li id="fn-%E6%B3%A82">
+<p data-sourcepos="328:10-328:638">ビルドについては、<a href="http://docs.bsframework.io/latest/build.html" rel="nofollow noopener" target="_blank">Hello World</a>はすぐビルドできるものの、<a href="https://github.com/gamefoundry/bsfExamples" rel="nofollow noopener" target="_blank">Examples</a>はビルド時に追加ファイルが多く、ダウンロードに失敗するケースもあり、ビルドまでにcmakeを修正したりと時間と手間がかかる。また、Macでは配布されているバイナリv1.1.0では執筆時点で<a href="https://github.com/GameFoundry/bsf/issues/129" rel="nofollow noopener" target="_blank">正しく動作しないケースがあるようで</a>、筆者環境では配布バイナリでもmasterからビルドしても正常動作せず。 <a href="#fnref-%E6%B3%A82" class="">↩</a></p>
+</li>
+</ol>
+</section>

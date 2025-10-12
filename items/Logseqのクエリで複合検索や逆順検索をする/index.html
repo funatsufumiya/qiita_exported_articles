@@ -1,0 +1,123 @@
+<h2 data-sourcepos="1:1-1:15">
+<span id="先に結論" class="fragment"></span><a href="#%E5%85%88%E3%81%AB%E7%B5%90%E8%AB%96"><i class="fa fa-link"></i></a>先に結論</h2>
+<p data-sourcepos="3:1-3:126">TODOの最新30を取得し、優先度 (A,B,C) をアルファベット順、日付を降順（新しい順）にする例。</p>
+<p data-sourcepos="5:1-5:53">（記事の後半に<a href="#%E5%88%A5%E8%A7%A3">別解</a>も紹介。）</p>
+<div class="code-frame" data-lang="cljs" data-sourcepos="7:1-33:3"><div class="highlight"><pre><code><span class="o">#</span><span class="n">+BEGIN_QUERY</span><span class="w">
+</span><span class="p">{</span><span class="no">:title</span><span class="w"> </span><span class="s">"TODO (直近30)"</span><span class="w">
+ </span><span class="no">:query</span><span class="w"> </span><span class="p">(</span><span class="nf">todo</span><span class="w"> </span><span class="n">TODO</span><span class="p">)</span><span class="w">
+ </span><span class="no">:result-transform</span><span class="w"> </span><span class="p">(</span><span class="k">fn</span><span class="w"> </span><span class="p">[</span><span class="n">result</span><span class="p">]</span><span class="w">
+  </span><span class="p">(</span><span class="k">let</span><span class="w"> </span><span class="p">[</span><span class="n">rev-pri</span><span class="w"> </span><span class="p">(</span><span class="k">fn</span><span class="w"> </span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="nf">case</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="s">"A"</span><span class="w"> </span><span class="s">"Z"</span><span class="w"> </span><span class="s">"B"</span><span class="w"> </span><span class="s">"Y"</span><span class="w"> </span><span class="s">"C"</span><span class="w"> </span><span class="s">"X"</span><span class="w"> </span><span class="s">"Z"</span><span class="w"> </span><span class="s">"B"</span><span class="w"> </span><span class="s">"A"</span><span class="p">))]</span><span class="w">
+   </span><span class="p">(</span><span class="nf">-&gt;&gt;</span><span class="w"> </span><span class="n">result</span><span class="w">
+    </span><span class="p">(</span><span class="nb">sort-by</span><span class="w"> </span><span class="p">(</span><span class="k">fn</span><span class="w"> </span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="w">
+        </span><span class="p">[</span><span class="w">
+          </span><span class="p">(</span><span class="nf">rev-pri</span><span class="w"> </span><span class="p">(</span><span class="nb">get</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="no">:block/priority</span><span class="w"> </span><span class="s">"Z"</span><span class="p">))</span><span class="w">
+          </span><span class="p">(</span><span class="nb">get</span><span class="w"> </span><span class="p">(</span><span class="nb">get</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="no">:block/page</span><span class="p">)</span><span class="w"> </span><span class="no">:block/journal-day</span><span class="w"> </span><span class="mi">19000101</span><span class="p">)</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+     </span><span class="p">))</span><span class="w">
+    </span><span class="nb">reverse</span><span class="w">
+    </span><span class="p">(</span><span class="nb">take</span><span class="w"> </span><span class="mi">30</span><span class="p">)</span><span class="w">
+    </span><span class="c1">;; 日付デバッグ用</span><span class="w">
+    </span><span class="c1">;; (map (fn [m] (update m :block/properties</span><span class="w">
+    </span><span class="c1">;;   (fn [u]</span><span class="w">
+    </span><span class="c1">;;      (assoc u</span><span class="w">
+    </span><span class="c1">;;           :journal-day (get (get m :block/page) :block/journal-day)</span><span class="w">
+    </span><span class="c1">;;       )</span><span class="w">
+    </span><span class="c1">;;   ))))</span><span class="w">
+    </span><span class="p">)))</span><span class="w">
+ </span><span class="no">:breadcrumb-show?</span><span class="w"> </span><span class="n">false</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="o">#</span><span class="n">+END_QUERY</span><span class="w">
+</span></code></pre></div></div>
+<h2 data-sourcepos="35:1-35:9">
+<span id="解説" class="fragment"></span><a href="#%E8%A7%A3%E8%AA%AC"><i class="fa fa-link"></i></a>解説</h2>
+<p data-sourcepos="37:1-37:247">まず、<code>-&gt;&gt;</code> はThread-Lastマクロと呼ばれていて、関数を順番に実行して適用するという意味。Thread-Firstマクロ (<code>-&gt;</code>) との違いは、引数が関数の最後に渡されるか最初に渡されるかの違い。</p>
+<p data-sourcepos="39:1-39:66">わかりやすくいえば次のように置き換えられる。</p>
+<div class="code-frame" data-lang="cljs" data-sourcepos="41:1-45:3"><div class="highlight"><pre><code><span class="p">(</span><span class="nf">-&gt;&gt;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="n">fn_a</span><span class="w"> </span><span class="n">fn_b</span><span class="w"> </span><span class="n">fn_c</span><span class="p">)</span><span class="w">
+</span><span class="c1">; 上と下は同じ意味</span><span class="w">
+</span><span class="p">(</span><span class="nf">fn_c</span><span class="w"> </span><span class="p">(</span><span class="nf">fn_b</span><span class="w"> </span><span class="p">(</span><span class="nf">fn_a</span><span class="w"> </span><span class="n">result</span><span class="p">)))</span><span class="w">
+</span></code></pre></div></div>
+<p data-sourcepos="47:1-47:115">もう少し具体的な例を<a href="https://clojuredocs.org/clojure.core/-%3E%3E" rel="nofollow noopener" target="_blank">ClojureDoc</a>から引用しておく。</p>
+<div class="code-frame" data-lang="cljs" data-sourcepos="49:1-66:3"><div class="highlight"><pre><code><span class="c1">;; An example of using the "thread-last" macro to get</span><span class="w">
+</span><span class="c1">;; the sum of the first 10 even squares.</span><span class="w">
+</span><span class="n">user=&gt;</span><span class="w"> </span><span class="p">(</span><span class="nf">-&gt;&gt;</span><span class="w"> </span><span class="p">(</span><span class="nb">range</span><span class="p">)</span><span class="w">
+            </span><span class="p">(</span><span class="nb">map</span><span class="w"> </span><span class="o">#</span><span class="p">(</span><span class="nb">*</span><span class="w"> </span><span class="n">%</span><span class="w"> </span><span class="n">%</span><span class="p">))</span><span class="w">
+            </span><span class="p">(</span><span class="nb">filter</span><span class="w"> </span><span class="n">even?</span><span class="p">)</span><span class="w">
+            </span><span class="p">(</span><span class="nb">take</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="w">
+            </span><span class="p">(</span><span class="nb">reduce</span><span class="w"> </span><span class="nb">+</span><span class="p">))</span><span class="w">
+</span><span class="mi">1140</span><span class="w">
+
+</span><span class="c1">;; This expands to:</span><span class="w">
+</span><span class="n">user=&gt;</span><span class="w"> </span><span class="p">(</span><span class="nb">reduce</span><span class="w"> </span><span class="nb">+</span><span class="w">
+               </span><span class="p">(</span><span class="nb">take</span><span class="w"> </span><span class="mi">10</span><span class="w">
+                     </span><span class="p">(</span><span class="nb">filter</span><span class="w"> </span><span class="n">even?</span><span class="w">
+                             </span><span class="p">(</span><span class="nb">map</span><span class="w"> </span><span class="o">#</span><span class="p">(</span><span class="nb">*</span><span class="w"> </span><span class="n">%</span><span class="w"> </span><span class="n">%</span><span class="p">)</span><span class="w">
+                                  </span><span class="p">(</span><span class="nb">range</span><span class="p">)))))</span><span class="w">
+</span><span class="mi">1140</span><span class="w">
+</span></code></pre></div></div>
+<p data-sourcepos="68:1-68:101">これを踏まえると、<code>:result-transform</code> の中身は次のように分けて考えられる。</p>
+<div class="code-frame" data-lang="cljs" data-sourcepos="70:1-95:3"><div class="highlight"><pre><code><span class="p">(</span><span class="k">fn</span><span class="w"> </span><span class="p">[</span><span class="n">result</span><span class="p">]</span><span class="w">
+  </span><span class="c1">; 先に使いたい関数を定義</span><span class="w">
+  </span><span class="p">(</span><span class="k">let</span><span class="w"> </span><span class="p">[</span><span class="n">rev-pri</span><span class="w"> </span><span class="p">(</span><span class="k">fn</span><span class="w"> </span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="nf">case</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="s">"A"</span><span class="w"> </span><span class="s">"Z"</span><span class="w"> </span><span class="s">"B"</span><span class="w"> </span><span class="s">"Y"</span><span class="w"> </span><span class="s">"C"</span><span class="w"> </span><span class="s">"X"</span><span class="w"> </span><span class="s">"Z"</span><span class="w"> </span><span class="s">"B"</span><span class="w"> </span><span class="s">"A"</span><span class="p">))]</span><span class="w">
+   </span><span class="c1">; 得られた結果を、</span><span class="w">
+   </span><span class="p">(</span><span class="nf">-&gt;&gt;</span><span class="w"> </span><span class="n">result</span><span class="w">
+    </span><span class="c1">; まずソートして</span><span class="w">
+    </span><span class="p">(</span><span class="nb">sort-by</span><span class="w"> </span><span class="p">(</span><span class="k">fn</span><span class="w"> </span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="w">
+        </span><span class="p">[</span><span class="w">
+          </span><span class="p">(</span><span class="nf">rev-pri</span><span class="w"> </span><span class="p">(</span><span class="nb">get</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="no">:block/priority</span><span class="w"> </span><span class="s">"Z"</span><span class="p">))</span><span class="w">
+          </span><span class="p">(</span><span class="nb">get</span><span class="w"> </span><span class="p">(</span><span class="nb">get</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="no">:block/page</span><span class="p">)</span><span class="w"> </span><span class="no">:block/journal-day</span><span class="w"> </span><span class="mi">19000101</span><span class="p">)</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+     </span><span class="p">))</span><span class="w">
+    </span><span class="c1">; 逆順にして</span><span class="w">
+    </span><span class="nb">reverse</span><span class="w">
+    </span><span class="c1">; 30個とってきて、</span><span class="w">
+    </span><span class="p">(</span><span class="nb">take</span><span class="w"> </span><span class="mi">30</span><span class="p">)</span><span class="w">
+    </span><span class="c1">; ついでに表示データに :journal-day を加える (※デバッグ用で、必須ではない。)</span><span class="w">
+    </span><span class="p">(</span><span class="nb">map</span><span class="w"> </span><span class="p">(</span><span class="k">fn</span><span class="w"> </span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="nf">update</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="no">:block/properties</span><span class="w">
+      </span><span class="p">(</span><span class="k">fn</span><span class="w"> </span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="w">
+         </span><span class="p">(</span><span class="nb">assoc</span><span class="w"> </span><span class="n">u</span><span class="w">
+              </span><span class="no">:journal-day</span><span class="w"> </span><span class="p">(</span><span class="nb">get</span><span class="w"> </span><span class="p">(</span><span class="nb">get</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="no">:block/page</span><span class="p">)</span><span class="w"> </span><span class="no">:block/journal-day</span><span class="p">)</span><span class="w">
+          </span><span class="p">)</span><span class="w">
+      </span><span class="p">))))</span><span class="w">
+    </span><span class="p">)))</span><span class="w">
+</span></code></pre></div></div>
+<p data-sourcepos="97:1-97:72">わかりやすく、ソートの部分だけを取り出しておく。</p>
+<div class="code-frame" data-lang="cljs" data-sourcepos="99:1-106:3"><div class="highlight"><pre><code><span class="p">(</span><span class="nb">sort-by</span><span class="w"> </span><span class="p">(</span><span class="k">fn</span><span class="w"> </span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="w">
+    </span><span class="p">[</span><span class="w">
+      </span><span class="p">(</span><span class="nf">rev-pri</span><span class="w"> </span><span class="p">(</span><span class="nb">get</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="no">:block/priority</span><span class="w"> </span><span class="s">"Z"</span><span class="p">))</span><span class="w">
+      </span><span class="p">(</span><span class="nb">get</span><span class="w"> </span><span class="p">(</span><span class="nb">get</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="no">:block/page</span><span class="p">)</span><span class="w"> </span><span class="no">:block/journal-day</span><span class="w"> </span><span class="mi">19000101</span><span class="p">)</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+ </span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+<p data-sourcepos="108:1-108:276">ここでは、複数のソート条件を配列で渡している。（ちなみに<code>get</code>関数の最後の引数にある<code>Z</code>や<code>19000101</code>は、フォールバックというもので、見つからなかったときにその文字列で間に合わせるというやつ。）</p>
+<p data-sourcepos="110:1-110:317">ちなみに、<code>sort-by</code>や<code>reverse</code>を2回やってしまうと、結果全体が新規に書き換わってしまうのでうまくいかない。<a href="https://discuss.logseq.com/t/sort-by-multiple-columns/6563/8" rel="nofollow noopener" target="_blank">Logseqフォーラム</a>にもあるように、<code>juxt</code>等も同様の理由で今回は役に立たない。</p>
+<p data-sourcepos="112:1-112:252">そこで、ここでは作為的に、<code>rev-pri</code>なる、優先順位のアルファベットを逆転させる関数を先に<code>let</code>で定義して、<code>A</code>-&gt;<code>Z</code>, <code>B</code>-&gt;<code>Y</code>... と先に置き換えておくことで、逆順ソートを実現している。</p>
+<p data-sourcepos="114:1-114:233">Thread-Lastマクロの最後で、結果を逆転=<code>reverse</code>しているので、最終結果としては、<strong>優先度 (A,B,C) がアルファベット順、日付が降順（新しい順）</strong> になるようにソートされる。</p>
+<p data-sourcepos="116:1-116:276">なお、今回は「優先度」を配列の先に置いているので、「優先度」が優先されてソートされるが、逆にすれば日付が優先される。これは例えば<code>DONE</code>などの終わったものを順に表示させるときに良いと思う。</p>
+<p data-sourcepos="118:1-118:202">ちなみに今回は<code>sort-by</code>に配列を渡したけれど、配列ではなくて文字列結合(<code>str</code>)でも可。こちらのほうが内部で何が起きているかわかりやすいと思う。</p>
+<h2 data-sourcepos="120:1-120:9">
+<span id="別解" class="fragment"></span><a href="#%E5%88%A5%E8%A7%A3"><i class="fa fa-link"></i></a>別解</h2>
+<p data-sourcepos="122:1-122:86"><code>journal-day</code>が<code>20241001</code>のような数値で返ってくることを活かして、</p>
+<div class="code-frame" data-lang="cljs" data-sourcepos="124:1-131:3"><div class="highlight"><pre><code><span class="p">(</span><span class="nb">sort-by</span><span class="w"> </span><span class="p">(</span><span class="k">fn</span><span class="w"> </span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="w">
+    </span><span class="p">[</span><span class="w">
+      </span><span class="p">(</span><span class="nb">get</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="no">:block/priority</span><span class="w"> </span><span class="s">"Z"</span><span class="p">)</span><span class="w">
+      </span><span class="p">(</span><span class="nb">-</span><span class="w"> </span><span class="p">(</span><span class="nb">get</span><span class="w"> </span><span class="p">(</span><span class="nb">get</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="no">:block/page</span><span class="p">)</span><span class="w"> </span><span class="no">:block/journal-day</span><span class="w"> </span><span class="mi">19000101</span><span class="p">))</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+ </span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+<p data-sourcepos="133:1-133:50">として <code>reverse</code> を取り除いても良い。</p>
+<p data-sourcepos="135:1-135:115">ただこの方法はマイナス値として扱えるような数値 (つまり整数) が来た場合に限る。</p>
+<h2 data-sourcepos="137:1-137:9">
+<span id="余談" class="fragment"></span><a href="#%E4%BD%99%E8%AB%87"><i class="fa fa-link"></i></a>余談</h2>
+<p data-sourcepos="139:1-139:129">複合検索とか、逆順検索みたいなのは、標準機能としてあってくれてもいいかなーと若干思う。</p>
+<p data-sourcepos="141:1-141:357">ただ、アルファベットを数値にする方法がわかれば<sup><a href="#fn-1" id="fnref-1">1</a></sup>、例えば日付の逆順なんかはマイナス値にすれば良いので、より汎用的な方法はありそう。（ただ、数値とかアルファベット1文字とかじゃない、<code>2024-10-01</code> みたいな非数値の文字列が現れたときはたぶん悩む。）</p>
+<p data-sourcepos="143:1-143:230">（追記）Logseqフォーラムに<a href="https://discuss.logseq.com/t/combined-sort-function-on-query/29673" rel="nofollow noopener" target="_blank">Feature Request</a>も一応出してみた。もしかしたらより良い方法があって教えてもらえるかも。<sup><a href="#fn-2" id="fnref-2">2</a></sup></p>
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p data-sourcepos="145:7-145:269"><code>cljs</code>なので<code>int</code>関数は使えないし、Logseqは使える関数が制限されている様子。「優先度」(A,B,C) のように特定の文字列であれば、数値に変換できる範囲に変換してから<code>read-string</code>する等もできる…？ <a href="#fnref-1" class="">↩</a></p>
+</li>
+<li id="fn-2">
+<p data-sourcepos="147:7-147:278">ただ、執筆時点現在LogseqはDB版という新しい機構に開発リソースを割いている様子なので、もしそちらが公開されればクエリなどの方法も刷新されそう。その際はこの議論は古くなってしまう可能性も。 <a href="#fnref-2" class="">↩</a></p>
+</li>
+</ol>
+</section>

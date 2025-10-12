@@ -1,0 +1,22 @@
+<h2 data-sourcepos="1:1-1:61">
+<span id="結論-タプルあるいはsystemparamを使えば解決" class="fragment"></span><a href="#%E7%B5%90%E8%AB%96-%E3%82%BF%E3%83%97%E3%83%AB%E3%81%82%E3%82%8B%E3%81%84%E3%81%AFsystemparam%E3%82%92%E4%BD%BF%E3%81%88%E3%81%B0%E8%A7%A3%E6%B1%BA"><i class="fa fa-link"></i></a>結論: タプルあるいはSystemParamを使えば解決</h2>
+<p data-sourcepos="3:1-3:73"><iframe id="qiita-embed-content__f02c006e28ced79f9439a76b29ba3d39" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__f02c006e28ced79f9439a76b29ba3d39" data-content="https%3A%2F%2Fgithub.com%2Fbevyengine%2Fbevy%2Fblob%2Fmain%2Fexamples%2Fecs%2Fsystem_param.rs" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="5:1-5:325">（追記）：以下に「16を超える引数はとれないよ」って書いてあって、対応策もちゃんと書いてあった。ただ実装上の関係か、タプルを使うと各16パラメータまでとのこと。（16 x 16 = 256なので、<code>SystemParam</code>を使わなくてもこれだけあれば十分。)</p>
+<p data-sourcepos="7:1-7:118"><a href="https://bevy-cheatbook.github.io/programming/systems.html" rel="nofollow noopener" target="_blank">https://bevy-cheatbook.github.io/programming/systems.html</a></p>
+<h2 data-sourcepos="9:1-9:93">
+<span id="背景-systemに17以上の引数を与えると意味不明なエラーが出る" class="fragment"></span><a href="#%E8%83%8C%E6%99%AF-system%E3%81%AB17%E4%BB%A5%E4%B8%8A%E3%81%AE%E5%BC%95%E6%95%B0%E3%82%92%E4%B8%8E%E3%81%88%E3%82%8B%E3%81%A8%E6%84%8F%E5%91%B3%E4%B8%8D%E6%98%8E%E3%81%AA%E3%82%A8%E3%83%A9%E3%83%BC%E3%81%8C%E5%87%BA%E3%82%8B"><i class="fa fa-link"></i></a>背景： systemに17以上の引数を与えると、意味不明なエラーが出る。</h2>
+<p data-sourcepos="11:1-11:393">systemに互換のない引数を定義するとエラーが出る（詳細は下記）のだけれど、引数が16を超えると、互換があるはずなのに同様のエラーが出て、にっちもさっちもいかなくなる。特徴は、<code>'a, 'b, 'c, 'd, 'e, ...</code> が妙に多いことくらいで、実はこの数は16にはならないのでさらに解明を難しくする。</p>
+<p data-sourcepos="13:1-13:120"><a href="https://bevy-cheatbook.github.io/pitfalls/into-system.html" rel="nofollow noopener" target="_blank">https://bevy-cheatbook.github.io/pitfalls/into-system.html</a></p>
+<p data-sourcepos="15:1-15:96">トレイトの定義も複雑なので、やっとのことで該当行にたどり着いた。</p>
+<p data-sourcepos="17:1-17:131"><iframe id="qiita-embed-content__a0e090405a07d366c5143a50e9ebe50b" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__a0e090405a07d366c5143a50e9ebe50b" data-content="https%3A%2F%2Fgithub.com%2Fbevyengine%2Fbevy%2Fblob%2Ffcd87b25281e7d1f6e857fb8096eea1ddfefb98c%2Fcrates%2Fbevy_ecs%2Fsrc%2Fsystem%2Ffunction_system.rs%23L701" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="19:1-19:177">確かに <code>16</code> という数字がコード中にあり、これ以上の引数はとれないので <code>SystemParam</code> を使ってねという趣旨のメモが残されている。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="21:1-25:3"><div class="highlight"><pre><code><span class="c1">// Note that we rely on the highest impl to be &lt;= the highest order of the tuple impls</span>
+<span class="c1">// of `SystemParam` created.</span>
+<span class="nd">all_tuples!</span><span class="p">(</span><span class="n">impl_system_function</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">F</span><span class="p">);</span>
+</code></pre></div></div>
+<p data-sourcepos="27:1-27:163">Rustのタプル自体は数の上限はないはずなので、何かしら別の実装上の要因があってのことと思われるが、詳細は未調査。</p>
+<p data-sourcepos="29:1-29:195">もしかしたら今後改善されるかもしれないけれど、たぶん望み薄なので、引数が多いときは素直にタプルか <code>SystemParam</code> を使ったほうがよさそう。</p>

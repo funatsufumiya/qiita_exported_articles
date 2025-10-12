@@ -1,0 +1,29 @@
+<p data-sourcepos="1:1-1:161">Canon EDSDK（EOS Digital Software Development Kit）でカメラをリモート制御したいとき、いくつかハマりどころがあるので備忘録。</p>
+<h2 data-sourcepos="3:1-3:48">
+<span id="1-take_picture_card_ngで撮影できない" class="fragment"></span><a href="#1-take_picture_card_ng%E3%81%A7%E6%92%AE%E5%BD%B1%E3%81%A7%E3%81%8D%E3%81%AA%E3%81%84"><i class="fa fa-link"></i></a>(1) TAKE_PICTURE_CARD_NGで撮影できない</h2>
+<p data-sourcepos="5:1-5:174"><code>kEdsPropID_SaveTo</code>を<code>kEdsSaveTo_Host</code>に設定すると、撮影された画像はホストPC側に転送されるにも関わらず、CARD_NGというエラーが出る。</p>
+<p data-sourcepos="7:1-7:154">このケースでは、SetCapacityを撮影前に行う必要がある。PC側に十分な容量があると教えてあげるためだと思われる。</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="9:1-12:3"><div class="highlight"><pre><code><span class="n">EdsCapacity</span> <span class="n">capacity</span> <span class="o">=</span> <span class="p">{</span> <span class="mh">0x7FFFFFFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="mi">1</span> <span class="p">};</span>
+<span class="n">err</span> <span class="o">=</span> <span class="n">EdsSetCapacity</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">capacity</span><span class="p">);</span>
+</code></pre></div></div>
+<h2 data-sourcepos="14:1-14:42">
+<span id="2-objecteventだけが呼ばれない" class="fragment"></span><a href="#2-objectevent%E3%81%A0%E3%81%91%E3%81%8C%E5%91%BC%E3%81%B0%E3%82%8C%E3%81%AA%E3%81%84"><i class="fa fa-link"></i></a>(2) ObjectEventだけが呼ばれない</h2>
+<p data-sourcepos="16:1-16:297">ホストPC側に画像を転送する際、ObjectEventHandlerで非同期イベントを受信して画像を受け取るのだが、Windowsではこのイベントが全くこないことがある。（しかも、ParameterEventやStateEventはきちんと呼ばれるにも関わらず…。）</p>
+<p data-sourcepos="18:1-18:218">この場合は、リモートレリーズ制御直後に以下のコードを挿入し、Win32APIでメッセージ受信をする必要がある。（イベント自体は非同期でハンドラが呼ばれる。）</p>
+<div class="code-frame" data-lang="cpp" data-sourcepos="20:1-28:3"><div class="highlight"><pre><code><span class="cp"># ifdef WIN32
+</span>		<span class="n">MSG</span> <span class="n">msg</span><span class="p">;</span>
+		<span class="k">while</span> <span class="p">(</span><span class="n">GetMessage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">))</span> <span class="p">{</span>
+			<span class="n">TranslateMessage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span>
+			<span class="n">DispatchMessage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span>
+		<span class="p">}</span>
+<span class="cp"># endif
+</span></code></pre></div></div>
+<p data-sourcepos="30:1-30:240">このwhile文中では、実際に欲しいイベント（例えばkEdsObjectEvent_DirItemRequestTransfer）以外にもいろいろ受信するので、実際に目的のイベントが受信されたら適宜breakする必要がある。</p>
+<h2 data-sourcepos="32:1-32:9">
+<span id="参考" class="fragment"></span><a href="#%E5%8F%82%E8%80%83"><i class="fa fa-link"></i></a>参考</h2>
+<ul data-sourcepos="34:1-37:0">
+<li data-sourcepos="34:1-34:89"><a href="https://stackoverflow.com/questions/22965982/canon-edsdk-saving-image-in-my-pc/22976188" class="autolink" rel="nofollow noopener" target="_blank">https://stackoverflow.com/questions/22965982/canon-edsdk-saving-image-in-my-pc/22976188</a></li>
+<li data-sourcepos="35:1-35:110"><a href="https://stackoverflow.com/questions/6891693/taking-picture-with-edsdk-and-retrieving-it-immediately/10428426" class="autolink" rel="nofollow noopener" target="_blank">https://stackoverflow.com/questions/6891693/taking-picture-with-edsdk-and-retrieving-it-immediately/10428426</a></li>
+<li data-sourcepos="36:1-37:0"><a href="http://songuke.blogspot.com/2012/05/short-note-about-using-canon-edsdk.html" class="autolink" rel="nofollow noopener" target="_blank">http://songuke.blogspot.com/2012/05/short-note-about-using-canon-edsdk.html</a></li>
+</ul>
+<p data-sourcepos="38:1-38:114">（この辺の情報、公式ドキュメントにも載せてくれたらホントにいいのになぁ…。）</p>

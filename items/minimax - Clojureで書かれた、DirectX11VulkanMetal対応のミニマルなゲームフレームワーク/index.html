@@ -1,0 +1,187 @@
+<p data-sourcepos="1:1-1:126"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F2bafa837-39bc-044c-fd28-4689d3494914.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=a30593470b2c93d44326b8400d7157bc" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F2bafa837-39bc-044c-fd28-4689d3494914.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=a30593470b2c93d44326b8400d7157bc" alt="screenshot.jpg" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F2bafa837-39bc-044c-fd28-4689d3494914.jpeg?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=8da10f1c5c4c2f539b9919c702563c39 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/2bafa837-39bc-044c-fd28-4689d3494914.jpeg" loading="lazy"></a></p>
+<p data-sourcepos="3:1-3:276">ゲームエンジン、とタイトルにつけようか迷ったけれど、<a href="https://github.com/roman01la/minimax" rel="nofollow noopener" target="_blank">minimax</a>という名前の通り、ミニマリスト的なフレームワークなので、ゲームフレームワークとタイトルにはつけた。<sup><a href="#fn-3" id="fnref-3">1</a></sup></p>
+<p data-sourcepos="5:1-5:281">ちなみに執筆時点の今現在では、本家はmacOSでしか動作確認が取られていなかったが、自分自身が動作確認と修正を行い、<a href="https://github.com/funatsufumiya/minimax/tree/for_pr" rel="nofollow noopener" target="_blank">こちらのフォーク</a>でWin/Mac/Linuxに対応させた。</p>
+<p data-sourcepos="7:1-7:421">個人的にはこのフレームワークがクロスプラットフォーム対応になったのは、ちょっと夢のようであって、Clojureで使えて、かつOpenGLではなく（OpenGLにも対応しているが）それ以降のモダン描画APIに対応したクロスプラットフォームなゲームフレームワークというのは、自分自身がずっと待望していたものだった。</p>
+<h2 data-sourcepos="9:1-9:31">
+<span id="bgfx-と-lwjgl3-について" class="fragment"></span><a href="#bgfx-%E3%81%A8-lwjgl3-%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><i class="fa fa-link"></i></a>BGFX と LWJGL3 について</h2>
+<p data-sourcepos="11:1-11:156">なぜ待望していたかの一つに、minimaxがLWJGL3を通して<a href="https://github.com/bkaradzic/bgfx" rel="nofollow noopener" target="_blank">BGFX</a>に対応しているというのがある。</p>
+<p data-sourcepos="13:1-13:33"><iframe id="qiita-embed-content__75633d736b4d3b9fc07371da36fbbcb9" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__75633d736b4d3b9fc07371da36fbbcb9" data-content="https%3A%2F%2Fgithub.com%2Fbkaradzic%2Fbgfx" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="15:1-15:157">BGFXというのは、モダン描画APIに対応しながらも、OpenGLのような気軽な使い勝手を目指して作られた描画ライブラリ。</p>
+<p data-sourcepos="17:1-17:199">そしてそのBGFXの持つクロスプラットフォームな特性から、<a href="https://github.com/LWJGL/lwjgl3" rel="nofollow noopener" target="_blank">LWJGL3</a>に含まれてJavaバインディングされるに至ったのだと思う。</p>
+<p data-sourcepos="19:1-19:31"><iframe id="qiita-embed-content__1ee9da8667f7f5d987a67f7063b1b949" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__1ee9da8667f7f5d987a67f7063b1b949" data-content="https%3A%2F%2Fgithub.com%2FLWJGL%2Flwjgl3" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="21:1-21:840">LWJGLといえば、<a href="https://www.minecraft.net/ja-jp" rel="nofollow noopener" target="_blank">Minecraft（マインクラフト）</a>（Java版）が使っているフレームワークであることで有名で、自分はLWJGL2だった時代のことしか知らなくて、今もMinecraftがLWJGLを使っているかどうかは知らないのだけれど、LWJGLはC++との親和性を強く意識して作られていて、Javaで書いたとしてもメモリの圧迫（ヒープ領域の圧迫）をしないようにメモリ管理が（必要なら）独自でできるように意識して作られているし、ライブラリのバインディングもほぼC++と似るように作られていて、C++版のサンプルコードを参考にしたりもできる。（<a href="https://github.com/LWJGL/lwjgl3-demos" rel="nofollow noopener" target="_blank">lwjgl3-demos</a>ももちろん良い参考になる。）</p>
+<p data-sourcepos="23:1-23:516">しかもここ数年のJavaのアップデートにより、<a href="https://docs.oracle.com/javase/jp/21/core/slicing-allocators-and-slicing-memory-segments.html" rel="nofollow noopener" target="_blank">アリーナ・アロケータやスタック・アロケータ</a>といった近代的で効率の良い、<a href="https://ziglang.org/" rel="nofollow noopener" target="_blank">Zig言語</a>等でも使われているメモリ管理手法がJavaに導入されているが、これとも相性が良いし、LWJGL3自身がメモリ関連の使いやすいユーティリティを提供してくれている。</p>
+<p data-sourcepos="25:1-25:292">LWJGLにはいろんなライブラリが含まれていて、必要に応じて取捨選択できるようになっている。例えばlwjgl-vulkanを使えばVulkan APIで開発を進めることもできる。(参考: <a href="https://github.com/lwjglgamedev/vulkanbook" rel="nofollow noopener" target="_blank">lwjglgamedev/vulkanbook</a>)</p>
+<p data-sourcepos="27:1-27:208">そういう意味ではBGFXは選択肢の一つでしかないのだけれど、書きやすさと、MetalやDirectXやVulkanに自動で対応してくれる臨機応変さが、とてもありがたい。</p>
+<p data-sourcepos="29:1-29:450">ちなみにLWJGLを経由して使う利点としては、C++から使うのに比べてビルドが簡単というのがいえる。これは<a href="https://mvnrepository.com/repos/central" rel="nofollow noopener" target="_blank">Maven Central</a>や<a href="https://gradle.org/" rel="nofollow noopener" target="_blank">Gradle</a>などのビルドシステムの充実のおかげ。（minimaxでは、ClojureだけインストールすればOK。Clojureの持つビルドシステムで、Maven Centralから依存関係を自動解決する。）</p>
+<p data-sourcepos="31:1-31:568">一方でLWJGLを使うデメリットは、JavaでありながらJavaで書かれたライブラリではなくネイティブなものを使うので、環境依存の描画問題などが起こりやすいこと。リソース管理についても他のJavaライブラリに比べるとやや煩雑な分だけ、GCに依存しないようにできるなど自由度は高いが、諸刃の剣。（<a href="https://stackoverflow.com/questions/52704046/how-to-find-and-eliminate-memory-leaks-in-lwjgl" rel="nofollow noopener" target="_blank">自動でメモリリークを検出する機能</a>などはある。）</p>
+<p data-sourcepos="33:1-33:255">【追記】LWJGLの最大のデメリットに、Web対応ができないというものがある。これはJavaの最大の宿命かもしれない。（iOS対応はGraalVMでできるはずだけど、LWJGL自体が対応しきれるかは不明。）</p>
+<h2 data-sourcepos="35:1-35:37">
+<span id="なぜclojureか-ほぼポエム" class="fragment"></span><a href="#%E3%81%AA%E3%81%9Cclojure%E3%81%8B-%E3%81%BB%E3%81%BC%E3%83%9D%E3%82%A8%E3%83%A0"><i class="fa fa-link"></i></a>なぜClojureか (ほぼポエム)</h2>
+<p data-sourcepos="37:1-37:99">（興味のある人だけ読んでもらえれば。次の章に進んでもらっても可。）</p>
+<ul data-sourcepos="39:1-41:0">
+<li data-sourcepos="39:1-39:66"><a href="https://www.amazon.co.jp/dp/4274065979/" rel="nofollow noopener" target="_blank">ハッカーと画家</a></li>
+<li data-sourcepos="40:1-41:0"><a href="https://www.amazon.co.jp/dp/4274069133/" rel="nofollow noopener" target="_blank">プログラミングClojure 第2版</a></li>
+</ul>
+<p data-sourcepos="42:1-42:188">上記の本や、他の記事の方が詳しいと思うのだけれど、自分はClojureが過去のLispの中で最も実用的で最も完成度が高いと勝手に思っている。</p>
+<p data-sourcepos="44:1-44:288">Lispから見たらそうだけれど、Javaから見ると、Kotlinのような使い勝手で使えつつ、動的言語でありながら凄まじいパフォーマンスを誇る。こう考えるとJavaScriptみたいなもんだと思ってもらえればいいかもしれない。</p>
+<p data-sourcepos="46:1-46:604">ちなみにゲームエンジンをスクリプト言語で書きたければ、JavaScriptではなくて、C++と相性の良いLuaを使うのが普通だと思う。好きなフレームワークからLuaを呼んだり、Lua(JIT)から直接<a href="https://lovr.org/" rel="nofollow noopener" target="_blank">LÖVR</a>や<a href="https://love2d.org/" rel="nofollow noopener" target="_blank">Love2D</a>を使えば良いし、Luaなら<a href="https://fennel-lang.org/" rel="nofollow noopener" target="_blank">Fennel</a>という、Clojureにちょっと似たLispを使うこともできる。（<a href="https://godotengine.org/" rel="nofollow noopener" target="_blank">Godot</a>もGDScriptというすごく書きやすいスクリプト言語を持っているのでこちらもおすすめ<sup><a href="#fn-2" id="fnref-2">2</a></sup>。）</p>
+<p data-sourcepos="48:1-48:384">だけれどわざわざClojureを使う意味は、やっぱりClojureが書きたいからに他ならないかなと思う。Clojureの生産性の高さとREPL駆動開発による楽しさ、<a href="https://logmi.jp/main/technology/331309?n=1&amp;e=321965" rel="nofollow noopener" target="_blank">哲学的なまでのシンプルさ</a>は、Clojureでしか味わえない。（ただ、minimaxのREPL連携はまだ未調査。）</p>
+<p data-sourcepos="50:1-50:474">Clojureには<a href="https://github.com/babashka/babashka" rel="nofollow noopener" target="_blank">babashka</a>や<a href="https://github.com/babashka/nbb" rel="nofollow noopener" target="_blank">nbb</a>という使いやすい気軽な環境がJVM以外にも<sup><a href="#fn-1" id="fnref-1">3</a></sup>あって、特にnbbはNode.jsのnpmが使えるので、<a href="https://github.com/maierfelix/nvk" rel="nofollow noopener" target="_blank">nvk</a>のようなVulkan実装を使っても楽しいかもしれないけれど、今のところ最も安定して使えるのはやはりJVMであるし、そうなると描画系はLWJGL3に行き着くと思う。</p>
+<p data-sourcepos="52:1-52:334">ちなみにClojureには<a href="https://jank-lang.org/" rel="nofollow noopener" target="_blank">Jank言語</a>という新しい亜種があって、これも期待しているのだけれど、最近公式ページに書かれているC++ interopではなくLLVMに移植され、過渡期のようなので、完成度が高まってきたらぜひ使いたいと思っている。</p>
+<p data-sourcepos="54:1-54:461">自分自身、Clojure（やJava）をネイティブに近い分野で実用するのは、GCがある関係で避けてきたのだけれど、Minecraftのような前例もあるし、近年のJVMの進化、<a href="https://www.graalvm.org/" rel="nofollow noopener" target="_blank">GraalVM</a>の存在、前述のアリーナ・アロケータやスタック・アロケータなどのJavaへの採用などもあって、そろそろ実用して良い頃合いなのではないかと思っている<sup><a href="#fn-a" id="fnref-a">4</a></sup>。</p>
+<p data-sourcepos="56:1-56:475">Clojure（およびJava）自体は、サーバウェアを書くにはたぶんハッピーな言語で、過去にはnbbに似た<a href="https://github.com/anmonteiro/lumo" rel="nofollow noopener" target="_blank">lumo</a>というClojureScriptのJSネイティブ実装もあったりした（nbbは<a href="https://github.com/babashka/sci" rel="nofollow noopener" target="_blank">SCI</a>というClojureの部分実装）ので、ブラウザ関係ではバリバリ使える言語だったはずで、だからこそClojurianは生き続けている (?) のだと思う。</p>
+<p data-sourcepos="58:1-58:616">Clojureをネイティブ寄りで使おうというのはちょっと挑戦ではあるけれど、ClojureScriptにも一応少し言及すると<a href="https://bun.sh/" rel="nofollow noopener" target="_blank">bun</a>が最近人気が出ていて、エッジ開発が強く意識されていて、C/C++との相性がとてもよく、nbbもbunと一緒に使うことができることから、将来的にはそちらへのシフトを念頭に置きつつ、JVMでいま使える選択肢として<a href="https://github.com/roman01la/minimax" rel="nofollow noopener" target="_blank">minimax</a>を挙げてみた。（将来的には、npmで使える選択肢が自分の中で出てくればとも思う。）</p>
+<h2 data-sourcepos="60:1-60:46">
+<span id="minimaxコードリーディングツアー" class="fragment"></span><a href="#minimax%E3%82%B3%E3%83%BC%E3%83%89%E3%83%AA%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%83%84%E3%82%A2%E3%83%BC"><i class="fa fa-link"></i></a>minimaxコードリーディングツアー</h2>
+<p data-sourcepos="62:1-62:285">このままminimaxについては何も書かずに終わろうと思ったけど、軽くコードリーディングツアーだけやっておく。（minimaxの特徴については<a href="https://github.com/roman01la/minimax" rel="nofollow noopener" target="_blank">README</a>に書かれているのであえて割愛する。）</p>
+<p data-sourcepos="64:1-64:213">なお、VSCode + <a href="https://calva.io/" rel="nofollow noopener" target="_blank">Calva</a> を使うと、定義にジャンプできるようになったり、エラーがチェックされたりして快適になるので、ぜひ手元にご準備の上。</p>
+<p data-sourcepos="66:1-66:158">冒頭部にあるスクリーンショットのコードは <a href="https://github.com/roman01la/minimax/blob/main/src/fg/core.clj" rel="nofollow noopener" target="_blank">src/fg/core.clj</a> にあたる。</p>
+<p data-sourcepos="68:1-68:175">個人的にClojureらしさが出ていると思う部分を以下に一部抜粋する。雲をふわふわさせたり、シーンを回転させている部分が中心。</p>
+<p data-sourcepos="70:1-70:193">いわゆる副作用があるコードは <code>do</code> や <code>doseq</code> で囲まれていて、状態変化には <code>atom</code> が使われている。（<code>vreset!</code> はatomを更新するためのマクロ。）</p>
+<div class="code-frame" data-lang="clojure" data-sourcepos="72:1-135:3"><div class="highlight"><pre><code><span class="c1">;; src/fg/core.clj より一部抜粋</span><span class="w">
+
+</span><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">model</span><span class="w">
+  </span><span class="p">(</span><span class="nf">do</span><span class="w">
+    </span><span class="p">(</span><span class="nf">log/debug</span><span class="w"> </span><span class="s">"Importing model..."</span><span class="p">)</span><span class="w">
+    </span><span class="p">(</span><span class="nf">log/time</span><span class="w"> </span><span class="p">(</span><span class="nf">md/load-model</span><span class="w"> </span><span class="s">"models/castle.glb"</span><span class="p">))))</span><span class="w">
+
+</span><span class="c1">;; debug</span><span class="w">
+</span><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">selected-object</span><span class="w"> </span><span class="p">(</span><span class="nf">atom</span><span class="w"> </span><span class="n">nil</span><span class="p">))</span><span class="w">
+</span><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">debug-box</span><span class="w"> </span><span class="o">@</span><span class="n">debug/debug-box</span><span class="p">)</span><span class="w">
+
+</span><span class="c1">;; scene</span><span class="w">
+</span><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">scene</span><span class="w">
+  </span><span class="p">(</span><span class="nf">atom</span><span class="w"> </span><span class="p">(</span><span class="nf">scene/create</span><span class="w">
+         </span><span class="p">{</span><span class="no">:name</span><span class="w"> </span><span class="s">"MainScene"</span><span class="w">
+          </span><span class="no">:children</span><span class="w"> </span><span class="p">[</span><span class="n">d-light</span><span class="w"> </span><span class="p">(</span><span class="no">:scene</span><span class="w"> </span><span class="n">model</span><span class="p">)</span><span class="w"> </span><span class="n">debug-box</span><span class="p">]})))</span><span class="w">
+
+</span><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">castle-obj</span><span class="w">
+  </span><span class="p">(</span><span class="nf">obj/find-by-name</span><span class="w"> </span><span class="o">@</span><span class="n">scene</span><span class="w"> </span><span class="s">"castle_root"</span><span class="p">))</span><span class="w">
+
+</span><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">cloud-1-obj</span><span class="w">
+  </span><span class="p">(</span><span class="nf">obj/find-by-name</span><span class="w"> </span><span class="o">@</span><span class="n">scene</span><span class="w"> </span><span class="s">"cloud_1"</span><span class="p">))</span><span class="w">
+
+</span><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">cloud-2-obj</span><span class="w">
+  </span><span class="p">(</span><span class="nf">obj/find-by-name</span><span class="w"> </span><span class="o">@</span><span class="n">scene</span><span class="w"> </span><span class="s">"cloud_2"</span><span class="p">))</span><span class="w">
+
+</span><span class="p">(</span><span class="k">defn</span><span class="w"> </span><span class="n">render</span><span class="w"> </span><span class="p">[</span><span class="n">dt</span><span class="w"> </span><span class="n">t</span><span class="p">]</span><span class="w">
+  </span><span class="p">(</span><span class="k">let</span><span class="w"> </span><span class="p">[</span><span class="n">t</span><span class="w"> </span><span class="p">(</span><span class="nb">*</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="w">
+        </span><span class="n">pos1</span><span class="w"> </span><span class="p">(</span><span class="nf">obj/position</span><span class="w"> </span><span class="n">cloud-1-obj</span><span class="p">)</span><span class="w">
+        </span><span class="n">pos2</span><span class="w"> </span><span class="p">(</span><span class="nf">obj/position</span><span class="w"> </span><span class="n">cloud-2-obj</span><span class="p">)</span><span class="w">
+        </span><span class="n">y</span><span class="w"> </span><span class="p">(</span><span class="nb">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="nf">Math/sin</span><span class="w"> </span><span class="p">(</span><span class="nb">/</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="w">
+              </span><span class="p">(</span><span class="nb">/</span><span class="w"> </span><span class="mi">100</span><span class="p">))</span><span class="w">
+        </span><span class="n">x</span><span class="w"> </span><span class="p">(</span><span class="nb">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="nf">Math/sin</span><span class="w"> </span><span class="p">(</span><span class="nb">/</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="mi">10</span><span class="p">))</span><span class="w">
+              </span><span class="p">(</span><span class="nb">/</span><span class="w"> </span><span class="mi">100</span><span class="p">))</span><span class="w">
+        </span><span class="n">z</span><span class="w"> </span><span class="p">(</span><span class="nb">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="nf">Math/cos</span><span class="w"> </span><span class="p">(</span><span class="nb">/</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="mi">10</span><span class="p">))</span><span class="w">
+              </span><span class="p">(</span><span class="nb">/</span><span class="w"> </span><span class="mi">100</span><span class="p">))]</span><span class="w">
+
+    </span><span class="p">(</span><span class="nf">obj/rotate-y</span><span class="w"> </span><span class="n">cloud-1-obj</span><span class="w"> </span><span class="p">(</span><span class="nb">*</span><span class="w"> </span><span class="n">dt</span><span class="w"> </span><span class="mf">0.3</span><span class="p">))</span><span class="w">
+    </span><span class="p">(</span><span class="nf">obj/set-position-y</span><span class="w"> </span><span class="n">cloud-1-obj</span><span class="w"> </span><span class="p">(</span><span class="nb">+</span><span class="w"> </span><span class="p">(</span><span class="nf">.y</span><span class="w"> </span><span class="n">pos1</span><span class="p">)</span><span class="w"> </span><span class="n">y</span><span class="p">))</span><span class="w">
+    </span><span class="p">(</span><span class="nf">obj/set-position-x</span><span class="w"> </span><span class="n">cloud-1-obj</span><span class="w"> </span><span class="p">(</span><span class="nb">+</span><span class="w"> </span><span class="p">(</span><span class="nf">.x</span><span class="w"> </span><span class="n">pos1</span><span class="p">)</span><span class="w"> </span><span class="n">x</span><span class="p">))</span><span class="w">
+    </span><span class="p">(</span><span class="nf">obj/set-position-z</span><span class="w"> </span><span class="n">cloud-1-obj</span><span class="w"> </span><span class="p">(</span><span class="nb">+</span><span class="w"> </span><span class="p">(</span><span class="nf">.z</span><span class="w"> </span><span class="n">pos1</span><span class="p">)</span><span class="w"> </span><span class="n">z</span><span class="p">))</span><span class="w">
+
+    </span><span class="p">(</span><span class="nf">obj/rotate-y</span><span class="w"> </span><span class="n">cloud-2-obj</span><span class="w"> </span><span class="p">(</span><span class="nb">*</span><span class="w"> </span><span class="n">dt</span><span class="w"> </span><span class="mf">-0.3</span><span class="p">))</span><span class="w">
+    </span><span class="p">(</span><span class="nf">obj/set-position-y</span><span class="w"> </span><span class="n">cloud-2-obj</span><span class="w"> </span><span class="p">(</span><span class="nb">+</span><span class="w"> </span><span class="p">(</span><span class="nf">.y</span><span class="w"> </span><span class="n">pos2</span><span class="p">)</span><span class="w"> </span><span class="n">y</span><span class="p">))</span><span class="w">
+    </span><span class="p">(</span><span class="nf">obj/set-position-x</span><span class="w"> </span><span class="n">cloud-2-obj</span><span class="w"> </span><span class="p">(</span><span class="nb">+</span><span class="w"> </span><span class="p">(</span><span class="nf">.x</span><span class="w"> </span><span class="n">pos2</span><span class="p">)</span><span class="w"> </span><span class="n">z</span><span class="p">))</span><span class="w">
+    </span><span class="p">(</span><span class="nf">obj/set-position-z</span><span class="w"> </span><span class="n">cloud-2-obj</span><span class="w"> </span><span class="p">(</span><span class="nb">+</span><span class="w"> </span><span class="p">(</span><span class="nf">.z</span><span class="w"> </span><span class="n">pos2</span><span class="p">)</span><span class="w"> </span><span class="n">x</span><span class="p">))</span><span class="w">
+
+    </span><span class="p">(</span><span class="nf">obj/rotate-y</span><span class="w"> </span><span class="n">castle-obj</span><span class="w"> </span><span class="p">(</span><span class="nb">*</span><span class="w"> </span><span class="n">dt</span><span class="w"> </span><span class="mf">0.1</span><span class="p">))</span><span class="w">
+
+    </span><span class="p">(</span><span class="nf">vreset!</span><span class="w"> </span><span class="p">(</span><span class="no">:visible?</span><span class="w"> </span><span class="n">debug-box</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="nf">some?</span><span class="w"> </span><span class="o">@</span><span class="n">selected-object</span><span class="p">))</span><span class="w">
+
+    </span><span class="p">(</span><span class="nb">when-let</span><span class="w"> </span><span class="p">[</span><span class="n">obj</span><span class="w"> </span><span class="o">@</span><span class="n">selected-object</span><span class="p">]</span><span class="w">
+      </span><span class="p">(</span><span class="k">let</span><span class="w"> </span><span class="p">[[</span><span class="nb">root</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">objs</span><span class="p">]</span><span class="w"> </span><span class="p">(</span><span class="nb">reverse</span><span class="w"> </span><span class="p">(</span><span class="nf">obj/obj-&gt;parent-seq</span><span class="w"> </span><span class="n">obj</span><span class="w"> </span><span class="p">[]))</span><span class="w">
+            </span><span class="n">mtx</span><span class="w"> </span><span class="p">(</span><span class="nf">-&gt;&gt;</span><span class="w"> </span><span class="n">objs</span><span class="w">
+                     </span><span class="p">(</span><span class="nb">reduce</span><span class="w">
+                      </span><span class="p">(</span><span class="k">fn</span><span class="w"> </span><span class="p">[</span><span class="n">mtx</span><span class="w"> </span><span class="n">obj</span><span class="p">]</span><span class="w">
+                        </span><span class="p">(</span><span class="nf">obj/apply-matrix*</span><span class="w"> </span><span class="n">mtx</span><span class="w"> </span><span class="p">(</span><span class="no">:lmtx</span><span class="w"> </span><span class="n">obj</span><span class="p">)</span><span class="w"> </span><span class="n">mtx</span><span class="p">))</span><span class="w">
+                      </span><span class="p">(</span><span class="nf">.set</span><span class="w"> </span><span class="p">(</span><span class="nf">Matrix4f.</span><span class="p">)</span><span class="w"> </span><span class="o">^</span><span class="n">Matrix4f</span><span class="w"> </span><span class="p">(</span><span class="no">:mtx</span><span class="w"> </span><span class="nb">root</span><span class="p">))))]</span><span class="w">
+        </span><span class="p">(</span><span class="nf">debug/set-object-transform</span><span class="w"> </span><span class="n">obj</span><span class="w"> </span><span class="n">debug-box</span><span class="w"> </span><span class="n">mtx</span><span class="p">)))))</span><span class="w">
+
+</span><span class="p">(</span><span class="k">defn</span><span class="w"> </span><span class="n">render-ui</span><span class="w"> </span><span class="p">[]</span><span class="w">
+  </span><span class="p">(</span><span class="nf">fg.ui.core/test-root</span><span class="w"> </span><span class="o">@</span><span class="n">state/state</span><span class="w"> </span><span class="o">@</span><span class="n">scene</span><span class="w"> </span><span class="n">selected-object</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+<p data-sourcepos="137:1-137:128">ちなみに <code>def</code> というのがいわゆるグローバル変数で、<code>let</code> は局所変数にあたる。<code>defn</code> は関数。</p>
+<p data-sourcepos="139:1-139:384">シーンの部分だけ以下に抜粋してさらにみてみると、ednという、JavaScriptでいうところのjsonで基本的には書かれていることがわかる<sup><a href="#fn-4" id="fnref-4">5</a></sup>。jsonと違うのは、キーは文字列ではなくキーワード (<code>:name</code> や <code>:children</code> など) になっていて、これはそのままEnum（列挙型）のように使えるスグレモノ。</p>
+<div class="code-frame" data-lang="clojure" data-sourcepos="141:1-147:3"><div class="highlight"><pre><code><span class="c1">;; scene</span><span class="w">
+</span><span class="p">(</span><span class="k">def</span><span class="w"> </span><span class="n">scene</span><span class="w">
+  </span><span class="p">(</span><span class="nf">atom</span><span class="w"> </span><span class="p">(</span><span class="nf">scene/create</span><span class="w">
+         </span><span class="p">{</span><span class="no">:name</span><span class="w"> </span><span class="s">"MainScene"</span><span class="w">
+          </span><span class="no">:children</span><span class="w"> </span><span class="p">[</span><span class="n">d-light</span><span class="w"> </span><span class="p">(</span><span class="no">:scene</span><span class="w"> </span><span class="n">model</span><span class="p">)</span><span class="w"> </span><span class="n">debug-box</span><span class="p">]})))</span><span class="w">
+</span></code></pre></div></div>
+<p data-sourcepos="149:1-149:266">ちなみにシーン自体の定義は <a href="https://github.com/roman01la/minimax/blob/ffd42cf1af15f3f7bb77b6a0a5fdeb6ea3a90a7a/src/minimax/objects/scene.clj" rel="nofollow noopener" target="_blank"><code>objects/scene.clj</code></a> にあって、あえて全文を掲載するけれど、定義は至ってシンプル。</p>
+<p data-sourcepos="151:1-151:243">（ここで出てくる <code>defrecord</code> というのは、クラスの代わりだと思ってもらって差し支えはない。<code>[name children mtx]</code> がパラメータ、つまりは変数みたいなものだと思ってもらえれば。 ）</p>
+<div class="code-frame" data-lang="clojure" data-sourcepos="153:1-193:3"><div class="highlight"><pre><code><span class="c1">;; objects/scene.clj の全文</span><span class="w">
+
+</span><span class="p">(</span><span class="nf">ns</span><span class="w"> </span><span class="n">minimax.objects.scene</span><span class="w">
+  </span><span class="p">(</span><span class="no">:require</span><span class="w"> </span><span class="p">[</span><span class="n">minimax.object</span><span class="w"> </span><span class="no">:as</span><span class="w"> </span><span class="n">obj</span><span class="p">]</span><span class="w">
+            </span><span class="p">[</span><span class="n">minimax.objects.light</span><span class="p">]</span><span class="w">
+            </span><span class="p">[</span><span class="n">minimax.util.scene</span><span class="w"> </span><span class="no">:as</span><span class="w"> </span><span class="n">util.scene</span><span class="p">])</span><span class="w">
+  </span><span class="p">(</span><span class="no">:import</span><span class="w"> </span><span class="p">(</span><span class="nf">minimax.objects.light</span><span class="w"> </span><span class="n">DirectionalLight</span><span class="p">)</span><span class="w">
+           </span><span class="p">(</span><span class="nf">org.joml</span><span class="w"> </span><span class="n">Matrix4f</span><span class="p">)))</span><span class="w">
+
+</span><span class="p">(</span><span class="nf">set!</span><span class="w"> </span><span class="n">*warn-on-reflection*</span><span class="w"> </span><span class="n">true</span><span class="p">)</span><span class="w">
+
+</span><span class="p">(</span><span class="nf">defrecord</span><span class="w"> </span><span class="n">Scene</span><span class="w"> </span><span class="p">[</span><span class="nb">name</span><span class="w"> </span><span class="nb">children</span><span class="w"> </span><span class="n">mtx</span><span class="p">]</span><span class="w">
+  </span><span class="n">obj/IRenderable</span><span class="w">
+  </span><span class="p">(</span><span class="nf">render</span><span class="w"> </span><span class="p">[</span><span class="n">this</span><span class="w"> </span><span class="n">id</span><span class="p">]</span><span class="w">
+    </span><span class="p">(</span><span class="k">let</span><span class="w"> </span><span class="p">[</span><span class="n">lights</span><span class="w"> </span><span class="p">(</span><span class="nf">obj/find-by-type</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">DirectionalLight</span><span class="p">)]</span><span class="w">
+      </span><span class="c1">;; lights are rendered first to set up uniforms</span><span class="w">
+      </span><span class="p">(</span><span class="nf">run!</span><span class="w"> </span><span class="o">#</span><span class="p">(</span><span class="nf">obj/render</span><span class="w"> </span><span class="n">%</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="n">lights</span><span class="p">)</span><span class="w">
+      </span><span class="p">(</span><span class="nf">obj/render*</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="n">mtx</span><span class="w"> </span><span class="nb">children</span><span class="p">)))</span><span class="w">
+  </span><span class="n">obj/IObject3D</span><span class="w">
+  </span><span class="p">(</span><span class="nf">add-child</span><span class="w"> </span><span class="p">[</span><span class="n">this</span><span class="w"> </span><span class="n">child</span><span class="p">]</span><span class="w">
+    </span><span class="p">(</span><span class="nf">obj/add-child*</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">child</span><span class="p">))</span><span class="w">
+  </span><span class="p">(</span><span class="nf">remove-child</span><span class="w"> </span><span class="p">[</span><span class="n">this</span><span class="w"> </span><span class="n">child</span><span class="p">]</span><span class="w">
+    </span><span class="p">(</span><span class="nf">obj/remove-child*</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">child</span><span class="p">))</span><span class="w">
+  </span><span class="p">(</span><span class="nb">children</span><span class="w"> </span><span class="p">[</span><span class="n">this</span><span class="p">]</span><span class="w">
+    </span><span class="nb">children</span><span class="p">)</span><span class="w">
+  </span><span class="p">(</span><span class="nf">find-by-name</span><span class="w"> </span><span class="p">[</span><span class="n">this</span><span class="w"> </span><span class="nb">name</span><span class="p">]</span><span class="w">
+    </span><span class="p">(</span><span class="nf">obj/find-by-name*</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="nb">name</span><span class="p">))</span><span class="w">
+  </span><span class="p">(</span><span class="nf">find-by-type</span><span class="w"> </span><span class="p">[</span><span class="n">this</span><span class="w"> </span><span class="n">obj-type</span><span class="p">]</span><span class="w">
+    </span><span class="p">(</span><span class="nf">obj/find-by-type*</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">obj-type</span><span class="p">))</span><span class="w">
+  </span><span class="p">(</span><span class="nf">replace-by-name</span><span class="w"> </span><span class="p">[</span><span class="n">this</span><span class="w"> </span><span class="nb">name</span><span class="w"> </span><span class="n">obj</span><span class="p">]</span><span class="w">
+    </span><span class="p">(</span><span class="nf">obj/replace-by-name*</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="nb">name</span><span class="w"> </span><span class="n">obj</span><span class="p">)))</span><span class="w">
+
+</span><span class="p">(</span><span class="k">defn</span><span class="w"> </span><span class="n">create</span><span class="w"> </span><span class="p">[{</span><span class="no">:keys</span><span class="w"> </span><span class="p">[</span><span class="nb">name</span><span class="w"> </span><span class="nb">children</span><span class="p">]}]</span><span class="w">
+  </span><span class="p">(</span><span class="nf">util.scene/add-parent-link</span><span class="w">
+   </span><span class="p">(</span><span class="nf">map-&gt;Scene</span><span class="w">
+    </span><span class="p">{</span><span class="no">:name</span><span class="w"> </span><span class="nb">name</span><span class="w">
+     </span><span class="no">:mtx</span><span class="w"> </span><span class="p">(</span><span class="nf">Matrix4f.</span><span class="p">)</span><span class="w">
+     </span><span class="no">:children</span><span class="w"> </span><span class="nb">children</span><span class="w">
+     </span><span class="no">:parent</span><span class="w"> </span><span class="p">(</span><span class="nf">volatile!</span><span class="w"> </span><span class="n">nil</span><span class="p">)})))</span><span class="w">
+</span></code></pre></div></div>
+<p data-sourcepos="195:1-195:348">最後の <code>create</code> 関数のところで、シーンを作るときと似たようなedn（つまりjsonもどき）があることに気付くと思うけれど、Clojureの文法および構成要素は非常に少ない。新しい文法に出会うことは、ユーザ定義のマクロを除いてほぼないと思ってもらっていい。</p>
+<p data-sourcepos="197:1-197:158">これが前述した<a href="https://logmi.jp/main/technology/321965" rel="nofollow noopener" target="_blank">シンプル</a>ということ。そしてこれが自分がClojureを書き続けたい理由。</p>
+<h2 data-sourcepos="199:1-199:16">
+<span id="まとめ-" class="fragment"></span><a href="#%E3%81%BE%E3%81%A8%E3%82%81-"><i class="fa fa-link"></i></a>まとめ (?)</h2>
+<p data-sourcepos="201:1-201:244">さて、minimax自体の特徴にはさほど言及しないまま、Clojureについてのポエムを書きたいだけ書いて終わった感が否めないけれど、きっと良さは伝わった (?) んじゃないかな。たぶん。</p>
+<p data-sourcepos="203:1-203:227">minimax自体は、GLTFが読み込めたり、PBRに対応していたり、UI表示に対応していたり、サウンドにも標準対応していたりと、minimaxといいながら結構至れり尽くせりな感じ。</p>
+<p data-sourcepos="205:1-205:288">冒頭でも紹介したように、<a href="https://github.com/funatsufumiya/minimax/tree/for_pr" rel="nofollow noopener" target="_blank">自分のフォーク</a>によってWin/Mac/Linux対応が完了していて、そのうち本家にマージされたらいいなと感じているので、ぜひ試してもらえると嬉しい。</p>
+<h2 data-sourcepos="207:1-207:30">
+<span id="ライセンスについて" class="fragment"></span><a href="#%E3%83%A9%E3%82%A4%E3%82%BB%E3%83%B3%E3%82%B9%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><i class="fa fa-link"></i></a>ライセンスについて</h2>
+<p data-sourcepos="209:1-209:683">ちなみに、minimaxが採用している、準コピーレフトなライセンスである<a href="https://www.eclipse.org/legal/epl-2.0/" rel="nofollow noopener" target="_blank">Eclipse Public License (EPL v2) </a>に抵抗のある人もいるかもしれないけれど、少し調べてみるとわかるように<a href="https://ja.wikipedia.org/wiki/GNU_Lesser_General_Public_License" rel="nofollow noopener" target="_blank">LGPL</a>よりもさらにゆるくて、基本的にコピーレフトが適用されるのはライブラリ部分のみ。商用利用等の派生作品などにはコピーレフトは伝播しない（ただしライブラリ部分のソース公開など一定の条件あり）ので、安心して使ってもらえればいいなと思う。</p>
+<section class="footnotes">
+<ol>
+<li id="fn-3">
+<p data-sourcepos="211:7-211:371">GodotやUnityのようなエディタはminimaxには付いていないのだけれど、<a href="https://github.com/kaosat-dev/Blenvy" rel="nofollow noopener" target="_blank">Blenvy (Blender &lt;-&gt; Bevy)</a>と同じようなノリで、GLTF自体を使ってBlenderをエディタのように使うことはできるし、<a href="https://github.com/kotlin-graphics/imgui/" rel="nofollow noopener" target="_blank">ImGuiバインディング</a>も使える、はず。 <a href="#fnref-3" class="">↩</a></p>
+</li>
+<li id="fn-2">
+<p data-sourcepos="213:7-213:553">Godotには、<a href="https://godot-kotl.in/en/stable/" rel="nofollow noopener" target="_blank">Kotlinバインディング</a>や、実験的な<a href="https://godot-kotlin.readthedocs.io/en/latest/" rel="nofollow noopener" target="_blank">Kotlin/Nativeバインディング</a>がある様子。<a href="https://github.com/tristanstraub/thecreeps-godotclj" rel="nofollow noopener" target="_blank">Clojureから使っている例</a>も一応あった。さすがGodot、人気さがうかがえる。ちなみに自分はC++で拡張機能を書きつつGDScriptで書く元々のスタイルがシンプルで好きだけど、Godotはいろんな言語から使えるのがホントすごい。 <a href="#fnref-2" class="">↩</a></p>
+</li>
+<li id="fn-1">
+<p data-sourcepos="215:7-215:247">わかりやすく「JVM以外にも」と書いたけれど、babashkaはGraalVMでネイティブ化されているだけで基本的にはJVM。ただ、GraalVMのネイティブ化は、JVMと思えないくらいの快適さがある。 <a href="#fnref-1" class="">↩</a></p>
+</li>
+<li id="fn-a">
+<p data-sourcepos="219:7-219:1113">【追記】後日談として、ここに書いていることは何も間違いではないのだけれど、検証を進めていくうちに、GC言語内で手動のメモリ管理をする辛さが理解されてきて、GDScriptなどの（準）参照カウンタベースの言語とはやはり根本的に違うというのは痛感しているところ。ZigやOdinやGoのような、deferなどがなく（追記: <a href="https://github.com/nijohando/deferable" rel="nofollow noopener" target="_blank">あった</a>）、参照カウントを使うにしてもある程度自作することになるのはちょっと大変そう（追記: これも一応<a href="https://github.com/cdeln/lexref-clj" rel="nofollow noopener" target="_blank">あった</a>）。ちなみにminimaxには、この辺を意識した <a href="https://github.com/funatsufumiya/minimax/blob/808de37a302c42483fe95280a229de38f33e3b74/src/minimax/mem.clj#L16C11-L16C15" rel="nofollow noopener" target="_blank"><code>mem/slet</code></a> という使いやすいスタック・アローケータがあり、実際書いていくときはこのあたりを駆使していけば良いとは思う。同様の考え方で参照カウンタなどもすぐ実装できそうとは思う。 <a href="#fnref-a" class="">↩</a></p>
+</li>
+<li id="fn-4">
+<p data-sourcepos="217:7-217:207">JavaScriptのオブジェクトとJSONが厳密には異なるのと同じく、ednはそのままイコールClojureのデータ型とは異なるが、ここではわかりやすさを優先した。 <a href="#fnref-4" class="">↩</a></p>
+</li>
+</ol>
+</section>

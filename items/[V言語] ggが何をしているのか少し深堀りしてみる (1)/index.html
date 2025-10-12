@@ -1,0 +1,89 @@
+<div data-sourcepos="1:1-3:3" class="note info">
+<span class="fa fa-fw fa-check-circle"></span><div>
+<p data-sourcepos="2:1-2:84">執筆時点でV言語 0.4.12 です。今後の変更に注意してください。</p>
+</div>
+</div>
+<p data-sourcepos="5:1-5:126">先日以下のような記事を書いたのですが、今回はもう少し深く中身を見ていこうと思います。</p>
+<p data-sourcepos="7:1-7:58"><iframe id="qiita-embed-content__8056b00b64b991ce477a7fbaef625c5d" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__8056b00b64b991ce477a7fbaef625c5d" data-content="https%3A%2F%2Fqiita.com%2Ffunatsufumiya%2Fitems%2Fec1b72aae4deb845d929" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="9:1-9:111">たぶん今後も似た記事を書きそうなので「(1)」とつけてますが、予定は未定です。</p>
+<h2 data-sourcepos="11:1-11:34">
+<span id="余談-v-analyzer-について" class="fragment"></span><a href="#%E4%BD%99%E8%AB%87-v-analyzer-%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><i class="fa fa-link"></i></a>余談: v-analyzer について</h2>
+<p data-sourcepos="13:1-13:159">ちなみに以下の通りに v-analyzer を入れると、定義ジャンプなどが効くようになるのでコードリーディングに便利です。</p>
+<p data-sourcepos="15:1-15:58"><iframe id="qiita-embed-content__291f49f3fbad3a7e3d2b9cd0c15e3215" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__291f49f3fbad3a7e3d2b9cd0c15e3215" data-content="https%3A%2F%2Fqiita.com%2Ffunatsufumiya%2Fitems%2F4f2824d304f006d3a366" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="17:1-17:338">ただし、V言語のexampleは、.v ファイルが並んでいることが多いのですが、v-analyzer は現時点では <code>module main</code> を含むファイルが複数あると静的構文解析がエラーするので、フォルダに1つになるように移動したりコピーしたりして工夫する必要があります。</p>
+<h2 data-sourcepos="19:1-19:56">
+<span id="draw_rect_filled-が内部で何をしているのか" class="fragment"></span><a href="#draw_rect_filled-%E3%81%8C%E5%86%85%E9%83%A8%E3%81%A7%E4%BD%95%E3%82%92%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%81%AE%E3%81%8B"><i class="fa fa-link"></i></a>draw_rect_filled が内部で何をしているのか</h2>
+<p data-sourcepos="21:1-21:70">単純な四角形だけを描くexampleを準備してみました。</p>
+<p data-sourcepos="23:1-23:161"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fe0dd1aea-48be-4a80-9752-8cec0c0ae01a.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=f086e63e137a74b7c083ef778348043e" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fe0dd1aea-48be-4a80-9752-8cec0c0ae01a.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=f086e63e137a74b7c083ef778348043e" alt="スクリーンショット 2025-09-24 5.08.52.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fe0dd1aea-48be-4a80-9752-8cec0c0ae01a.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=d3b472b76838d0ee18d6bd7a2fd166e9 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/e0dd1aea-48be-4a80-9752-8cec0c0ae01a.png" loading="lazy"></a></p>
+<p data-sourcepos="25:1-25:102"><iframe id="qiita-embed-content__f3102d525c4a914db074f2c43be16b93" src="https://qiita.com/embed-contents/github-blob#qiita-embed-content__f3102d525c4a914db074f2c43be16b93" data-content="https%3A%2F%2Fgithub.com%2Ffunatsufumiya%2Fv-lab%2Fblob%2Fc579453b0ca0732a462c1fc1057588d07abf5d64%2Frectangles%2Fmain.v" frameborder="0" scrolling="no" loading="lazy" style="width:100%;">
+</iframe>
+</p>
+<p data-sourcepos="27:1-27:42">ポイントは以下の箇所ですね。</p>
+<p data-sourcepos="29:1-29:110"><iframe id="qiita-embed-content__6583345568f430f8ab89dc43c63e8fd4" src="https://qiita.com/embed-contents/github-blob#qiita-embed-content__6583345568f430f8ab89dc43c63e8fd4" data-content="https%3A%2F%2Fgithub.com%2Ffunatsufumiya%2Fv-lab%2Fblob%2Fc579453b0ca0732a462c1fc1057588d07abf5d64%2Frectangles%2Fmain.v%23L37-L43" frameborder="0" scrolling="no" loading="lazy" style="width:100%;">
+</iframe>
+</p>
+<p data-sourcepos="31:1-31:70"><code>draw_rect_filled</code> が何をしているのか見てみましょう。</p>
+<p data-sourcepos="33:1-33:99"><iframe id="qiita-embed-content__6f39911343a4b4136058fdf4c8303031" src="https://qiita.com/embed-contents/github-blob#qiita-embed-content__6f39911343a4b4136058fdf4c8303031" data-content="https%3A%2F%2Fgithub.com%2Fvlang%2Fv%2Fblob%2F0df443563544c3c35d5c8027d0f3a341f68c1eed%2Fvlib%2Fgg%2Fdraw.c.v%23L257-L281" frameborder="0" scrolling="no" loading="lazy" style="width:100%;">
+</iframe>
+</p>
+<p data-sourcepos="35:1-35:186"><code>$if macos</code> のところはmac用の特殊処理のようですね。（<code>$if</code>はC言語でいうところの <code>#ifdef</code>のようなプリプロセッサで、コンパイル時処理。）</p>
+<p data-sourcepos="37:1-37:150">以下の部分が核になっていて、<code>c4b</code> = <code>color 4 bytes</code> で色を描いて、<code>v2f</code> = <code>vertex 2 floats</code> で頂点を指定しています。</p>
+<p data-sourcepos="39:1-39:99"><iframe id="qiita-embed-content__b981f8eefa8a10c9e274c1115b101608" src="https://qiita.com/embed-contents/github-blob#qiita-embed-content__b981f8eefa8a10c9e274c1115b101608" data-content="https%3A%2F%2Fgithub.com%2Fvlang%2Fv%2Fblob%2F0df443563544c3c35d5c8027d0f3a341f68c1eed%2Fvlib%2Fgg%2Fdraw.c.v%23L273-L280" frameborder="0" scrolling="no" loading="lazy" style="width:100%;">
+</iframe>
+</p>
+<h2 data-sourcepos="41:1-41:38">
+<span id="ggbegin-が何をしているか" class="fragment"></span><a href="#ggbegin-%E3%81%8C%E4%BD%95%E3%82%92%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%81%8B"><i class="fa fa-link"></i></a>gg.begin() が何をしているか</h2>
+<p data-sourcepos="43:1-43:264">ちなみに頂点などの話をするときに、カメラや行列がどんな設定になっているかが大事になってきますが、<code>gg.begin()</code> で何をしているかを見てみると、シンプルな平行投影 (<code>ortho</code>) になっています。</p>
+<p data-sourcepos="45:1-45:97"><iframe id="qiita-embed-content__0969824257849c773e5e3b94b2930dab" src="https://qiita.com/embed-contents/github-blob#qiita-embed-content__0969824257849c773e5e3b94b2930dab" data-content="https%3A%2F%2Fgithub.com%2Fvlang%2Fv%2Fblob%2F0df443563544c3c35d5c8027d0f3a341f68c1eed%2Fvlib%2Fgg%2Fgg.c.v%23L600-L608" frameborder="0" scrolling="no" loading="lazy" style="width:100%;">
+</iframe>
+</p>
+<p data-sourcepos="47:1-47:189">このコードによると、<code>sapp.width()</code> （ <code>import sokol.sapp</code> ）で画面の横幅がとれるようで、画面をリサイズしてもちゃんと横幅がとれていました。</p>
+<p data-sourcepos="49:1-49:218">また、その後の引数の最後の <code>-1.0</code> と <code>1.0</code> は、z座標のnearとfarの範囲 (culling) が指定されていて、ggのデフォルトではz座標は-1.0〜1.0までであることがわかります。</p>
+<p data-sourcepos="51:1-51:154">例えば、<code>gg.begin()</code> の後で以下のように書けば、Z範囲を好きにいじって、自分の好きな3Dを描くこともできますね。</p>
+<div class="code-frame" data-lang="v" data-sourcepos="53:1-57:3"><div class="highlight"><pre><code>sgl.defaults()
+sgl.matrix_mode_projection()
+sgl.ortho(0.0, f32(sapp.width()), f32(sapp.height()), 0.0, -10000.0, 10000.0)
+</code></pre></div></div>
+<p data-sourcepos="59:1-59:372">実際、以下のコードのように描くと、好きな3Dの三角形を2Dに混じって描くことができます。（詳しい解説はしませんが、Z座標を確認するために時間でスイープさせてみたりしています。デフォルトではZ = 0で、背景色もZ = 0なので、それより手前に描くとちゃんと見えます。）</p>
+<p data-sourcepos="61:1-61:161"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fc30685ab-58f4-46d4-8a9c-25f6d7c879bb.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=846118001a1373c95f650127b39b873d" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fc30685ab-58f4-46d4-8a9c-25f6d7c879bb.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=846118001a1373c95f650127b39b873d" alt="スクリーンショット 2025-09-24 5.26.48.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fc30685ab-58f4-46d4-8a9c-25f6d7c879bb.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=e6d4ec93d757a29e44cb4d601fcddf95 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/c30685ab-58f4-46d4-8a9c-25f6d7c879bb.png" loading="lazy"></a></p>
+<p data-sourcepos="63:1-63:101"><iframe id="qiita-embed-content__c18c5e2c5fb1baef78fc2603c85cfb7e" src="https://qiita.com/embed-contents/github-blob#qiita-embed-content__c18c5e2c5fb1baef78fc2603c85cfb7e" data-content="https%3A%2F%2Fgithub.com%2Ffunatsufumiya%2Fv-lab%2Fblob%2F40fa4918c7a9462c86fa5beeb54e7dc645db45e5%2Ftriangle6%2Fmain.v" frameborder="0" scrolling="no" loading="lazy" style="width:100%;">
+</iframe>
+</p>
+<h2 data-sourcepos="65:1-65:57">
+<span id="パイプラインとブレンドモードについて" class="fragment"></span><a href="#%E3%83%91%E3%82%A4%E3%83%97%E3%83%A9%E3%82%A4%E3%83%B3%E3%81%A8%E3%83%96%E3%83%AC%E3%83%B3%E3%83%89%E3%83%A2%E3%83%BC%E3%83%89%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><i class="fa fa-link"></i></a>パイプラインとブレンドモードについて</h2>
+<p data-sourcepos="67:1-67:76"><code>draw_rect_filled</code> が何をしているのかに少し話は戻ります。</p>
+<p data-sourcepos="69:1-69:99"><iframe id="qiita-embed-content__5813ff83ce17843deba87aa5338acf5e" src="https://qiita.com/embed-contents/github-blob#qiita-embed-content__5813ff83ce17843deba87aa5338acf5e" data-content="https%3A%2F%2Fgithub.com%2Fvlang%2Fv%2Fblob%2F0df443563544c3c35d5c8027d0f3a341f68c1eed%2Fvlib%2Fgg%2Fdraw.c.v%23L257-L281" frameborder="0" scrolling="no" loading="lazy" style="width:100%;">
+</iframe>
+</p>
+<p data-sourcepos="71:1-71:141">唯一解説していなかった以下の部分ですが、透明〜半透明のときだけパイプラインを指定していますね。</p>
+<p data-sourcepos="73:1-73:99"><iframe id="qiita-embed-content__03fae6470f890f00b7f5ded7841a0a8e" src="https://qiita.com/embed-contents/github-blob#qiita-embed-content__03fae6470f890f00b7f5ded7841a0a8e" data-content="https%3A%2F%2Fgithub.com%2Fvlang%2Fv%2Fblob%2F0df443563544c3c35d5c8027d0f3a341f68c1eed%2Fvlib%2Fgg%2Fdraw.c.v%23L270-L272" frameborder="0" scrolling="no" loading="lazy" style="width:100%;">
+</iframe>
+</p>
+<p data-sourcepos="75:1-75:197">パイプラインの初期化は <code>init_pipeline()</code> で行われていて、デフォルトでは <code>alpha</code> (アルファ合成用) と <code>add</code> (加算合成用) が準備されているようです。</p>
+<p data-sourcepos="77:1-77:97"><iframe id="qiita-embed-content__5de1604dd9d960bc4dc4594999dbdd63" src="https://qiita.com/embed-contents/github-blob#qiita-embed-content__5de1604dd9d960bc4dc4594999dbdd63" data-content="https%3A%2F%2Fgithub.com%2Fvlang%2Fv%2Fblob%2F0df443563544c3c35d5c8027d0f3a341f68c1eed%2Fvlib%2Fgg%2Fgg.c.v%23L151-L179" frameborder="0" scrolling="no" loading="lazy" style="width:100%;">
+</iframe>
+</p>
+<p data-sourcepos="79:1-79:358"><code>gfx.BlendState</code> のところは、OpenGLでいうところの glBlendFunc とglBlendFuncSeparate にあたるもので、この例に習って好きなパイプラインを事前に作っておいて <code>sgl.load_pipeline()</code> で読み込めば、Photoshop等でよくある好きなブレンドモードを自分で使い分けることができそうです。</p>
+<p data-sourcepos="81:1-81:97"><iframe id="qiita-embed-content__f16d172069bc625c6399e05239b1a8dc" src="https://qiita.com/embed-contents/github-blob#qiita-embed-content__f16d172069bc625c6399e05239b1a8dc" data-content="https%3A%2F%2Fgithub.com%2Fvlang%2Fv%2Fblob%2F0df443563544c3c35d5c8027d0f3a341f68c1eed%2Fvlib%2Fgg%2Fgg.c.v%23L172-L176" frameborder="0" scrolling="no" loading="lazy" style="width:100%;">
+</iframe>
+</p>
+<p data-sourcepos="83:1-83:7">参考:</p>
+<p data-sourcepos="85:1-85:32"><iframe id="qiita-embed-content__6023379d55c83c21a0783879068e4757" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__6023379d55c83c21a0783879068e4757" data-content="https%3A%2F%2Fmemo.devjam.net%2Fclip%2F538" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="87:1-87:135">ちなみに <code>sgl.push_pipeline()</code> と <code>sgl.pop_pipeline()</code> を使うと、パイプラインの状態保存もできるようです。</p>
+<p data-sourcepos="89:1-89:53"><iframe id="qiita-embed-content__4ef127c9d51416d2b023f325dd50cb9c" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__4ef127c9d51416d2b023f325dd50cb9c" data-content="https%3A%2F%2Fmodules.vlang.io%2Fsokol.sgl.html%23push_pipeline" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<h2 data-sourcepos="91:1-91:12">
+<span id="まとめ" class="fragment"></span><a href="#%E3%81%BE%E3%81%A8%E3%82%81"><i class="fa fa-link"></i></a>まとめ</h2>
+<p data-sourcepos="93:1-93:254">今回はこれくらいで終わります。<code>sokol.sgl</code> (<a href="https://modules.vlang.io/sokol.sgl.html" rel="nofollow noopener" target="_blank">vdoc</a>) にはOpenGL風のAPIが整備されているので、OpenGLに慣れていれば大抵のことは読み替えができるという印象です。</p>
+<p data-sourcepos="95:1-95:296"><a href="https://github.com/floooh/sokol" rel="nofollow noopener" target="_blank">Sokol</a> は現代的なGPU処理のラッパーなので、OpenGL時代にはなかった用語が多々ありますが、以下の記事にイラスト付きでわかりやすく用語がまとまっているので、理解の参考になるかと思います。</p>
+<p data-sourcepos="97:1-97:57"><iframe id="qiita-embed-content__2ad83d7ec1d87dc7b9cb3832dd257498" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__2ad83d7ec1d87dc7b9cb3832dd257498" data-content="https%3A%2F%2Falain.xyz%2Fblog%2Fcomparison-of-modern-graphics-apis" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="99:1-99:312">個人的に、Sokolの情報自体が結構少ないように思うので、ggのようにV言語がラッパーを描いてくれていて、かつvdocなどを整備してくれているのはありがたいですね。C言語等で直接sokolを使いたい場合にも大いに参考になりそうです。</p>

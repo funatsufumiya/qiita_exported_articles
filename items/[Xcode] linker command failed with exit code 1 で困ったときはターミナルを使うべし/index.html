@@ -1,0 +1,18 @@
+<h2 data-sourcepos="1:1-1:9">
+<span id="結論" class="fragment"></span><a href="#%E7%B5%90%E8%AB%96"><i class="fa fa-link"></i></a>結論</h2>
+<p data-sourcepos="3:1-3:21">ターミナルから</p>
+<div class="code-frame" data-lang="text" data-sourcepos="5:1-7:3"><div class="highlight"><pre><code>$ xcodebuild -project xxx.xcodeproj -configuration Debug
+</code></pre></div></div>
+<p data-sourcepos="9:1-9:72">すると、リンカー(<code>ld</code>)のエラーメッセージが見れる。</p>
+<h2 data-sourcepos="11:1-11:9">
+<span id="解説" class="fragment"></span><a href="#%E8%A7%A3%E8%AA%AC"><i class="fa fa-link"></i></a>解説</h2>
+<p data-sourcepos="13:1-13:327">Xcodeで、<code>linker command failed with exit code 1 (use -v to see invocation)</code> というエラーが出ると、<code>Reveal in Logs</code>でも、ビルド履歴（ナビゲータ領域<sup><a href="#fn-1" id="fnref-1">1</a></sup>の一番右のアイコン）からも詳細が見れなくて、どうしたらいいかわからず詰まってしまうことがあります。</p>
+<p data-sourcepos="15:1-15:342">そういうときはターミナルから使える、いわゆるCLIコマンドを打つと、より詳細なエラーログが見れることがあります。（Xcodeプロジェクトの場合は上記のとおりですが、場合によっては<code>cmake</code>や<code>make</code>など、別のビルドコマンドが必要な場合があります。）</p>
+<p data-sourcepos="17:1-17:133">さらに、<code>Build Settings</code>の<code>Other Linker Flags</code>などに<code>-v</code>を指定すれば、より詳細なエラーログを見れます。</p>
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p data-sourcepos="19:7-19:48">ファイルツリーとか見るところ <a href="#fnref-1" class="">↩</a></p>
+</li>
+</ol>
+</section>

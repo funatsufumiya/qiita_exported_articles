@@ -1,0 +1,56 @@
+<p data-sourcepos="1:1-1:156">おそらく執筆時点でのノウハウに過ぎないと思われる、本家での解決までに使える一時的なノウハウを集めてみた。</p>
+<p data-sourcepos="3:1-3:144">ちなみに、サンプルの内容には全く言及しない。あくまでビルドが通るまでのノウハウであることに注意。</p>
+<p data-sourcepos="5:1-5:115">※ RavEngineとRGLの概要については自分の書いた以下の記事を参考にしていただければ。</p>
+<p data-sourcepos="7:1-7:58"><iframe id="qiita-embed-content__6aca780695757ced570ba3d70dc16846" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__6aca780695757ced570ba3d70dc16846" data-content="https%3A%2F%2Fqiita.com%2Ffunatsufumiya%2Fitems%2F4a154378e490fdde42a8" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="9:1-9:185">なお、Windows/Mac/Linuxなどの様々なプラットフォームの問題が混在するので、見出しでわかるようにしておくので都度読み飛ばしてほしい。</p>
+<h2 data-sourcepos="11:1-11:57">
+<span id="共通-ビルド済みのサンプルが動かない" class="fragment"></span><a href="#%E5%85%B1%E9%80%9A-%E3%83%93%E3%83%AB%E3%83%89%E6%B8%88%E3%81%BF%E3%81%AE%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%E3%81%8C%E5%8B%95%E3%81%8B%E3%81%AA%E3%81%84"><i class="fa fa-link"></i></a>(共通) ビルド済みのサンプルが動かない</h2>
+<p data-sourcepos="13:1-13:429"><a href="https://github.com/RavEngine/Samples?tab=readme-ov-file#how-to-try-the-samples-without-building" rel="nofollow noopener" target="_blank">README の How to try the samples without building</a> に、ビルドせずにビルド済みのバイナリを動かす方法（例: <a href="https://github.com/RavEngine/Samples/actions/runs/12626631480" rel="nofollow noopener" target="_blank">#669 の CIビルド済ファイル</a>をダウンロードなど）が紹介されているが、これが動かないことがある。</p>
+<p data-sourcepos="15:1-15:329">動けばバンザイでOKなのだけれど、おそらく環境要因等で動かない場合は、自分でビルドするしかない。（ただし、<a href="https://github.com/RavEngine/RavEngine?tab=readme-ov-file#system-requirements-for-developers" rel="nofollow noopener" target="_blank">最低動作環境</a>が非常に厳しいので、まず先に確認する。）</p>
+<p data-sourcepos="17:1-17:303">手動ビルドは、具体的なコマンドがドキュメント不足でわかりづらい点が多々あるので、必要に応じて <a href="https://github.com/RavEngine/Samples/blob/master/.github/workflows/build.yml" rel="nofollow noopener" target="_blank"><code>.github/workflows/build.yml</code></a> などを参考にすることをおすすめする。</p>
+<p data-sourcepos="19:1-19:223">ちなみに、mainブランチ (masterブランチ) の更新は、時にはビルドが失敗するものも含まれているはずなので、コミットログのCIの成功・失敗は一応参考にすると良い。</p>
+<h2 data-sourcepos="21:1-21:87">
+<span id="共通-ヒープ領域を使い果たしたと言われてビルドに失敗する" class="fragment"></span><a href="#%E5%85%B1%E9%80%9A-%E3%83%92%E3%83%BC%E3%83%97%E9%A0%98%E5%9F%9F%E3%82%92%E4%BD%BF%E3%81%84%E6%9E%9C%E3%81%9F%E3%81%97%E3%81%9F%E3%81%A8%E8%A8%80%E3%82%8F%E3%82%8C%E3%81%A6%E3%83%93%E3%83%AB%E3%83%89%E3%81%AB%E5%A4%B1%E6%95%97%E3%81%99%E3%82%8B"><i class="fa fa-link"></i></a>(共通) ヒープ領域を使い果たしたと言われてビルドに失敗する</h2>
+<p data-sourcepos="23:1-23:162">これはいわゆるメモリ不足。本当にメモリが足りない場合もあるし、失敗した時点からやり直せば解決する場合もある。</p>
+<p data-sourcepos="25:1-25:206">本質的な対応策としては、ライブラリをstatic linkにしない、外部ライブラリを動的リンクするなどの対応策があるはずだけれど、これについては未調査。</p>
+<h2 data-sourcepos="27:1-27:36">
+<span id="win-ロングパスの有効化" class="fragment"></span><a href="#win-%E3%83%AD%E3%83%B3%E3%82%B0%E3%83%91%E3%82%B9%E3%81%AE%E6%9C%89%E5%8A%B9%E5%8C%96"><i class="fa fa-link"></i></a>(Win) ロングパスの有効化</h2>
+<p data-sourcepos="29:1-29:213">ビルド時に、パスが256文字を超えているためにファイルが保存できないという主旨のエラーが出る。これは以下のようにロングパスを有効化することで回避。</p>
+<p data-sourcepos="31:1-31:54"><iframe id="qiita-embed-content__256578ecd92af1219dbea98260e1508c" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__256578ecd92af1219dbea98260e1508c" data-content="https%3A%2F%2Fqiita.com%2Fmasinc000%2Fitems%2F934166ac13d894ae28d1" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<h2 data-sourcepos="33:1-33:53">
+<span id="win-dx12のバージョン問題--agility-sdk-" class="fragment"></span><a href="#win-dx12%E3%81%AE%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3%E5%95%8F%E9%A1%8C--agility-sdk-"><i class="fa fa-link"></i></a>(Win) DX12のバージョン問題 ( Agility SDK )</h2>
+<p data-sourcepos="35:1-35:159">RavEngineではなく、<a href="https://github.com/RavEngine/RGL-Samples" rel="nofollow noopener" target="_blank">RGLのサンプル</a>をビルドする際に、実行時にDX12の構成エラーが出る。</p>
+<p data-sourcepos="37:1-37:274">これは、<a href="https://qiita.com/keruya/items/f89c7c8936dac622bdf0" id="reference-dd13dfe6fad7db1c5551">Agility SDK</a>が同梱されていないのが問題で、<code>C:¥Windows¥System32</code> にあるDX12関連のdllを読もうとして、実行時のバージョンのミスマッチにより動作に失敗する。</p>
+<p data-sourcepos="39:1-39:268">結論としては、<a href="https://github.com/RavEngine/Samples" rel="nofollow noopener" target="_blank">RavEngine/Samples</a>の依存関係の方のRGLには、Agility SDKが同梱されているので、そちらをコピーして使う。（<code>deps/RGL</code>ごとコピーして基本的に問題ないはず。）<sup><a href="#fn-1" id="fnref-1">1</a></sup></p>
+<h2 data-sourcepos="41:1-41:41">
+<span id="mac-metalのビルドに失敗する" class="fragment"></span><a href="#mac-metal%E3%81%AE%E3%83%93%E3%83%AB%E3%83%89%E3%81%AB%E5%A4%B1%E6%95%97%E3%81%99%E3%82%8B"><i class="fa fa-link"></i></a>(Mac) metalのビルドに失敗する</h2>
+<p data-sourcepos="43:1-43:387">これは、CMakeの呼び出し時に <code>-G Xcode</code> を指定していないのが問題。Metalシェーダのビルドには、現時点でXcodeが必須のようで、<a href="https://github.com/RavEngine/RavEngine?tab=readme-ov-file#supported-platforms" rel="nofollow noopener" target="_blank">READMEのSupported Platforms</a>でMacだけmakeやninjaが存在せずに、Xcodeだけがサポートされているのはこれが理由。</p>
+<p data-sourcepos="45:1-45:125">（エラーメッセージとしては、<code>LANGUAGE METAL</code> がサポートされていないなどのエラーが出る。）</p>
+<h2 data-sourcepos="47:1-47:69">
+<span id="linux-volkフォルダがない-volk-copyとなってしまう" class="fragment"></span><a href="#linux-volk%E3%83%95%E3%82%A9%E3%83%AB%E3%83%80%E3%81%8C%E3%81%AA%E3%81%84-volk-copy%E3%81%A8%E3%81%AA%E3%81%A3%E3%81%A6%E3%81%97%E3%81%BE%E3%81%86"><i class="fa fa-link"></i></a>(Linux) volkフォルダがない (volk copyとなってしまう)</h2>
+<p data-sourcepos="49:1-49:250">これはタイトル通りで、Vulkan SDKの一部であるvolkが、なぜか <code>deps/volk copy</code> という名前のフォルダになってしまう。これは単純にリネームすればOK。（気付くのにちょっと時間がかかる。）</p>
+<h2 data-sourcepos="51:1-51:55">
+<span id="linux-createpipelinelayoutの作成に失敗する" class="fragment"></span><a href="#linux-createpipelinelayout%E3%81%AE%E4%BD%9C%E6%88%90%E3%81%AB%E5%A4%B1%E6%95%97%E3%81%99%E3%82%8B"><i class="fa fa-link"></i></a>(Linux) CreatePipelineLayoutの作成に失敗する</h2>
+<p data-sourcepos="53:1-53:181">おそらくgcc (clang)のバージョンが関連していると思われる、<code>device-&gt;CreatePipelineLayout({ ... });</code> の構文読み取りエラーが起こることがある。</p>
+<p data-sourcepos="55:1-55:184">これは一度 <code>RGL::PipelineLayoutDescriptor pld{ ... };</code> として変数に格納して、その後 <code>pipelineLayout = device-&gt;CreatePipelineLayout(pld);</code> とすれば解決する。</p>
+<h2 data-sourcepos="57:1-57:52">
+<span id="linux-rve_vfs_get_name-がないといわれる" class="fragment"></span><a href="#linux-rve_vfs_get_name-%E3%81%8C%E3%81%AA%E3%81%84%E3%81%A8%E3%81%84%E3%82%8F%E3%82%8C%E3%82%8B"><i class="fa fa-link"></i></a>(Linux) RVE_VFS_get_name がないといわれる</h2>
+<p data-sourcepos="59:1-59:297">これは、VirtualFileSystem.cppで、<code>extern const</code>となっている<a href="https://github.com/RavEngine/RavEngine/blob/1fdfe9183a1655fe9a36a892be816a71e1e0e404/src/VirtualFileSystem.cpp#L129-L132" rel="nofollow noopener" target="_blank">2種類の関数</a>が、CMakeによる動的生成によって実体が呼び出されるのが原因。</p>
+<p data-sourcepos="61:1-61:478">実は自分はまだこれをちゃんとは解決できていないのだけれど、<a href="https://github.com/RavEngine/HelloCube" rel="nofollow noopener" target="_blank">HelloCube</a>の方のサンプルを動かすか、あるいはCMakeから不必要な <code>add_sample(...)</code> の行を除いて、<code>extern const</code>の行をコメントアウトしたり、あるいはサンプルのcppに追加の行やファイルを追加し、CMakeLists.txtから正しいものを目で読み取って記載するという手はある。</p>
+<p data-sourcepos="63:1-63:293">（Win/Macでは問題ないので、IssueやDiscussionを探せば解決策があるかもしれないし、CMakeのオプションなど、<a href="https://github.com/RavEngine/Samples/blob/master/.github/workflows/build.yml" rel="nofollow noopener" target="_blank">GitHub Workflowの記述</a>を参考にするべきかもしれない。）</p>
+<h2 data-sourcepos="65:1-65:80">
+<span id="linux-vulkanの実行時エラーで〇〇の機能がないといわれる" class="fragment"></span><a href="#linux-vulkan%E3%81%AE%E5%AE%9F%E8%A1%8C%E6%99%82%E3%82%A8%E3%83%A9%E3%83%BC%E3%81%A7%E3%80%87%E3%80%87%E3%81%AE%E6%A9%9F%E8%83%BD%E3%81%8C%E3%81%AA%E3%81%84%E3%81%A8%E3%81%84%E3%82%8F%E3%82%8C%E3%82%8B"><i class="fa fa-link"></i></a>(Linux) Vulkanの実行時エラーで〇〇の機能がないといわれる</h2>
+<p data-sourcepos="67:1-67:92">例えば、<code>Cannot init - Fragment Shader Interlock is not supported</code> のようなもの。</p>
+<p data-sourcepos="69:1-69:366">こればっかりは正直どうしようもなくて、WSLを使っていると起こりがち。デバッグ関連の最新機能が多いので、コメントアウトできる部分もありそうな気はするけれど、仮想環境ではないUbuntu 24.04を使うと解決することが多いけれど、おそらく使っているGPUにも依存する。</p>
+<p data-sourcepos="71:1-71:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F7d383652-b1f2-9cb1-783e-a26281e61915.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=dfceb4b82c74bce6ae82b61692fa0d65" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F7d383652-b1f2-9cb1-783e-a26281e61915.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=dfceb4b82c74bce6ae82b61692fa0d65" alt="スクリーンショット 2025-01-08 16.42.30.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F7d383652-b1f2-9cb1-783e-a26281e61915.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=c5d5a5e60ec2c48cddff7cbe994ac251 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/7d383652-b1f2-9cb1-783e-a26281e61915.png" loading="lazy"></a></p>
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p data-sourcepos="73:7-73:304">Agility SDKが存在しないように見える時は、gitのサブモジュールを再帰的に取得するのを忘れている。余談として、サブモジュールのサイズや転送量を削減するには次の記事を参照: <a href="https://qiita.com/tsuyoshi_cho/items/8ee621805332249a6fa5" class="autolink" id="reference-3d8cb2504393eca8edb1">https://qiita.com/tsuyoshi_cho/items/8ee621805332249a6fa5</a> <a href="#fnref-1" class="">↩</a></p>
+</li>
+</ol>
+</section>

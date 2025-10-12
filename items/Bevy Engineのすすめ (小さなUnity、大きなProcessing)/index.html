@@ -1,0 +1,188 @@
+<p data-sourcepos="1:1-1:108">(英語版も書きました: <a href="https://dev.to/funatsufumiya/bevy-engine-as-a-small-unity-big-processing-3edg" class="autolink" rel="nofollow noopener" target="_blank">https://dev.to/funatsufumiya/bevy-engine-as-a-small-unity-big-processing-3edg</a>)</p>
+<p data-sourcepos="3:1-4:4"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F512755b8-198c-c19c-1e33-d38febb9cea7.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=1d2524426a7e0b446e3dc6b93b2608c7" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F512755b8-198c-c19c-1e33-d38febb9cea7.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=1d2524426a7e0b446e3dc6b93b2608c7" alt="スクリーンショット 2024-01-22 17.35.32.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F512755b8-198c-c19c-1e33-d38febb9cea7.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=316064df4101185aec3f0b590b9edc50 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/512755b8-198c-c19c-1e33-d38febb9cea7.png" loading="lazy"></a><br>
+<sup><a href="#fn-1" id="fnref-1">1</a></sup></p>
+<h2 data-sourcepos="6:1-6:72">
+<span id="はじめに-クリエイティブコーディングとprocessing" class="fragment"></span><a href="#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB-%E3%82%AF%E3%83%AA%E3%82%A8%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%81%A8processing"><i class="fa fa-link"></i></a>はじめに: クリエイティブ・コーディングとProcessing</h2>
+<p data-sourcepos="8:1-8:96">ゲームエンジンってたくさんありますが、あなたは何を使ってますか？</p>
+<p data-sourcepos="10:1-10:384">私はいわゆるクリエイティブ・コーディングが好きで、思いついたことを形にするために、例えばUnityやUE5、<a href="https://derivative.ca/" rel="nofollow noopener" target="_blank">Touch Designer</a>や<a href="https://www.notch.one/" rel="nofollow noopener" target="_blank">Notch</a>、Reactなど、その都度プロトタイピングにちょうど良さそうなツールを選んでは、思いついたものを作っていたりします。</p>
+<p data-sourcepos="12:1-12:208">そんなときふと、クリエイティブ・コーディングの自分にとっての源流ってなんだろうと思うと、やはり<a href="https://processing.org/" rel="nofollow noopener" target="_blank">Processing</a>だろうなと思います。</p>
+<p data-sourcepos="14:1-14:401">Processingの何が良かったかと振り返ると、やはり気軽さでしょう。今でも<a href="https://p5js.org/" rel="nofollow noopener" target="_blank">p5.js</a>や<a href="https://openframeworks.cc/ja/" rel="nofollow noopener" target="_blank">openFrameworks</a>のような形でその哲学は引き継がれ続けていますが、例えばp5.jsは<a href="https://editor.p5js.org/" rel="nofollow noopener" target="_blank">オンラインエディタ</a>をブラウザで開くだけで気軽にコードが書けたりします <sup><a href="#fn-2" id="fnref-2">2</a></sup> 。</p>
+<p data-sourcepos="16:1-16:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fae34f4ba-e027-863f-e851-349b076d6fe0.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=dce25cc6a66bcf4e60e60f5744040821" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fae34f4ba-e027-863f-e851-349b076d6fe0.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=dce25cc6a66bcf4e60e60f5744040821" alt="スクリーンショット 2024-01-22 17.05.15.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fae34f4ba-e027-863f-e851-349b076d6fe0.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=d1117720046bc8fa0d3241b00dc80ccc 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/ae34f4ba-e027-863f-e851-349b076d6fe0.png" loading="lazy"></a></p>
+<p data-sourcepos="18:1-18:178">当時から、Processingはエディタ一つ入れるだけで他に何もいらず、ただシンプルにコードを書くことを楽しむことができていました。</p>
+<h3 data-sourcepos="20:1-20:49">
+<span id="大規模ゲームエンジンとその狭間" class="fragment"></span><a href="#%E5%A4%A7%E8%A6%8F%E6%A8%A1%E3%82%B2%E3%83%BC%E3%83%A0%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%B3%E3%81%A8%E3%81%9D%E3%81%AE%E7%8B%AD%E9%96%93"><i class="fa fa-link"></i></a>大規模ゲームエンジンとその狭間</h3>
+<p data-sourcepos="22:1-22:302">ところで、クリエイティブ・コーディングというのは別に形態を問わない概念であって、私はBlenderやUnreal Engineなどに搭載されている、いわゆるビジュアルエディタも立派なクリエイティブ・コーディングだと思っています。</p>
+<p data-sourcepos="24:1-24:169"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fde09eae3-2ea2-7c23-bed1-ead514624689.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=4394ecfdd3f29222371b09b75d960233" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fde09eae3-2ea2-7c23-bed1-ead514624689.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=4394ecfdd3f29222371b09b75d960233" alt="image01.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fde09eae3-2ea2-7c23-bed1-ead514624689.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=e7f9e7afed7cedc7cb996ffb157ad5ed 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/de09eae3-2ea2-7c23-bed1-ead514624689.png" loading="lazy"></a> (図: Blenderのジオメトリノード <sup><a href="#fn-3" id="fnref-3">3</a></sup>)</p>
+<p data-sourcepos="26:1-26:199"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fa36cbedc-01cd-cc2a-5988-4f3a0d439639.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=bb1b472203be9ad43eaf71d43cf34a99" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fa36cbedc-01cd-cc2a-5988-4f3a0d439639.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=bb1b472203be9ad43eaf71d43cf34a99" alt="material-editor-hero-image.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fa36cbedc-01cd-cc2a-5988-4f3a0d439639.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=b765146c96a8095f9e29662f32cf72bb 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/a36cbedc-01cd-cc2a-5988-4f3a0d439639.png" loading="lazy"></a> (図: Unreal Engine 5のマテリアルエディタ <sup><a href="#fn-4" id="fnref-4">4</a></sup>)</p>
+<p data-sourcepos="28:1-28:243">実際、私自身もこうしたものをフル活用してアイデアを形にしていますし、ノーコードという考え方があるように、もう今はコードというのは一つの概念になった感すらあります。</p>
+<p data-sourcepos="30:1-30:225">Webブラウザなどもエンジンの一つですが、ゲームエンジンに限らずエンジンというのは、私たちの制作を支える屋台骨であり、なくてはならないものになっています。</p>
+<p data-sourcepos="32:1-32:539">しかしながらときどき、Processingのように、軽量で使い勝手の良いものに原点回帰したいなという想いと、Reactのようなリアクティブプログラミングといった、<strong>近代的な概念と気軽さが融合したものが欲しい</strong>、つまりUnityとProcessingの狭間にあるものが欲しいと、ふと思うことがあります。何十GBもあるエディタのダウンロードを待つ必要がなく、すぐに手を動かせるくらいのものが欲しいな、と <sup><a href="#fn-5" id="fnref-5">5</a></sup>。</p>
+<h2 data-sourcepos="34:1-34:56">
+<span id="bevy-engineにみるunityとprocessingのあいだ" class="fragment"></span><a href="#bevy-engine%E3%81%AB%E3%81%BF%E3%82%8Bunity%E3%81%A8processing%E3%81%AE%E3%81%82%E3%81%84%E3%81%A0"><i class="fa fa-link"></i></a>Bevy Engineにみる、UnityとProcessingのあいだ</h2>
+<p data-sourcepos="36:1-36:130">そう思っていたとき、ふと出会ったのが<a href="https://github.com/bevyengine/bevy" rel="nofollow noopener" target="_blank">Bevy Engine</a>というものでした。</p>
+<p data-sourcepos="38:1-38:167"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fdcd305b8-cc3d-3154-fd65-096b934e158e.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=cfaa8cc2f851ca0095479f14d7d9e327" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fdcd305b8-cc3d-3154-fd65-096b934e158e.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=cfaa8cc2f851ca0095479f14d7d9e327" alt="スクリーンショット 2024-01-22 17.39.48.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fdcd305b8-cc3d-3154-fd65-096b934e158e.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=bb49ed4f34efee75f9a667a968e18f7e 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/dcd305b8-cc3d-3154-fd65-096b934e158e.png" loading="lazy"></a> <sup><a href="#fn-6" id="fnref-6">6</a></sup></p>
+<p data-sourcepos="40:1-40:273">Bevy Engineはオープンソースであり、まだ開発されてそんなに年数が経っていないのですが、まるで<a href="https://ofxaddons.com/" rel="nofollow noopener" target="_blank">openFrameworksのアドオン群</a>のように、多数の有志によるプラグイン群が存在しています。</p>
+<p data-sourcepos="42:1-42:220">ProcessingやopenFrameworksと似ているのは、そうしたプラグインシステムを<strong>必要に応じて</strong>追加していく形式をとっており、コアは小さく書かれているということです。</p>
+<p data-sourcepos="44:1-44:455">そして何より、Rust (cargo) 以外のツールは基本的に要りません。まず <code>$ cargo new bevy-hello</code> <sup><a href="#fn-bash" id="fnref-bash">7</a></sup> で空のプロジェクトを作り、<code>$ cd bevy-hello</code> でプロジェクトフォルダに移動し、<code>$ cargo add bevy</code> でbevyをライブラリとして追加し、あとは <code>src/main.rs</code> に好きなExampleにあるコード (例えば以下) を貼り付けたりして書き、<code>$ cargo run</code> するだけで動きます。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="46:1-59:3">
+<div class="code-lang"><span class="bold">hello-world</span></div>
+<div class="highlight"><pre><code><span class="k">use</span> <span class="nn">bevy</span><span class="p">::</span><span class="nn">prelude</span><span class="p">::</span><span class="o">*</span><span class="p">;</span>
+
+<span class="k">fn</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nn">App</span><span class="p">::</span><span class="nf">new</span><span class="p">()</span>
+        <span class="c1">// .add_plugins(DefaultPlugins) // ※ この行を含むとウィンドウが出ます</span>
+        <span class="nf">.add_systems</span><span class="p">(</span><span class="n">Startup</span><span class="p">,</span> <span class="n">hello_world</span><span class="p">)</span>
+        <span class="nf">.run</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">fn</span> <span class="nf">hello_world</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nd">println!</span><span class="p">(</span><span class="s">"hello world"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+<p data-sourcepos="61:1-61:163"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F1250ac7e-85ba-5d84-7c78-696611bc86d9.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8ef187abdd8121a160f61e86af538c50" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F1250ac7e-85ba-5d84-7c78-696611bc86d9.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8ef187abdd8121a160f61e86af538c50" alt="スクリーンショット 2024-01-22 18.58.17a.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F1250ac7e-85ba-5d84-7c78-696611bc86d9.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=0863f8b304c990ed6371d94ebc36e722 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/1250ac7e-85ba-5d84-7c78-696611bc86d9.png" loading="lazy"></a></p>
+<p data-sourcepos="63:1-63:221">初回の起動 (ビルド、コンパイル) には時間がかかりますが、2回目以降は驚くほど高速に再読み込みでき、必要に応じてアセットなどのホットリロードもできます。</p>
+<h2 data-sourcepos="65:1-65:45">
+<span id="ecs-entity-component-system-を眺める" class="fragment"></span><a href="#ecs-entity-component-system-%E3%82%92%E7%9C%BA%E3%82%81%E3%82%8B"><i class="fa fa-link"></i></a>ECS (Entity Component System) を眺める</h2>
+<p data-sourcepos="67:1-67:152"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F7f99290b-03ac-8dd9-c33b-a995ead50733.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8d064cb9336fab76ccdccf98e841c581" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F7f99290b-03ac-8dd9-c33b-a995ead50733.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8d064cb9336fab76ccdccf98e841c581" alt="IMG_0627.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F7f99290b-03ac-8dd9-c33b-a995ead50733.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=23aef19dded80158dec97f4d454e970b 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/7f99290b-03ac-8dd9-c33b-a995ead50733.png" loading="lazy"></a>  (図: ECSの模試図 <sup><a href="#fn-e" id="fnref-e">8</a></sup>)</p>
+<h3 data-sourcepos="70:1-70:22">
+<span id="まずは-system" class="fragment"></span><a href="#%E3%81%BE%E3%81%9A%E3%81%AF-system"><i class="fa fa-link"></i></a>まずは "System"</h3>
+<p data-sourcepos="72:1-72:137">さて、いわゆるHello Worldが書けたところで、せっかくなので少しだけ他のコードも眺めてみましょう。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="74:1-84:3"><div class="highlight"><pre><code><span class="c1">// (前略)</span>
+
+<span class="k">fn</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nn">App</span><span class="p">::</span><span class="nf">new</span><span class="p">()</span>
+        <span class="nf">.add_plugins</span><span class="p">(</span><span class="n">DefaultPlugins</span><span class="p">)</span> <span class="c1">// これはおまじない</span>
+        <span class="nf">.add_systems</span><span class="p">(</span><span class="n">Startup</span><span class="p">,</span> <span class="n">setup</span><span class="p">)</span>
+        <span class="nf">.add_systems</span><span class="p">(</span><span class="n">Update</span><span class="p">,</span> <span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">rotate_camera</span><span class="p">,</span> <span class="n">update_config</span><span class="p">))</span>
+        <span class="nf">.run</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p data-sourcepos="86:1-86:376">これは<a href="https://bevyengine.org/examples/3D%20Rendering/3d-gizmos/" rel="nofollow noopener" target="_blank">3D Gizmos</a>というサンプルからとったコードの冒頭部ですが、<code>add_systems(Startup, ...)</code> と <code>add_systems(Update, ...)</code> という部分が、Processingでいうところの<code>setup</code> (一回だけ呼ばれる関数) と<code>draw</code> (更新時に毎回呼ばれる関数) を登録しています。</p>
+<p data-sourcepos="88:1-88:69">実際に登録されている関数を一つ見てみましょう。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="90:1-105:3"><div class="highlight"><pre><code><span class="k">fn</span> <span class="nf">system</span><span class="p">(</span><span class="k">mut</span> <span class="n">gizmos</span><span class="p">:</span> <span class="n">Gizmos</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">Res</span><span class="o">&lt;</span><span class="n">Time</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">gizmos</span><span class="nf">.cuboid</span><span class="p">(</span>
+        <span class="nn">Transform</span><span class="p">::</span><span class="nf">from_translation</span><span class="p">(</span><span class="nn">Vec3</span><span class="p">::</span><span class="n">Y</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span><span class="nf">.with_scale</span><span class="p">(</span><span class="nn">Vec3</span><span class="p">::</span><span class="nf">splat</span><span class="p">(</span><span class="mf">1.</span><span class="p">)),</span>
+        <span class="nn">Color</span><span class="p">::</span><span class="n">BLACK</span><span class="p">,</span>
+    <span class="p">);</span>
+    <span class="n">gizmos</span><span class="nf">.rect</span><span class="p">(</span>
+        <span class="nn">Vec3</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="n">time</span><span class="nf">.elapsed_seconds</span><span class="p">()</span><span class="nf">.cos</span><span class="p">()</span> <span class="o">*</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span>
+        <span class="nn">Quat</span><span class="p">::</span><span class="nf">from_rotation_y</span><span class="p">(</span><span class="n">PI</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">),</span>
+        <span class="nn">Vec2</span><span class="p">::</span><span class="nf">splat</span><span class="p">(</span><span class="mf">2.</span><span class="p">),</span>
+        <span class="nn">Color</span><span class="p">::</span><span class="n">GREEN</span><span class="p">,</span>
+    <span class="p">);</span>
+    
+    <span class="c1">// (後略)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p data-sourcepos="107:1-107:320">ここが驚くべきポイントですが、引数には欲しいものを指す<strong>型</strong>を指定すると、自動でその値がバインドされるようになっています。まるで<a href="https://qiita.com/okazuki/items/a0f2fb0a63ca88340ff6" id="reference-411c6fd24de99dffffd0">DI (依存性注入)</a>とも呼べるトリックで、クールですね。</p>
+<p data-sourcepos="109:1-109:304">ちなみに<code>Startup</code>では基本的に何を行うかというと、Reactなどでいうところの構成要素の登録を行います。いわばHTMLを書いているようなものです。HTMLでいうJavaScriptにあたる、要素の更新は、<code>Update</code>に登録した関数群で行います。</p>
+<p data-sourcepos="111:1-111:140">この関数群を <strong>System</strong> と総称していますが、何か作業を行うものは基本的にすべてSystemに書きます <sup><a href="#fn-7" id="fnref-7">9</a></sup>。</p>
+<p data-sourcepos="113:1-113:398">ちなみにProcessingでいうところの <code>draw</code> と違うところは、<strong>描画自体は基本的に自動で行われる</strong>という点にあります <sup><a href="#fn-d" id="fnref-d">10</a></sup>。だから <code>draw</code> ではなく <code>update</code> であって、updateでは基本的に描画自体ではなくて値などのパラメータや、構成要素だけを変えていきます。ここはReactなどと似ているところです。</p>
+<h3 data-sourcepos="115:1-115:84">
+<span id="すべてはentity属性はすべてcomponentデータはすべてresource" class="fragment"></span><a href="#%E3%81%99%E3%81%B9%E3%81%A6%E3%81%AFentity%E5%B1%9E%E6%80%A7%E3%81%AF%E3%81%99%E3%81%B9%E3%81%A6component%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AF%E3%81%99%E3%81%B9%E3%81%A6resource"><i class="fa fa-link"></i></a>すべてはEntity、属性はすべてComponent、データはすべてResource</h3>
+<p data-sourcepos="117:1-117:495">そしてここがUnity (厳密には<a href="https://unity.com/ja/dots" rel="nofollow noopener" target="_blank">Unity DOTS</a>) と似ている部分ですが、すべての構成要素は <code>Entity</code> と呼ばれるものから派生しています。すべては <code>Entity</code> (Unityでいうところの <code>Game Object</code>) なので、統一的に扱いやすく、さらに、属性はすべて <code>Component</code> から派生しています。Unityでもコンポーネントは同じ概念で存在するので、読み替えがわかりやすいですね。</p>
+<p data-sourcepos="119:1-119:224">さらに、いわゆる変数にあたる保持しておきたいデータはすべて <code>Resource</code> になり、画像や3Dデータなどのアセットは <code>Asset</code> です。これもシンプルでわかりやすいです。</p>
+<p data-sourcepos="121:1-121:205">そしてこれらをどうやって <code>System</code> から取得するかといえば、先ほどと同じく、引数に<strong>型</strong>を宣言すると勝手に取ってきてくれます <sup><a href="#fn-8" id="fnref-8">11</a></sup>。不思議ですね。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="123:1-147:3"><div class="highlight"><pre><code><span class="k">fn</span> <span class="nf">check_zero_health</span><span class="p">(</span>
+    <span class="c1">// `Health`と`Transform`Componentを持つEntityにアクセスする</span>
+    <span class="c1">// `Health`は読み取り専用で取得し、`Transform`は変更可能(mut)で取得する</span>
+    <span class="c1">// オプション: `Player`Componetが存在するなら取得する</span>
+    <span class="k">mut</span> <span class="n">query</span><span class="p">:</span> <span class="n">Query</span><span class="o">&lt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Health</span><span class="p">,</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">Transform</span><span class="p">,</span> <span class="nb">Option</span><span class="o">&lt;&amp;</span><span class="n">Player</span><span class="o">&gt;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 一致する全てのEntityを取得する</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">health</span><span class="p">,</span> <span class="k">mut</span> <span class="n">transform</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span> <span class="k">in</span> <span class="n">query</span><span class="nf">.iter_mut</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nd">eprintln!</span><span class="p">(</span><span class="s">"Entity at {} has {} HP."</span><span class="p">,</span> <span class="n">transform</span><span class="py">.translation</span><span class="p">,</span> <span class="n">health</span><span class="py">.hp</span><span class="p">);</span>
+
+        <span class="c1">// HPが0なら、中央に移動</span>
+        <span class="k">if</span> <span class="n">health</span><span class="py">.hp</span> <span class="o">&lt;=</span> <span class="mf">0.0</span> <span class="p">{</span>
+            <span class="n">transform</span><span class="py">.translation</span> <span class="o">=</span> <span class="nn">Vec3</span><span class="p">::</span><span class="n">ZERO</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="k">let</span> <span class="nf">Some</span><span class="p">(</span><span class="n">player</span><span class="p">)</span> <span class="o">=</span> <span class="n">player</span> <span class="p">{</span>
+            <span class="c1">// ここではEntityは`Player`</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// ※コードの引用元 (コメント等の解説含む):</span>
+<span class="c1">// https://xianliang2032.hatenablog.com/entry/2021/09/28/Rust_Bevy_Query%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6</span>
+</code></pre></div></div>
+<p data-sourcepos="149:1-149:276">今回は紹介に留めておきたいので、<strong>ECS (Entity Component System)</strong> と呼ばれているこのアーキテクチャの紹介は、これくらいにしておきますが、Unityなどと同様に、汎用的な機構を備えていることがわかります。</p>
+<p data-sourcepos="151:1-151:183"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F0ee1352e-1d56-13c6-a837-c7437066c31c.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=4570e7e97eeecca0c09c659cee889dc0" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F0ee1352e-1d56-13c6-a837-c7437066c31c.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=4570e7e97eeecca0c09c659cee889dc0" alt="UnityとBevyの用語対応表.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F0ee1352e-1d56-13c6-a837-c7437066c31c.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=6eb1753a98cbb2e85eed603059f9e553 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/0ee1352e-1d56-13c6-a837-c7437066c31c.png" loading="lazy"></a> (図: UnityとBevyの用語対応表)</p>
+<h2 data-sourcepos="153:1-153:122">
+<span id="その他の特徴-クロスプラットフォーム低レベル描画エンジンの抽象化などなど-割愛" class="fragment"></span><a href="#%E3%81%9D%E3%81%AE%E4%BB%96%E3%81%AE%E7%89%B9%E5%BE%B4-%E3%82%AF%E3%83%AD%E3%82%B9%E3%83%97%E3%83%A9%E3%83%83%E3%83%88%E3%83%95%E3%82%A9%E3%83%BC%E3%83%A0%E4%BD%8E%E3%83%AC%E3%83%99%E3%83%AB%E6%8F%8F%E7%94%BB%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%B3%E3%81%AE%E6%8A%BD%E8%B1%A1%E5%8C%96%E3%81%AA%E3%81%A9%E3%81%AA%E3%81%A9-%E5%89%B2%E6%84%9B"><i class="fa fa-link"></i></a>その他の特徴: クロスプラットフォーム、低レベル描画エンジンの抽象化などなど (割愛)</h2>
+<p data-sourcepos="155:1-155:167"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Ff9645187-f1da-2efd-c816-287c87b6f0e1.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=b9156f57b45a5458d57ab0d2c79a4c88" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Ff9645187-f1da-2efd-c816-287c87b6f0e1.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=b9156f57b45a5458d57ab0d2c79a4c88" alt="スクリーンショット 2024-01-22 19.50.31.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Ff9645187-f1da-2efd-c816-287c87b6f0e1.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=f0792f44f56f544113f24644d803ecde 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/f9645187-f1da-2efd-c816-287c87b6f0e1.png" loading="lazy"></a> <sup><a href="#fn-g" id="fnref-g">12</a></sup></p>
+<p data-sourcepos="157:1-157:342">他にもBevy Engineの面白い特徴はいろいろあり、例えば<code>wgpu</code>という仕組みでDirectXやMetal、Vulkan、WebGLなどに一つのコードで自動でクロスプラットフォーム対応できたりしますが、こうしたことはUnity等ではある意味で当たり前のことなので今回は割愛します。</p>
+<h2 data-sourcepos="159:1-159:119">
+<span id="最後に-プラグインシステムでどんどん拡張--例えばinspectorやgizmoパーティクル-etc" class="fragment"></span><a href="#%E6%9C%80%E5%BE%8C%E3%81%AB-%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%81%A7%E3%81%A9%E3%82%93%E3%81%A9%E3%82%93%E6%8B%A1%E5%BC%B5--%E4%BE%8B%E3%81%88%E3%81%B0inspector%E3%82%84gizmo%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%82%AF%E3%83%AB-etc"><i class="fa fa-link"></i></a>最後に: プラグインシステムでどんどん拡張 / 例えばInspectorやGizmo、パーティクル …etc</h2>
+<p data-sourcepos="161:1-161:269">最後に、プラグインについてちょっと触れておきます。例えば欲が出てくると、Unityのようなエディタがやっぱりほしいな、って思ったりしますよね。こうしたことはだいたいプラグインでできます。</p>
+<p data-sourcepos="163:1-163:141"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F69fa08c2-2a41-32da-a3d9-2ef330ed0b7a.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=4e0389783cef49089860af39ae0aa6de" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F69fa08c2-2a41-32da-a3d9-2ef330ed0b7a.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=4e0389783cef49089860af39ae0aa6de" alt="0f18eacdfb26-20231117.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F69fa08c2-2a41-32da-a3d9-2ef330ed0b7a.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=8990a4225562577a8e6d60c9cf90bc61 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/69fa08c2-2a41-32da-a3d9-2ef330ed0b7a.png" loading="lazy"></a> <sup><a href="#fn-9" id="fnref-9">13</a></sup></p>
+<p data-sourcepos="165:1-165:325">例えば、GPUパーティクルシステムが欲しいと思えば、<a href="https://github.com/djeedai/bevy_hanabi" rel="nofollow noopener" target="_blank">bevy_hanabi</a>が使えますし、<a href="https://github.com/jakobhellermann/bevy-inspector-egui" rel="nofollow noopener" target="_blank">bevy-inspector-egui</a>などを使うと、さっきより気軽なInspector (操作盤)を表示させたりできます。</p>
+<p data-sourcepos="167:1-167:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F18ac4ff1-2426-256e-8454-7791a495287b.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=9e43445dd0870ad2b82a3a4dc30c8a53" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F18ac4ff1-2426-256e-8454-7791a495287b.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=9e43445dd0870ad2b82a3a4dc30c8a53" alt="スクリーンショット 2024-01-22 18.28.57.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F18ac4ff1-2426-256e-8454-7791a495287b.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=01117c19c4ca2989d5d6b766e631eab8 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/18ac4ff1-2426-256e-8454-7791a495287b.png" loading="lazy"></a></p>
+<p data-sourcepos="169:1-169:205">挙げればきりがないですが、例えばHTMLでUIを書きたい！とか思うと、<a href="https://github.com/jkb0o/belly" rel="nofollow noopener" target="_blank">belly</a> というプラグインがそれを実現してくれたりします。</p>
+<p data-sourcepos="171:1-171:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F55fb0ed0-8381-4b43-e34d-6e3a916aeb52.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=a4e95b105a1ffa989f6610b2af2c4e07" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F55fb0ed0-8381-4b43-e34d-6e3a916aeb52.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=a4e95b105a1ffa989f6610b2af2c4e07" alt="スクリーンショット 2024-01-22 18.34.40.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F55fb0ed0-8381-4b43-e34d-6e3a916aeb52.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=d16e1e1b5e5aed58d95eaf8def5b4b5f 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/55fb0ed0-8381-4b43-e34d-6e3a916aeb52.png" loading="lazy"></a></p>
+<p data-sourcepos="174:1-174:284">こういう気軽な拡張ができるのが、やはりどんなエンジンでも楽しい部分でもあり、そしてECSアーキテクチャのおかげで、他の <code>Entity</code> や <code>Component</code> などの構造物と並列して、違和感なく使えるのが嬉しいですね。</p>
+<p data-sourcepos="176:1-176:166"><strong>追記:</strong> Bevyのプラグイン一覧は <a href="https://bevyengine.org/assets/#assets" class="autolink" rel="nofollow noopener" target="_blank">https://bevyengine.org/assets/#assets</a> や <a href="https://github.com/topics/bevy-plugin" class="autolink" rel="nofollow noopener" target="_blank">https://github.com/topics/bevy-plugin</a> にリストアップされています。</p>
+<h2 data-sourcepos="178:1-178:101">
+<span id="まとめ-クリエイティブコーディングの過去と未来を融合していくと" class="fragment"></span><a href="#%E3%81%BE%E3%81%A8%E3%82%81-%E3%82%AF%E3%83%AA%E3%82%A8%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%81%AE%E9%81%8E%E5%8E%BB%E3%81%A8%E6%9C%AA%E6%9D%A5%E3%82%92%E8%9E%8D%E5%90%88%E3%81%97%E3%81%A6%E3%81%84%E3%81%8F%E3%81%A8"><i class="fa fa-link"></i></a>まとめ: クリエイティブ・コーディングの過去と未来を融合していくと…</h2>
+<p data-sourcepos="180:1-180:324">さて、今回はUnityやUnreal Engineなどのゲームエンジンにちょっと疲れた人や、プログラミングの授業でProcessingの次に何をしようかと迷っている人などにとって、その間くらいにある「ちょうどいい存在」として、Bevy Engineを紹介してみました。</p>
+<p data-sourcepos="182:1-182:152">ちなみに実際に書いてみると、Rustが出すエラーのわかりにくさにきっとビックリすることとは思います 笑 <sup><a href="#fn-10" id="fnref-10">14</a></sup>。</p>
+<p data-sourcepos="184:1-184:555">…これは半分冗談で、慣れの部分が大きいですが、Bevy EngineはECSというコンポーネントシステムの恩恵で、Rustの難しい部分である所有権やライフタイムをそこまで意識しなくて済むように工夫されています。ですがきっと今後は、このBevy EngineのようなものがTypeScriptなどの一般的な言語からも利用できるようになって、こういう姿がきっと未来のクリエイティブ・コーディングなんだろうな、と思ったりします。</p>
+<p data-sourcepos="186:1-186:539">Bevyはまだ登場して年数が浅いので、例えばp5.jsなどのように気軽に作品をオンラインでシェアするようなプラットフォームとか、アドオンが一覧になったサイトとかは<del>ありません</del> (<strong>追記:</strong> <a href="https://bevyengine.org/assets/#assets" rel="nofollow noopener" target="_blank">Bevyプラグイン一覧</a>は既に公式にありました！) が、既に<a href="https://bevyengine.org/examples/" rel="nofollow noopener" target="_blank">Example</a>はWebGLで対話的に見ることができますし、そういう未来もすぐそこに来ていると思います。</p>
+<p data-sourcepos="188:1-188:180">こういうところから少しずつ、クリエイティブ・コーディングの過去と未来のそれぞれの良さが、うまく融合していくといいですね。</p>
+<hr>
+<h2 data-sourcepos="192:1-192:24">
+<span id="追記補足など" class="fragment"></span><a href="#%E8%BF%BD%E8%A8%98%E8%A3%9C%E8%B6%B3%E3%81%AA%E3%81%A9"><i class="fa fa-link"></i></a>追記・補足など</h2>
+<ul data-sourcepos="194:1-195:0">
+<li data-sourcepos="194:1-195:0">wgslというシェーダーだけを気軽に試したいとき (いわゆる<a href="https://www.shadertoy.com/" rel="nofollow noopener" target="_blank">ShaderToy</a>的なツール) には、<a href="https://github.com/alphastrata/shadplay" rel="nofollow noopener" target="_blank">shadplay</a> が便利そうです。ECSとか気にせずエフェクトだけ試したい場合はおすすめ <sup><a href="#fn-dc" id="fnref-dc">15</a></sup>。</li>
+</ul>
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p data-sourcepos="196:7-196:90"><a href="https://bevyengine.org/examples/2D%20Rendering/bloom-2d/" class="autolink" rel="nofollow noopener" target="_blank">https://bevyengine.org/examples/2D%20Rendering/bloom-2d/</a> より引用、再構成。 <a href="#fnref-1" class="">↩</a></p>
+</li>
+<li id="fn-2">
+<p data-sourcepos="198:7-198:196">蛇足ですが、<a href="https://zenn.dev/kurogitsune/books/d6165036240279" rel="nofollow noopener" target="_blank">つぶやきProcessing</a> などの文化はワンライナーにも通じるものがあって、興味深いですね。 <a href="#fnref-2" class="">↩</a></p>
+</li>
+<li id="fn-3">
+<p data-sourcepos="200:7-200:104"><a href="https://forest.watch.impress.co.jp/docs/serial/blenderwthing/1373040.html" class="autolink" rel="nofollow noopener" target="_blank">https://forest.watch.impress.co.jp/docs/serial/blenderwthing/1373040.html</a> より画像を引用。 <a href="#fnref-3" class="">↩</a></p>
+</li>
+<li id="fn-4">
+<p data-sourcepos="202:7-202:113"><a href="https://docs.unrealengine.com/5.0/ja/organizing-a-material-graph-in-unreal-engine/" class="autolink" rel="nofollow noopener" target="_blank">https://docs.unrealengine.com/5.0/ja/organizing-a-material-graph-in-unreal-engine/</a> より画像を引用。 <a href="#fnref-4" class="">↩</a></p>
+</li>
+<li id="fn-5">
+<p data-sourcepos="204:7-204:632">容量について念の為フォローアップしておきますが、容量やスペックというのは相対的なものなので、シンプルさとは何か、の印象については常に変わっていくことと思います。実際、当時のProcessingも300MBくらいあって、容量は小さいとは言い難いものでした。そこでこの記事の文脈では、シンプルさというのは、プラグインシステムや抽象化などを使ってコアをシンプルに保っておくことと仮にしておきます（Unityなども既に充分シンプルであるとは思います）。 <a href="#fnref-5" class="">↩</a></p>
+</li>
+<li id="fn-6">
+<p data-sourcepos="206:7-206:91"><a href="https://bevyengine.org/examples/3D%20Rendering/3d-gizmos/" class="autolink" rel="nofollow noopener" target="_blank">https://bevyengine.org/examples/3D%20Rendering/3d-gizmos/</a> より引用、再構成。 <a href="#fnref-6" class="">↩</a></p>
+</li>
+<li id="fn-bash">
+<p data-sourcepos="208:10-208:156">以下、<code>$</code> から始まるコマンドはターミナルに打ち込むものを指します。(<code>$</code>は省いてそれ以降を入力します。) <a href="#fnref-bash" class="">↩</a></p>
+</li>
+<li id="fn-e">
+<p data-sourcepos="222:7-222:68"><a href="https://blog.mozvr.com/introducing-ecsy/" class="autolink" rel="nofollow noopener" target="_blank">https://blog.mozvr.com/introducing-ecsy/</a> より図を引用。 <a href="#fnref-e" class="">↩</a></p>
+</li>
+<li id="fn-7">
+<p data-sourcepos="210:7-210:180">ちなみにSystemには依存関係を指定したり、セットと呼ばれる組み合わせも作ることができますが、冗長なので今回は割愛します。 <a href="#fnref-7" class="">↩</a></p>
+</li>
+<li id="fn-d">
+<p data-sourcepos="212:7-212:420">注意としては、ECSなどの高レベルAPIから描画エンジン自体(wgpu)の低レベルAPI、そしてその中間に位置する中レベルAPIがバランスよく提供されているので、描画をカスタムできないという意味ではありません。シェーダーパイプラインや、各種バッファーオブジェクトなどはちゃんと操作できるのでご安心を。 <a href="#fnref-d" class="">↩</a></p>
+</li>
+<li id="fn-8">
+<p data-sourcepos="214:7-214:139"><a href="https://xianliang2032.hatenablog.com/entry/2021/09/28/Rust_Bevy_Query%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6" class="autolink" rel="nofollow noopener" target="_blank">https://xianliang2032.hatenablog.com/entry/2021/09/28/Rust_Bevy_Query%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6</a> よりコードを引用。 <a href="#fnref-8" class="">↩</a></p>
+</li>
+<li id="fn-g">
+<p data-sourcepos="220:7-220:75"><a href="https://bevy-cheatbook.github.io/gpu/intro.html" class="autolink" rel="nofollow noopener" target="_blank">https://bevy-cheatbook.github.io/gpu/intro.html</a> より表を引用。 <a href="#fnref-g" class="">↩</a></p>
+</li>
+<li id="fn-9">
+<p data-sourcepos="216:7-216:76"><a href="https://zenn.dev/eloy/articles/ea11899ee3dbe4" class="autolink" rel="nofollow noopener" target="_blank">https://zenn.dev/eloy/articles/ea11899ee3dbe4</a> より画像を引用。 <a href="#fnref-9" class="">↩</a></p>
+</li>
+<li id="fn-10">
+<p data-sourcepos="218:8-218:269">記事中では割愛しましたが、実際にコードを書くときは<a href="https://qiita.com/simonritchie/items/a8bdcbc65a0ae1861e6b" id="reference-569366f2fb828501983c">VSCodeにrust-analyzerを入れれば</a>完璧に補完が効くので、もう準備はバッチリです。Have a happy coding! <a href="#fnref-10" class="">↩</a></p>
+</li>
+<li id="fn-dc">
+<p data-sourcepos="224:8-224:187">Bevy公式Discord<a href="https://bevyengine.org/community/" rel="nofollow noopener" target="_blank">コミュニティ</a>からいただいた情報です。コミュニティの皆さんの支援には本当に感謝します。 <a href="#fnref-dc" class="">↩</a></p>
+</li>
+</ol>
+</section>

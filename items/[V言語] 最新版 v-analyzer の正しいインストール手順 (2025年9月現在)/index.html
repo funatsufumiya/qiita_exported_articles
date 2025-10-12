@@ -1,0 +1,46 @@
+<p data-sourcepos="1:1-1:396">VSCode等でV言語の開発をする上で必須になってくる <a href="https://github.com/vlang/v-analyzer" rel="nofollow noopener" target="_blank">v-analyzer</a> ですが、歴史的経緯でリポジトリが複数あり、かつマーケットプレイスで配布されているものが古い方のリポジトリという事情があって、混乱が見られるので、以下に2025年9月現在の最新手順を記載します。</p>
+<h2 data-sourcepos="3:1-3:40">
+<span id="まずv-analyzerのインストール" class="fragment"></span><a href="#%E3%81%BE%E3%81%9Av-analyzer%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><i class="fa fa-link"></i></a>まずv-analyzerのインストール</h2>
+<p data-sourcepos="5:1-5:215">Googleでv-analyzerと検索すると、<a href="https://github.com/v-analyzer/v-analyzer" rel="nofollow noopener" target="_blank">v-analyzer/v-analyzer</a> がヒットしますが、<strong>こちらはメンテナンスされていない古いリポジトリです！</strong></p>
+<p data-sourcepos="7:1-7:146">現時点でメンテナンスされている新しいリポジトリは、<a href="https://github.com/vlang/v-analyzer" rel="nofollow noopener" target="_blank">vlang/v-analyzer</a> の方です。</p>
+<p data-sourcepos="9:1-9:35"><iframe id="qiita-embed-content__4939e929894a71f78c1d3adf617e1536" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__4939e929894a71f78c1d3adf617e1536" data-content="https%3A%2F%2Fgithub.com%2Fvlang%2Fv-analyzer" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="11:1-11:156">インストール手順は、<a href="https://github.com/vlang/v-analyzer?tab=readme-ov-file#installation" rel="nofollow noopener" target="_blank">README.md#installation</a>に書かれているように、</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="13:1-15:3"><div class="highlight"><pre><code>v download <span class="nt">-RD</span> https://raw.githubusercontent.com/vlang/v-analyzer/main/install.vsh
+</code></pre></div></div>
+<p data-sourcepos="17:1-17:78">でインストールされ、このコマンドを実行すると最後に、</p>
+<div class="code-frame" data-lang="text" data-sourcepos="19:1-24:3"><div class="highlight"><pre><code>For example in VS Code settings.json:
+{
+    "v-analyzer.serverPath": "/Users/fu/.config/v-analyzer/bin/v-analyzer"
+}
+</code></pre></div></div>
+<p data-sourcepos="26:1-26:110">のように <code>settings.json</code> への記載事項が表示されます。これをコピペしておきます。</p>
+<p data-sourcepos="28:1-28:156">なお、必須ではないのですがv-analyzerをPATHに通しておくことで、<code>v-analyzer up</code> で最新版に更新したりできて便利です。</p>
+<h2 data-sourcepos="30:1-30:40">
+<span id="vscode-extensionのインストール" class="fragment"></span><a href="#vscode-extension%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><i class="fa fa-link"></i></a>VSCode Extensionのインストール</h2>
+<p data-sourcepos="32:1-32:327">次にVSCode Extensionをインストールします。<a href="https://github.com/vlang/v-analyzer" rel="nofollow noopener" target="_blank">vlang/v-analyzer</a> からも古いリポジトリから配布されているものがリンクされていて、Extensionは古いもので大丈夫のようです。（つまり、普通に検索して出てくるv-analyzerでOK。）</p>
+<p data-sourcepos="34:1-34:75"><iframe id="qiita-embed-content__2d57525584bccb87f97b6f33a71c3f54" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__2d57525584bccb87f97b6f33a71c3f54" data-content="https%3A%2F%2Fmarketplace.visualstudio.com%2Fitems%3FitemName%3DVOSCA.vscode-v-analyzer" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<h2 data-sourcepos="36:1-36:26">
+<span id="settingsjson-の編集" class="fragment"></span><a href="#settingsjson-%E3%81%AE%E7%B7%A8%E9%9B%86"><i class="fa fa-link"></i></a>settings.json の編集</h2>
+<p data-sourcepos="38:1-38:174">最後に、v-analyzerインストール時に表示された以下の部分（<strong>環境やユーザによって違います</strong>）をsettings.jsonに設定して完了です。</p>
+<div class="code-frame" data-lang="json" data-sourcepos="40:1-42:3"><div class="highlight"><pre><code><span class="nl">"v-analyzer.serverPath"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/Users/fu/.config/v-analyzer/bin/v-analyzer"</span><span class="w">
+</span></code></pre></div></div>
+<h2 data-sourcepos="44:1-44:50">
+<span id="検証-古いものと新しいものの違い" class="fragment"></span><a href="#%E6%A4%9C%E8%A8%BC-%E5%8F%A4%E3%81%84%E3%82%82%E3%81%AE%E3%81%A8%E6%96%B0%E3%81%97%E3%81%84%E3%82%82%E3%81%AE%E3%81%AE%E9%81%95%E3%81%84"><i class="fa fa-link"></i></a>検証: 古いものと新しいものの違い</h2>
+<p data-sourcepos="46:1-46:202">古い方のv-analyzerはメンテされていないので、いろいろとバグがあったりするのですが、特に使っていて困っていたのはサブモジュールの扱いでした。</p>
+<p data-sourcepos="48:1-48:44"><iframe id="qiita-embed-content__ddc49b820c920c9ef15b40fc5e2e4332" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__ddc49b820c920c9ef15b40fc5e2e4332" data-content="https%3A%2F%2Fgithub.com%2Ffunatsufumiya%2Fv_mytestlib" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="50:1-50:133">例としてこのモジュールをインストールしたあと、<code>~/.vmodule</code> 以外のどこかのリポジトリに適当に、</p>
+<div class="code-frame" data-lang="v" data-sourcepos="52:1-58:3"><div class="highlight"><pre><code>import mytestlib.sub
+
+fn main(){
+	sub.sub()
+}
+</code></pre></div></div>
+<p data-sourcepos="60:1-60:214">と書いてVSCodeで見てみると、新しいv-analyzerではきちんとサブモジュールが検出され、補完できたり、docが表示されたり、定義にジャンプすることができます。</p>
+<p data-sourcepos="62:1-62:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F2d8cf97d-8838-4709-bed6-cc0246f320c1.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=7cba8bcd776c15db61ea25af338d55d6" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F2d8cf97d-8838-4709-bed6-cc0246f320c1.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=7cba8bcd776c15db61ea25af338d55d6" alt="スクリーンショット 2025-09-23 11.20.36.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F2d8cf97d-8838-4709-bed6-cc0246f320c1.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=c618dfe9d428daf276e73b8ed9053c61 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/2d8cf97d-8838-4709-bed6-cc0246f320c1.png" loading="lazy"></a></p>
+<p data-sourcepos="64:1-64:162">一方で古い方では、サブモジュールが正しく検出されないので、同様の現象で困っている人はぜひ試していただければ。</p>

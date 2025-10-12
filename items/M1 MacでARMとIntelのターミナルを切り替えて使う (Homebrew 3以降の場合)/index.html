@@ -1,0 +1,134 @@
+<p data-sourcepos="1:1-1:335">M1 MacではRosetta 2を使って x86, x86_64 (以下x64) のIntelアプリやライブラリを実行できるのは有名だが、ターミナルを切り替えて使うことで、ARM非対応のツールやライブラリを使ってIntel版の開発を進めることができ、かつARM版と共存させることができる。</p>
+<p data-sourcepos="3:1-3:282">ARMとIntelのターミナルを切り替えて使う記事は既にあるものの、2021/2/5にARMに正式対応したHomebrew 3.0.0以前の記事しか見当たらず、<strong>Homebrew 3.0.0以降の正式対応後の手順と設定</strong>を改めてまとめてみることにした。</p>
+<h2 data-sourcepos="5:1-5:29">
+<span id="itermをインストール" class="fragment"></span><a href="#iterm%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><i class="fa fa-link"></i></a>iTermをインストール</h2>
+<p data-sourcepos="7:1-7:319">デフォルトのターミナルでも良いのだけれど、後述の見た目を分けることができなかったり、名称変更後のターミナルがSpotlightで呼び出しにくいなどで不便が多いので、<a href="https://iterm2.com/" rel="nofollow noopener" target="_blank">iTerm</a>をインストールしている前提で以下説明する。</p>
+<h2 data-sourcepos="9:1-9:48">
+<span id="intel版-x64版-のターミナルを作る" class="fragment"></span><a href="#intel%E7%89%88-x64%E7%89%88-%E3%81%AE%E3%82%BF%E3%83%BC%E3%83%9F%E3%83%8A%E3%83%AB%E3%82%92%E4%BD%9C%E3%82%8B"><i class="fa fa-link"></i></a>Intel版 (x64版) のターミナルを作る</h2>
+<p data-sourcepos="11:1-11:186"><code>/Applications/iTerm.app</code> をコピーして、「iTerm_x64.app」などに名称変更する。（ターミナル.appの場合は、<code>/Applications/Utilities/Terminal.app</code>を複製。）</p>
+<p data-sourcepos="13:1-13:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F3cf0e9c1-d3bd-43a8-ba70-a6616240ae39.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=b2fbd46c6769bd80b664203336bc036f" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F3cf0e9c1-d3bd-43a8-ba70-a6616240ae39.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=b2fbd46c6769bd80b664203336bc036f" alt="スクリーンショット 2021-08-12 15.26.45.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F3cf0e9c1-d3bd-43a8-ba70-a6616240ae39.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=b978e8a061ba4e6832c41aaab29eda0e 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/3cf0e9c1-d3bd-43a8-ba70-a6616240ae39.png" loading="lazy"></a></p>
+<p data-sourcepos="15:1-15:161">複製した方の「iTerm_x64.app」を右クリックして「情報を見る」を選択し、「Rosettaを使用して開く」にチェックを入れる。</p>
+<p data-sourcepos="17:1-17:163"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F41488ec1-34d6-8acd-0cef-fcd266d78cce.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=0edb3a06e8c6a219b221607ef53d9572" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F41488ec1-34d6-8acd-0cef-fcd266d78cce.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=0edb3a06e8c6a219b221607ef53d9572" alt="スクリーンショット_2021-08-12_15_23_53u.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F41488ec1-34d6-8acd-0cef-fcd266d78cce.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=1aadda3cab6d87337619953f3ecb827c 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/41488ec1-34d6-8acd-0cef-fcd266d78cce.png" loading="lazy"></a></p>
+<h2 data-sourcepos="19:1-19:57">
+<span id="ターミナルの見た目をそれぞれで変える" class="fragment"></span><a href="#%E3%82%BF%E3%83%BC%E3%83%9F%E3%83%8A%E3%83%AB%E3%81%AE%E8%A6%8B%E3%81%9F%E7%9B%AE%E3%82%92%E3%81%9D%E3%82%8C%E3%81%9E%E3%82%8C%E3%81%A7%E5%A4%89%E3%81%88%E3%82%8B"><i class="fa fa-link"></i></a>ターミナルの見た目をそれぞれで変える</h2>
+<p data-sourcepos="21:1-21:264">２つのターミナルをそのまま使うと非常に紛らわしいので、見た目を変える。<code>.bash_profile</code>などから切り替えてもいいのだけれど、簡単な方法として、プロファイルの背景色を変えるのがおすすめ。</p>
+<p data-sourcepos="23:1-23:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fb4f0f36e-0b98-aa84-3633-483855f7889f.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=b33c18494a19578e0c39bb8a901d6585" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fb4f0f36e-0b98-aa84-3633-483855f7889f.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=b33c18494a19578e0c39bb8a901d6585" alt="スクリーンショット 2021-08-12 15.30.45.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fb4f0f36e-0b98-aa84-3633-483855f7889f.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=22d08a4d45a8f9bad0a361d8f8f45dba 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/b4f0f36e-0b98-aa84-3633-483855f7889f.png" loading="lazy"></a></p>
+<p data-sourcepos="25:1-25:251">変えたい方のターミナルを一度起動して、メニューの iTerm &gt; Preferences から、Profiles &gt; Colors &gt; Background で変更できる。（ターミナル.appだと、この設定を変えると両方に反映されてしまう。）</p>
+<p data-sourcepos="27:1-27:344"><strong>追記:</strong> プロファイルが一つだと、iTermでも設定が共有されてしまうことがあるようなので、ちゃんと切り替える方が良いみたい。２つプロファイル、例えば「ARM」と「Intel」を作成して、以下のように.bash_profileに追記することで自動切り替えを実現する。</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="29:1-39:3">
+<div class="code-lang"><span class="bold">.bash_profile</span></div>
+<div class="highlight"><pre><code><span class="nb">alias </span><span class="nv">change_profile</span><span class="o">=</span><span class="s1">'(){echo -e "\033]1337;SetProfile=$1\a"}'</span>
+
+<span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">uname</span> <span class="nt">-m</span><span class="si">)</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"arm64"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+  <span class="c"># arm64</span>
+  change_profile ARM
+<span class="k">else</span>
+  <span class="c"># x86_64</span>
+  change_profile Intel
+<span class="k">fi</span>
+</code></pre></div>
+</div>
+<p data-sourcepos="41:1-41:165">新規プロファイルを作る際は、Defaultのプロファイルを「Other Actions...」から複製して、Generalタブから名称変更するのが楽。</p>
+<p data-sourcepos="43:1-43:120">ちなみに上記設定を追記すると、最初の実行時に警告が出るので、Always Allowを選択する。</p>
+<p data-sourcepos="45:1-45:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F15f85a8c-96d8-52ed-06d8-0b808da16dd7.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=a7ed993df4f7556bd3b9cf564d4261eb" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F15f85a8c-96d8-52ed-06d8-0b808da16dd7.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=a7ed993df4f7556bd3b9cf564d4261eb" alt="スクリーンショット 2021-08-18 21.13.08.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F15f85a8c-96d8-52ed-06d8-0b808da16dd7.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=9c7ad900fc2d766a6bb172ca705a9871 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/15f85a8c-96d8-52ed-06d8-0b808da16dd7.png" loading="lazy"></a></p>
+<p data-sourcepos="47:1-47:257">後でこの設定を変更したい場合は、Preferences &gt; Advanced から、 Show only non-default valuesにチェックを入れ、Prevent control sequences from changing the current profile? の値を変更する （デフォルトはUnspecified）。</p>
+<p data-sourcepos="49:1-49:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fe791c768-2312-a826-5009-ce2b24a00076.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=a247d14a924af444e6669a16aaebec3c" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fe791c768-2312-a826-5009-ce2b24a00076.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=a247d14a924af444e6669a16aaebec3c" alt="スクリーンショット 2021-08-18 21.13.17.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fe791c768-2312-a826-5009-ce2b24a00076.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=1edd10397205d7e9562474a14d629199 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/e791c768-2312-a826-5009-ce2b24a00076.png" loading="lazy"></a></p>
+<h2 data-sourcepos="52:1-52:51">
+<span id="ちゃんとx64になっていることを確認" class="fragment"></span><a href="#%E3%81%A1%E3%82%83%E3%82%93%E3%81%A8x64%E3%81%AB%E3%81%AA%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E3%81%93%E3%81%A8%E3%82%92%E7%A2%BA%E8%AA%8D"><i class="fa fa-link"></i></a>ちゃんとx64になっていることを確認</h2>
+<p data-sourcepos="54:1-54:145">それぞれのターミナルを起動して、<code>uname -m</code> を実行すると、ARM版では<code>arm64</code>、Intel版では<code>x86_64</code>と表示される。</p>
+<p data-sourcepos="56:1-56:163"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F932d55c0-02bc-1bc0-0eb2-f0e31b98aa69.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=43c772a0b716932d19d6a559afbeff19" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F932d55c0-02bc-1bc0-0eb2-f0e31b98aa69.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=43c772a0b716932d19d6a559afbeff19" alt="スクリーンショット 2021-08-12 15.55.45a.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F932d55c0-02bc-1bc0-0eb2-f0e31b98aa69.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=886df5f8fafd50c7136e2cbcad1228d4 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/932d55c0-02bc-1bc0-0eb2-f0e31b98aa69.png" loading="lazy"></a></p>
+<h2 data-sourcepos="59:1-59:53">
+<span id="homebrewをそれぞれでインストールする" class="fragment"></span><a href="#homebrew%E3%82%92%E3%81%9D%E3%82%8C%E3%81%9E%E3%82%8C%E3%81%A7%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B"><i class="fa fa-link"></i></a>Homebrewをそれぞれでインストールする</h2>
+<p data-sourcepos="61:1-61:235">次に、各ターミナルを起動して、Homebrewを<strong>それぞれで</strong>インストールする。（ARM版のHomebrewを既にインストール済みの場合は、Intel版のターミナルでのみインストールする。）</p>
+<div class="code-frame" data-lang="sh" data-sourcepos="63:1-65:3"><div class="highlight"><pre><code>/bin/bash <span class="nt">-c</span> <span class="s2">"</span><span class="si">$(</span>curl <span class="nt">-fsSL</span> https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="si">)</span><span class="s2">"</span>
+</code></pre></div></div>
+<p data-sourcepos="67:1-67:203">Homebrew 3.0.0以降でARM版に正式対応したので、ARM版ターミナルでは <code>/opt/homebrew</code>、Intel版では <code>/usr/local/</code> 以下にそれぞれ自動判別してインストールされる。</p>
+<p data-sourcepos="69:1-69:301">最後にパスの設定を促されるのだが、今回は共存させる必要があるので、bashの場合は<code>~/.profile</code>、zshの場合は <code>~/.zprofile</code>に以下のように設定する。（既に<code>eval "$(/opt/homebrew/bin/brew shellenv)"</code>が記載されている場合は置き換える。）</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="71:1-78:3">
+<div class="code-lang"><span class="bold">.profile</span></div>
+<div class="highlight"><pre><code><span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">uname</span> <span class="nt">-m</span><span class="si">)</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"arm64"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+  </span><span class="nb">eval</span> <span class="s2">"</span><span class="si">$(</span>/opt/homebrew/bin/brew shellenv<span class="si">)</span><span class="s2">"</span>
+  <span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"/opt/homebrew/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
+<span class="k">else
+  </span><span class="nb">eval</span> <span class="s2">"</span><span class="si">$(</span>/usr/local/bin/brew shellenv<span class="si">)</span><span class="s2">"</span>
+<span class="k">fi</span>
+</code></pre></div>
+</div>
+<p data-sourcepos="80:1-80:206">これでそれぞれのターミナルを再起動すると、きちんとbrewがそれぞれのアーキテクチャで使えるようになっている。<code>which brew</code>でbrewのパスを確認できる。</p>
+<p data-sourcepos="82:1-82:164"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F29a9c702-e479-2161-5945-18a521b3fdfa.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=06e1431e47fe64d863870a930f8d0366" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F29a9c702-e479-2161-5945-18a521b3fdfa.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=06e1431e47fe64d863870a930f8d0366" alt="スクリーンショット 2021-08-12 15.55.45ax.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F29a9c702-e479-2161-5945-18a521b3fdfa.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=3f5d794f3b7bbf2429bd4433997d980e 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/29a9c702-e479-2161-5945-18a521b3fdfa.png" loading="lazy"></a></p>
+<p data-sourcepos="84:1-84:229">あとは、それぞれのbrewはまるで別々のパソコンで使っているかのように別のフォルダに棲み分けされるので、必要なツールやライブラリはそれぞれでインストールする。</p>
+<p data-sourcepos="86:1-86:272">注意として、<strong>パスが通っているとARMかIntelかに関係なく実行できる</strong>のが、便利だが紛らわしい。ARMとIntelが混ざっていても問題ない場合もあるが、きちんとフォルダと設定を分けておいたほうが無難。</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="88:1-94:3">
+<div class="code-lang"><span class="bold">.bash_profile</span></div>
+<div class="highlight"><pre><code><span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">uname</span> <span class="nt">-m</span><span class="si">)</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"arm64"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+  <span class="c"># arm用の設定...</span>
+<span class="k">else</span>
+  <span class="c"># intel用の設定...</span>
+<span class="k">fi</span>
+</code></pre></div>
+</div>
+<h2 data-sourcepos="96:1-96:28">
+<span id="envを棲み分けする" class="fragment"></span><a href="#env%E3%82%92%E6%A3%B2%E3%81%BF%E5%88%86%E3%81%91%E3%81%99%E3%82%8B"><i class="fa fa-link"></i></a>*envを棲み分けする</h2>
+<p data-sourcepos="98:1-98:115">ARMとIntelで設定を分けたほうがいい具体例として、pyenv、nodenv、rbenvなどの*envがある。</p>
+<h3 data-sourcepos="100:1-100:19">
+<span id="anyenvの場合" class="fragment"></span><a href="#anyenv%E3%81%AE%E5%A0%B4%E5%90%88"><i class="fa fa-link"></i></a>anyenvの場合</h3>
+<p data-sourcepos="102:1-102:266">自分の場合はこれらをまとめて設定できる<a href="https://github.com/anyenv/anyenv" rel="nofollow noopener" target="_blank">anyenv</a>を使っているが、何も考えずに使ってしまうと<code>~/.anyenv</code>に両方混ざっておかしなことになるので、例えば以下のようにする。</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="104:1-107:3"><div class="highlight"><pre><code>git clone https://github.com/anyenv/anyenv ~/.anyenv_arm64
+<span class="nb">cp</span> <span class="nt">-r</span> ~/.anyenv_arm64 ~/.anyenv_x64
+</code></pre></div></div>
+<div class="code-frame" data-lang="bash" data-sourcepos="109:1-121:3">
+<div class="code-lang"><span class="bold">.bash_profile</span></div>
+<div class="highlight"><pre><code><span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">uname</span> <span class="nt">-m</span><span class="si">)</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"arm64"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+  <span class="c"># arm64</span>
+  <span class="nb">export </span><span class="nv">ANYENV_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.anyenv_arm64"</span>
+  <span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.anyenv_arm64/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
+  <span class="nb">eval</span> <span class="s2">"</span><span class="si">$(</span>anyenv init -<span class="si">)</span><span class="s2">"</span>
+<span class="k">else</span>
+  <span class="c"># x86_64</span>
+  <span class="nb">export </span><span class="nv">ANYENV_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.anyenv_x64"</span>
+  <span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.anyenv_x64/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
+  <span class="nb">eval</span> <span class="s2">"</span><span class="si">$(</span>anyenv init -<span class="si">)</span><span class="s2">"</span>
+<span class="k">fi</span>
+</code></pre></div>
+</div>
+<h3 data-sourcepos="123:1-123:18">
+<span id="pyenvの場合" class="fragment"></span><a href="#pyenv%E3%81%AE%E5%A0%B4%E5%90%88"><i class="fa fa-link"></i></a>pyenvの場合</h3>
+<p data-sourcepos="125:1-125:108">（anyenvを使っている場合は前述の設定だけで問題ないので、追加設定は不要。）</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="127:1-130:3"><div class="highlight"><pre><code>git clone https://github.com/pyenv/pyenv ~/.pyenv_arm64
+<span class="nb">cp</span> <span class="nt">-r</span> ~/.pyenv_arm64 ~/.pyenv_x64
+</code></pre></div></div>
+<div class="code-frame" data-lang="bash" data-sourcepos="132:1-144:3">
+<div class="code-lang"><span class="bold">.bash_profile</span></div>
+<div class="highlight"><pre><code><span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">uname</span> <span class="nt">-m</span><span class="si">)</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"arm64"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+  <span class="c"># arm64</span>
+  <span class="nb">export </span><span class="nv">PYENV_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.pyenv_arm64"</span>
+  <span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.pyenv_arm64/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
+  <span class="nb">eval</span> <span class="s2">"</span><span class="si">$(</span>pyenv init -<span class="si">)</span><span class="s2">"</span>
+<span class="k">else</span>
+  <span class="c"># x86_64</span>
+  <span class="nb">export </span><span class="nv">PYENV_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.pyenv_x64"</span>
+  <span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.pyenv_x64/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
+  <span class="nb">eval</span> <span class="s2">"</span><span class="si">$(</span>pyenv init -<span class="si">)</span><span class="s2">"</span>
+<span class="k">fi</span>
+</code></pre></div>
+</div>
+<p data-sourcepos="146:1-146:120">nodenvやrbenvなどの場合も、node-buildやruby-buildのcloneが追加で必要なくらいで、設定は同様。</p>
+<h2 data-sourcepos="148:1-148:47">
+<span id="armとintelが混ざってしまった場合" class="fragment"></span><a href="#arm%E3%81%A8intel%E3%81%8C%E6%B7%B7%E3%81%96%E3%81%A3%E3%81%A6%E3%81%97%E3%81%BE%E3%81%A3%E3%81%9F%E5%A0%B4%E5%90%88"><i class="fa fa-link"></i></a>ARMとIntelが混ざってしまった場合</h2>
+<p data-sourcepos="150:1-150:188">前述の通り、パスが通っているとARMかIntelか関係なく呼び出せてしまうので、アーキテクチャが混ざっていると困まったことがよく起こる。</p>
+<p data-sourcepos="152:1-152:225">コマンドの場合は、<code>which</code>や<code>where</code>などでどれが呼ばれているかを特定して、場合によって<code>lipo -info</code>や<code>otool</code>を使ってアーキテクチャを判断してケースバイケースで対処。</p>
+<p data-sourcepos="154:1-154:223">ライブラリの場合も同様で、<code>brew doctor</code>や<code>locate</code>などのコマンドで判別しつつ、<code>C_INCLUDE_PATH</code>や<code>LD_LIBRARY_PATH</code>などの環境変数を切り分けたり、brewなどで調整したりする。</p>
+<p data-sourcepos="156:1-156:217">いずれにしても、片方のアーキテクチャ<strong>のみで</strong>インストールされているツールやライブラリが問題になることが多いので、きちんと切り分けていれば大丈夫。</p>
+<h2 data-sourcepos="158:1-158:43">
+<span id="arch--x86_64-をうまく使うと便利" class="fragment"></span><a href="#arch--x86_64-%E3%82%92%E3%81%86%E3%81%BE%E3%81%8F%E4%BD%BF%E3%81%86%E3%81%A8%E4%BE%BF%E5%88%A9"><i class="fa fa-link"></i></a>arch -x86_64 をうまく使うと便利</h2>
+<p data-sourcepos="160:1-160:67">ちなみに一度Rosettaがインストールされていれば、</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="162:1-164:3"><div class="highlight"><pre><code><span class="nv">$ </span><span class="nb">arch</span> <span class="nt">-x86_64</span> <span class="nb">uname</span> <span class="nt">-m</span>
+</code></pre></div></div>
+<p data-sourcepos="166:1-166:203">のように <code>arch -x86_64</code> をつけてコマンドを実行すればRosettaで実行でき、ちょっとしたことはこれで十分。（逆にARM64で実行したい場合は <code>arch -arm64e</code>。 ）</p>
+<p data-sourcepos="168:1-168:69">この方法を使えば、ターミナルごと分けなくても、</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="170:1-172:3"><div class="highlight"><pre><code><span class="nv">$ </span><span class="nb">arch</span> <span class="nt">-x86_64</span> zsh
+</code></pre></div></div>
+<p data-sourcepos="174:1-174:6">とか</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="176:1-178:3"><div class="highlight"><pre><code><span class="nv">$ </span><span class="nb">arch</span> <span class="nt">-x86_64</span> bash
+</code></pre></div></div>
+<p data-sourcepos="180:1-180:326">でRosettaのシェルに切り替えることもできる。これでも今までの設定はちゃんと読み込まれるので、どちらがいいかは好み。（ARCHでシェルを切り替える方が、ターミナルのGUI自体はネイティブに実行される分、電池消費はいいかもしれない。）</p>

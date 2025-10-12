@@ -1,0 +1,15 @@
+<p data-sourcepos="1:1-1:85">※ この現象は近々修正予定とのことで、直るまでの暫定措置。</p>
+<h2 data-sourcepos="3:1-3:9">
+<span id="現象" class="fragment"></span><a href="#%E7%8F%BE%E8%B1%A1"><i class="fa fa-link"></i></a>現象</h2>
+<p data-sourcepos="5:1-5:364">Power BIにログインしようと、<a href="https://app.powerbi.com/" class="autolink" rel="nofollow noopener" target="_blank">https://app.powerbi.com/</a> にアクセスした際に、ライセンスが失効していると、<code>https://app.powerbi.com/SignupRedirect?pbi_source=websignup&amp;responseError=UserNotLicensedru=https%3A...</code> のようなURLだけ表示され、何も画面に表示されないというトラブルが発生することがある。</p>
+<h2 data-sourcepos="7:1-7:12">
+<span id="回避策" class="fragment"></span><a href="#%E5%9B%9E%E9%81%BF%E7%AD%96"><i class="fa fa-link"></i></a>回避策</h2>
+<p data-sourcepos="9:1-9:199">URLの <code>https://app.powerbi.com/SignupRedirect?pbi_source=websignup&amp;responseError=UserNotLicensedru=https%3A...</code> の、 <code>=UserNotLicensedru=</code> の箇所を <code>=UserNotLicensed&amp;ru=</code> に置き換える。</p>
+<p data-sourcepos="11:1-11:139">すると次の画面に遷移できるようになり、新しくサインアップなどを行うことができるようになる<sup><a href="#fn-1" id="fnref-1">1</a></sup>。</p>
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p data-sourcepos="13:7-13:308">ライセンスが切れているのでエラーしても仕方ないかと思っていたが、ここで止まると新たなサインアップもできないため、Azureのサポートリクエストにより問い合わせたところ、この解決策を教えてもらえた。本当に感謝。 <a href="#fnref-1" class="">↩</a></p>
+</li>
+</ol>
+</section>

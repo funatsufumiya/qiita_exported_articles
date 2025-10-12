@@ -1,0 +1,99 @@
+<div data-sourcepos="1:1-3:3" class="note warn">
+<span class="fa fa-fw fa-exclamation-circle"></span><div>
+<p data-sourcepos="2:1-2:91">以下は V言語 0.4.12 時点の情報で、今後変更があるかもしれません。</p>
+</div>
+</div>
+<div data-sourcepos="5:1-7:3" class="note warn">
+<span class="fa fa-fw fa-exclamation-circle"></span><div>
+<p data-sourcepos="6:1-6:177">この記事でいうサブモジュールは <code>git submodule</code> のことではなくて、V言語の概念としてのモジュール内の別のモジュールのことです。</p>
+</div>
+</div>
+<h2 data-sourcepos="9:1-9:23">
+<span id="先に結論-tldr" class="fragment"></span><a href="#%E5%85%88%E3%81%AB%E7%B5%90%E8%AB%96-tldr"><i class="fa fa-link"></i></a>先に結論 (TL;DR)</h2>
+<p data-sourcepos="11:1-11:298">現時点では、モジュール内のexampleフォルダを <code>~/.vmodules</code> 以外の別フォルダにコピーして開発するしかない。<del>シンボリックリンク等は不可。</del> <strong>【追記】</strong> <code>ln -s ~/Documents/mylib ~/.vmodules/mylib</code> <strong>はOK</strong>でした。逆はダメでした。</p>
+<p data-sourcepos="13:1-13:109">（あるいは、examples だけ <code>git submodule</code>にしたり別のリポジトリにしてしまう等。）</p>
+<p data-sourcepos="15:1-15:72">あわせて v-analyzer の最新版を使っているかも要確認。</p>
+<p data-sourcepos="17:1-17:58"><iframe id="qiita-embed-content__e8fc5e02452837e2611c7470e59fb6f3" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__e8fc5e02452837e2611c7470e59fb6f3" data-content="https%3A%2F%2Fqiita.com%2Ffunatsufumiya%2Fitems%2F4f2824d304f006d3a366" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<h2 data-sourcepos="19:1-19:66">
+<span id="vmodules-でモジュール開発する上でのトラブル" class="fragment"></span><a href="#vmodules-%E3%81%A7%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%E9%96%8B%E7%99%BA%E3%81%99%E3%82%8B%E4%B8%8A%E3%81%A7%E3%81%AE%E3%83%88%E3%83%A9%E3%83%96%E3%83%AB"><i class="fa fa-link"></i></a>~/.vmodules でモジュール開発する上でのトラブル</h2>
+<p data-sourcepos="21:1-21:321">V言語では外部モジュールは基本的に <code>~/.vmodules</code> 上に置かれていて、新しいモジュールを作るときはそこに新しいフォルダを作り、<code>v.mod</code>という空のファイルを置くことでモジュールとして認識されるので、そこからテストしていきます。<sup><a href="#fn-2" id="fnref-2">1</a></sup></p>
+<p data-sourcepos="23:1-23:160">ただ、<code>example</code> フォルダなどを中に作ってモジュールを試そうとすると、現時点では場合によってエラーが発生します。</p>
+<p data-sourcepos="25:1-25:145">代表的なものは、<strong>モジュール内に存在するはずのサブモジュールが正しく認識されない</strong>というものです。</p>
+<h3 data-sourcepos="27:1-27:10">
+<span id="検証" class="fragment"></span><a href="#%E6%A4%9C%E8%A8%BC"><i class="fa fa-link"></i></a>検証</h3>
+<p data-sourcepos="29:1-29:44"><iframe id="qiita-embed-content__48ad6adb2c639d346b9b9748fe22e883" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__48ad6adb2c639d346b9b9748fe22e883" data-content="https%3A%2F%2Fgithub.com%2Ffunatsufumiya%2Fv_mytestlib" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="31:1-31:157">例えば上記モジュールをインストールしてexampleを実行するとき、README通りの以下の手順ならうまくいくのですが <sup><a href="#fn-1" id="fnref-1">2</a></sup>:</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="33:1-45:3"><div class="highlight"><pre><code><span class="nv">$ </span>git clone https://github.com/funatsufumiya/v_mytestlib ~/.vmodules/mytestlib
+
+<span class="nv">$ </span>v run ~/.vmodules/mytestlib/example/main.v
+
+<span class="c"># hello</span>
+<span class="c"># sub</span>
+
+<span class="nv">$ </span>v run ~/.vmodules/mytestlib/example2/main.v
+
+<span class="c"># sub</span>
+
+</code></pre></div></div>
+<p data-sourcepos="47:1-47:57">相対パスで実行するとうまくいきません。</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="49:1-72:3"><div class="highlight"><pre><code><span class="nv">$ </span><span class="nb">cd</span> ~/.vmodules/mytestlib
+<span class="nv">$ </span>v run example/main.v
+
+<span class="c"># mytestlib.v:7:6: error: unknown function: mytestlib.sub.sub .</span>
+<span class="c"># 1 possibility: `mytestlib.hello`.</span>
+<span class="c">#     5 | pub fn hello(){</span>
+<span class="c">#     6 |     println("hello")</span>
+<span class="c">#     7 |     sub.sub()</span>
+<span class="c">#       |         ~~~~~</span>
+<span class="c">#     8 | }</span>
+<span class="c"># If the code of your project is in multiple files, try with `v example` instead of `v example/main.v`</span>
+
+<span class="nv">$ </span>v run example2/main.v
+
+<span class="c"># example2/main.v:4:6: error: unknown function: mytestlib.sub.sub</span>
+<span class="c">#     2 |</span>
+<span class="c">#     3 | fn main(){</span>
+<span class="c">#     4 |     sub.sub()</span>
+<span class="c">#       |         ~~~~~</span>
+<span class="c">#     5 | }</span>
+<span class="c"># If the code of your project is in multiple files, try with `v example2` instead of `v example2/main.v</span>
+
+</code></pre></div></div>
+<p data-sourcepos="74:1-74:181">しかも実は、<a href="https://github.com/vlang/v-analyzer" rel="nofollow noopener" target="_blank">v-analyzer</a> 上の静的構文解析も、先の時点（<code>~/.vmodules</code> 以下にある時点）でうまくいきません。</p>
+<p data-sourcepos="76:1-76:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F69a5865f-c754-4c25-85a8-a964a947276f.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=759acae61408d2eb2bde2e85475d798a" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F69a5865f-c754-4c25-85a8-a964a947276f.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=759acae61408d2eb2bde2e85475d798a" alt="スクリーンショット 2025-09-23 16.12.01.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F69a5865f-c754-4c25-85a8-a964a947276f.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=13b7aca6fda83eac9405fb9d916f9997 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/69a5865f-c754-4c25-85a8-a964a947276f.png" loading="lazy"></a></p>
+<h2 data-sourcepos="78:1-78:12">
+<span id="解決策" class="fragment"></span><a href="#%E8%A7%A3%E6%B1%BA%E7%AD%96"><i class="fa fa-link"></i></a>解決策</h2>
+<p data-sourcepos="80:1-80:314"><code>v run</code> 上だけで正しく認識されるだけでよければ、<code>v run ~/.vmodules/mytestlib/example/main.v</code> のように絶対パスで実行すれば正しい結果が得られます。（ここでもエラーが出る場合は、脚注 <sup><a href="#fn-1" id="fnref-1-2">2</a></sup> および <code>v up</code> などでV言語のバージョンを確認。）</p>
+<p data-sourcepos="82:1-82:135">ただ、これでは <a href="https://github.com/vlang/v-analyzer" rel="nofollow noopener" target="_blank">v-analyzer</a> 上の静的構文解析のエラーが回避できません。</p>
+<div data-sourcepos="84:1-86:3" class="note warn">
+<span class="fa fa-fw fa-exclamation-circle"></span><div>
+<p data-sourcepos="85:1-85:292">v-analyzerは<a href="https://qiita.com/funatsufumiya/items/4f2824d304f006d3a366">この記事</a>で最新版が正しくインストールされている前提です。そうでない場合はそもそも静的構文解析がうまくいきません。（私自身ここでハマりました… orz）</p>
+</div>
+</div>
+<p data-sourcepos="88:1-88:481">ではどうすればいいのだろうと試行錯誤して、<a href="https://github.com/rcqls/vdev" rel="nofollow noopener" target="_blank">vdev</a>というツール（<code>v -path</code>の改変ツール）を使ってみたり（<a href="https://github.com/funatsufumiya/vdev" rel="nofollow noopener" target="_blank">フォーク</a>してみたり）、シンボリックリンクを作ったりしたのですが、<del>結論からいうとうまくいきませんでした。</del> <strong>【追記】</strong> <code>ln -s ~/Documents/mylib ~/.vmodules/mylib</code> <strong>はOK</strong> でした。逆はダメでした。</p>
+<p data-sourcepos="90:1-90:316"><del>現時点では、冒頭の結論 (TL;DR) にあるように、モジュール内のexampleフォルダを <code>~/.vmodules</code> 以外の別フォルダにコピーして開発するしかないようです。（フォルダのシンボリックリンクでは、v-analyzer は正しく認識しませんでした。）</del></p>
+<p data-sourcepos="92:1-92:230"><code>~/.vmodules</code> 以下にモジュール自体は置いて、V言語やv-analyzerにモジュールを認識させつつ、VSCodeではコピーしたファイルの方を開いてexampleをデバッグするという感じです。</p>
+<p data-sourcepos="94:1-94:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F7235df2c-7dae-4ada-b4b1-0086019295e3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=b2c553d3141e7fba8cc9dcf731547607" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F7235df2c-7dae-4ada-b4b1-0086019295e3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=b2c553d3141e7fba8cc9dcf731547607" alt="スクリーンショット 2025-09-23 15.42.02.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F7235df2c-7dae-4ada-b4b1-0086019295e3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=8b83a3e094577d0301918d641d3fcdc7 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/7235df2c-7dae-4ada-b4b1-0086019295e3.png" loading="lazy"></a></p>
+<p data-sourcepos="96:1-96:199"><del>フォルダのシンボリックリンクを使えればgitの管理などで都合が良いのですが、現時点では v-analyzer が正しく認識しないので仕方がありません。</del></p>
+<p data-sourcepos="98:1-98:184">（あるいは、examples だけ <code>git submodule</code>にしたり別のリポジトリにしてしまうといった感じで別管理にしてしまってもいいかと思います。）</p>
+<p data-sourcepos="100:1-100:397">おそらく、<code>v.mod</code> の検出方法とか、<code>~/.vmodules</code> の扱いなどに理由があるのだと思いますが、そもそもこうなってしまう原因は私にはよくわからず、今後のV言語やv-analyzerのバージョンアップに期待するしかなさそうです。（Rust言語の <code>cargo run --example xxx</code> みたいなものがあるといいんですけどね。）</p>
+<h2 data-sourcepos="102:1-102:9">
+<span id="余談" class="fragment"></span><a href="#%E4%BD%99%E8%AB%87"><i class="fa fa-link"></i></a>余談</h2>
+<p data-sourcepos="104:1-104:307">V言語のモジュール周りは2025年9月現在であまりしっかりドキュメントがまとまっておらず、仕様もはっきりせず、GitHubやDiscordでも同様の質問や意見が飛び交っている状況になっています。（特に <code>v.mod</code> ファイルへの混乱など。）</p>
+<p data-sourcepos="106:1-106:618">結局のところ公式のexampleや他のGitHubのリポジトリがどうしているのか真似してみたり、Discordなどから情報を得るしかないのですが、モジュールに関しては、他の言語のようにわかりやすい情報がまとまっているとは言い難いし、新旧の情報が入り乱れているし、ユーザ同士も自身のミスなのかバグなのか仕様なのかよくわからない状況で利用を続けているので、V言語自体がバージョン1.0に達していないので色々と混沌とした状況といえるかなとは思います。</p>
+<p data-sourcepos="108:1-108:329">ただ少なくとも私自身はこの検証過程でモジュールやサブモジュール自体は正しく動作することが確認できたし、最新のv-analyzerで補完等もちゃんと効くことがわかったので、一応安心してV言語を使っていけるんじゃないかなとは思っています。</p>
+<p data-sourcepos="110:1-110:231">今後、より良いモジュール開発の手順とか、現在水面下で開発が進んでいるとみられる、npmなどのようなモジュール依存関係の解決などが進んでいくといいなと思います。</p>
+<section class="footnotes">
+<ol>
+<li id="fn-2">
+<p data-sourcepos="113:7-113:326"><a href="https://zenn.dev/tkm/articles/de319625f17f25232636" class="autolink" rel="nofollow noopener" target="_blank">https://zenn.dev/tkm/articles/de319625f17f25232636</a> にあるように、<code>v new</code> コマンドで新規作成すると確実ですが、<code>~/.vmodules</code> 以外に作るとフォルダ内のexample上でモジュール・サブモジュールが正しく認識されないことに現時点では変わりはありません。 <a href="#fnref-2" class="">↩</a></p>
+</li>
+<li id="fn-1">
+<p data-sourcepos="112:7-112:204">ただし、絶対パスで <code>v run</code> を実行した場合でも、その時に <code>cd</code> しているディレクトリが <code>~/.vmodules</code> 上のモジュール内だとうまくいかないので注意。 <a href="#fnref-1" class="">↩</a> <a href="#fnref-1-2" class="">↩<sup>2</sup></a></p>
+</li>
+</ol>
+</section>

@@ -1,0 +1,82 @@
+<p data-sourcepos="1:1-1:58"><iframe id="qiita-embed-content__21fc8e3b853be57f42339046e304deb3" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__21fc8e3b853be57f42339046e304deb3" data-content="https%3A%2F%2Fqiita.com%2Ffunatsufumiya%2Fitems%2Fec1b72aae4deb845d929" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="3:1-3:30">上記記事の続きです。</p>
+<h2 data-sourcepos="5:1-5:48">
+<span id="ggをさらにprocessingっぽくしてみる" class="fragment"></span><a href="#gg%E3%82%92%E3%81%95%E3%82%89%E3%81%ABprocessing%E3%81%A3%E3%81%BD%E3%81%8F%E3%81%97%E3%81%A6%E3%81%BF%E3%82%8B"><i class="fa fa-link"></i></a>ggをさらにProcessingっぽくしてみる</h2>
+<p data-sourcepos="7:1-7:213"><a href="https://qiita.com/funatsufumiya/items/ec1b72aae4deb845d929">前の記事</a>で、<a href="https://modules.vlang.io/gg.html" rel="nofollow noopener" target="_blank">gg</a> がなんとなく<a href="https://processing.org/" rel="nofollow noopener" target="_blank">Processing</a>っぽく使えると書きました。</p>
+<p data-sourcepos="9:1-9:259">似ているなら寄せてしまえばいいんじゃないかと思い、<a href="https://openframeworks.cc/" rel="nofollow noopener" target="_blank">openFrameworks</a>と<a href="https://ebitengine.org/" rel="nofollow noopener" target="_blank">Ebitengine</a>のソースを参考にしつつ、ProcessingのAPI設計に寄せたAPIを作ってみました。</p>
+<p data-sourcepos="11:1-11:28"><iframe id="qiita-embed-content__c7ff063f40dc33c3dba9a228e9422906" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__c7ff063f40dc33c3dba9a228e9422906" data-content="https%3A%2F%2Fgithub.com%2Fcc4v%2Fcc4v" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<h2 data-sourcepos="13:1-13:30">
+<span id="hello-world-processing風" class="fragment"></span><a href="#hello-world-processing%E9%A2%A8"><i class="fa fa-link"></i></a>Hello World (Processing風)</h2>
+<p data-sourcepos="15:1-15:237"><a href="https://github.com/cc4v/cc4v" rel="nofollow noopener" target="_blank">cc (cc4v)</a> はまだまだ開発中なので、今後APIが変わっていく可能性がありますが、Processing風の使い方と、openFrameworks風の使い方の二種類を用意しています。</p>
+<p data-sourcepos="17:1-17:200">どんなAPIがあるかは <a href="https://github.com/cc4v/cc4v/blob/main/docs/coverage.md" rel="nofollow noopener" target="_blank">docs/coverage.md</a> を見てもらうとわかりますが、Processing風のHello Worldは以下になります。</p>
+<p data-sourcepos="19:1-19:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Ff6e33f7e-8cc8-455a-acaf-70d2ebbc3448.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=338aa129457a896021e57988dce598db" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Ff6e33f7e-8cc8-455a-acaf-70d2ebbc3448.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=338aa129457a896021e57988dce598db" alt="スクリーンショット 2025-10-04 12.06.31.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Ff6e33f7e-8cc8-455a-acaf-70d2ebbc3448.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=0d49d720196fa3a52bbfc16f62981d42 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/f6e33f7e-8cc8-455a-acaf-70d2ebbc3448.png" loading="lazy"></a></p>
+<p data-sourcepos="21:1-21:109"><iframe id="qiita-embed-content__44bb48aed3ad95955c0bad9737fa9ddc" src="https://qiita.com/embed-contents/github-blob#qiita-embed-content__44bb48aed3ad95955c0bad9737fa9ddc" data-content="https%3A%2F%2Fgithub.com%2Fcc4v%2Fcc4v-examples%2Fblob%2F86841c7801312f7d637ee82cd0bc6e914bc89ce0%2Fhello_world%2Fmain.v%23L5-L13" frameborder="0" scrolling="no" loading="lazy" style="width:100%;">
+</iframe>
+</p>
+<p data-sourcepos="23:1-23:233">ggに比べて、だいぶ簡単になったことがわかるんじゃないかなと思います。（参考: ggの<a href="https://github.com/vlang/v/blob/396ef5c9aa11ae0c6595af6c0172c1c060e09b8a/examples/gg/minimal.v" rel="nofollow noopener" target="_blank">minimal example</a>）</p>
+<p data-sourcepos="25:1-25:133">（※ draw関数がなぜ <code>draw()</code> ではなく <code>draw(_ voidptr)</code> なのかは、記事を最後まで読めばわかります。）</p>
+<p data-sourcepos="27:1-27:75">さらに、円を表示するサンプルは次のようになります。</p>
+<p data-sourcepos="29:1-29:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fe0a9424b-47c1-44b5-9b4a-0e10bf493cc3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=451462301686f3743c1fbe5d9126b572" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fe0a9424b-47c1-44b5-9b4a-0e10bf493cc3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=451462301686f3743c1fbe5d9126b572" alt="スクリーンショット 2025-10-04 12.06.48.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fe0a9424b-47c1-44b5-9b4a-0e10bf493cc3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=064b5587f1a4a315796c785bd95855e0 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/e0a9424b-47c1-44b5-9b4a-0e10bf493cc3.png" loading="lazy"></a></p>
+<p data-sourcepos="31:1-31:110"><iframe id="qiita-embed-content__2a300f5b4588fa27a2a6bdc6da17c4e6" src="https://qiita.com/embed-contents/github-blob#qiita-embed-content__2a300f5b4588fa27a2a6bdc6da17c4e6" data-content="https%3A%2F%2Fgithub.com%2Fcc4v%2Fcc4v-examples%2Fblob%2F86841c7801312f7d637ee82cd0bc6e914bc89ce0%2Ftests%2Fcircle%2Fmain.v%23L5-L22" frameborder="0" scrolling="no" loading="lazy" style="width:100%;">
+</iframe>
+</p>
+<p data-sourcepos="33:1-33:382">cc (cc4v) では、すべてを <code>cc.xxx()</code> とシンプルに書けるようにちょっとしたトリックを使っていて、隠された動作が極力ないようにする（= 可読性を最優先する）V言語の哲学とは若干背反してしまっているのですが、gg の覚えにくい部分を極力排除するには仕方ないかなと思っています。</p>
+<div data-sourcepos="35:1-39:3" class="note info">
+<span class="fa fa-fw fa-check-circle"></span><div>
+<p data-sourcepos="36:1-36:339">ちなみに、cc (cc4v) は、openFrameworks（およびEbitengine）のソースコードを基本的に参考にしていて、Processingは<a href="https://processing.org/reference/" rel="nofollow noopener" target="_blank">API Reference</a>にできるだけ互換性を保つようにしているだけで、<code>fill()</code> <code>no_fill()</code> などの哲学はopenFrameworksに寄っています。</p>
+<p data-sourcepos="38:1-38:181">※ MPL-2.0ライセンスで公開しているのは、Processingコミュニティへの敬意です。コードベースはあくまでopenFrameworks / Ebitengine 準拠です。</p>
+</div>
+</div>
+<h2 data-sourcepos="41:1-41:29">
+<span id="openframeworks風に使う" class="fragment"></span><a href="#openframeworks%E9%A2%A8%E3%81%AB%E4%BD%BF%E3%81%86"><i class="fa fa-link"></i></a>openFrameworks風に使う</h2>
+<p data-sourcepos="43:1-43:123">先程はProcessing風のAPIでしたが、一応openFrameworks風のものも用意しているのでご紹介します。</p>
+<p data-sourcepos="45:1-45:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F080a51c1-c7ac-4d9c-a11a-a571e292d44c.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=67b43cb0e6adf8c4b6e74bacda8e525b" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F080a51c1-c7ac-4d9c-a11a-a571e292d44c.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=67b43cb0e6adf8c4b6e74bacda8e525b" alt="スクリーンショット 2025-10-04 12.10.12.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F080a51c1-c7ac-4d9c-a11a-a571e292d44c.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=418c3bf464b9cf10410ee0737037de9a 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/080a51c1-c7ac-4d9c-a11a-a571e292d44c.png" loading="lazy"></a></p>
+<p data-sourcepos="47:1-47:110"><iframe id="qiita-embed-content__41471d08c2528f68be0fafe335b4d8aa" src="https://qiita.com/embed-contents/github-blob#qiita-embed-content__41471d08c2528f68be0fafe335b4d8aa" data-content="https%3A%2F%2Fgithub.com%2Fcc4v%2Fcc4v-examples%2Fblob%2F86841c7801312f7d637ee82cd0bc6e914bc89ce0%2Fhello_world3%2Fmain.v%23L5-L55" frameborder="0" scrolling="no" loading="lazy" style="width:100%;">
+</iframe>
+</p>
+<p data-sourcepos="49:1-49:114">このサンプルでは、毎フレームごとに <code>count</code> が追加されていくものになっています。</p>
+<p data-sourcepos="51:1-51:452">実は現時点でまだすべての関数 (例えば <code>windowResized</code>) を実装しているわけではないのですが、 <code>on_event(event &amp;gg.Event)</code> が存在するので、<a href="https://github.com/vlang/v/tree/master/examples/gg" rel="nofollow noopener" target="_blank">gg の examples</a> を参考に好きなイベントをトリガーすることができますし、cc (cc4v) は gg のラッパーでしかないので、以下のように gg を直接呼び出すこともできます。</p>
+<p data-sourcepos="53:1-53:163"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Ffa965718-7694-42d5-9673-a6ce2c250c0d.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=2a6aa856dae7865b53dbeda2f8ba356f" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Ffa965718-7694-42d5-9673-a6ce2c250c0d.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=2a6aa856dae7865b53dbeda2f8ba356f" alt="スクリーンショット 2025-10-04 13.11.39f.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Ffa965718-7694-42d5-9673-a6ce2c250c0d.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=eedf9d0fbce9cb00f4c8842df61dc1af 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/fa965718-7694-42d5-9673-a6ce2c250c0d.png" loading="lazy"></a></p>
+<p data-sourcepos="55:1-55:100"><iframe id="qiita-embed-content__0e58c9b3a15921caf7306ea8bb766181" src="https://qiita.com/embed-contents/github-blob#qiita-embed-content__0e58c9b3a15921caf7306ea8bb766181" data-content="https%3A%2F%2Fgithub.com%2Fcc4v%2Fcc4v-examples%2Fblob%2F86841c7801312f7d637ee82cd0bc6e914bc89ce0%2Fgg%2Fmain.v%23L5-L15" frameborder="0" scrolling="no" loading="lazy" style="width:100%;">
+</iframe>
+</p>
+<h2 data-sourcepos="57:1-57:32">
+<span id="ebitengine風の-just_pressed" class="fragment"></span><a href="#ebitengine%E9%A2%A8%E3%81%AE-just_pressed"><i class="fa fa-link"></i></a>Ebitengine風の just_pressed</h2>
+<p data-sourcepos="59:1-59:224">cc (cc4v) では、<a href="https://ebitengine.org/" rel="nofollow noopener" target="_blank">Ebitengine</a>のような<a href="https://pkg.go.dev/github.com/hajimehoshi/ebiten/v2/inpututil#IsKeyJustPressed" rel="nofollow noopener" target="_blank">IsKeyJustPressed</a> 風のAPIも利便性のために用意しています。</p>
+<p data-sourcepos="61:1-61:330">cc4vでもProcessingやopenFrameworksのように <code>key_pressed</code> や <code>mouse_pressed</code> などのコールバックを定義できるようにしているものの、V言語はGo言語とよく似ていて、コールバックが多いとコードが多くなる傾向があって、個人的にはこちらのほうが簡単です。</p>
+<p data-sourcepos="63:1-63:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F91b01c28-ba37-4e2a-b999-fc375418abf1.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=cf467dc2769d4e9518e225ea8c562c9d" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F91b01c28-ba37-4e2a-b999-fc375418abf1.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=cf467dc2769d4e9518e225ea8c562c9d" alt="スクリーンショット 2025-10-04 12.18.48.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F91b01c28-ba37-4e2a-b999-fc375418abf1.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=9374f1ff42ffc505776889604680d4fa 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/91b01c28-ba37-4e2a-b999-fc375418abf1.png" loading="lazy"></a></p>
+<p data-sourcepos="65:1-65:120"><iframe id="qiita-embed-content__f1c39901f58ee756bfb5bb9df84e4ffe" src="https://qiita.com/embed-contents/github-blob#qiita-embed-content__f1c39901f58ee756bfb5bb9df84e4ffe" data-content="https%3A%2F%2Fgithub.com%2Fcc4v%2Fcc4v-examples%2Fblob%2F86841c7801312f7d637ee82cd0bc6e914bc89ce0%2Ftests%2Fkey_just_pressed%2Fmain.v%23L5-L24" frameborder="0" scrolling="no" loading="lazy" style="width:100%;">
+</iframe>
+</p>
+<p data-sourcepos="67:1-67:153">これにより、記述量を減らしながらやりたいことをスクラッチでサッと書くということができるかなと思います。</p>
+<h2 data-sourcepos="69:1-69:48">
+<span id="グローバル変数っぽいものの扱い" class="fragment"></span><a href="#%E3%82%B0%E3%83%AD%E3%83%BC%E3%83%90%E3%83%AB%E5%A4%89%E6%95%B0%E3%81%A3%E3%81%BD%E3%81%84%E3%82%82%E3%81%AE%E3%81%AE%E6%89%B1%E3%81%84"><i class="fa fa-link"></i></a>グローバル変数っぽいものの扱い</h2>
+<p data-sourcepos="71:1-71:373">最後に、V言語は実はデフォルトではグローバル変数が使えなくて、<a href="https://docs.vlang.io/global-variables.html" rel="nofollow noopener" target="_blank"><code>-enable-globals</code> オプションを有効にすることで使えるようになる</a>のですが、ユーザが自由に選べるように、グローバル変数を使わなくても良いようにする工夫をしています。<sup><a href="#fn-1" id="fnref-1">1</a></sup></p>
+<p data-sourcepos="73:1-73:109"><iframe id="qiita-embed-content__5bb0c591cdd408b212f6ff8791b40cc3" src="https://qiita.com/embed-contents/github-blob#qiita-embed-content__5bb0c591cdd408b212f6ff8791b40cc3" data-content="https%3A%2F%2Fgithub.com%2Fcc4v%2Fcc4v-examples%2Fblob%2F86841c7801312f7d637ee82cd0bc6e914bc89ce0%2Ftests%2Fimage%2Fmain.v%23L5-L27" frameborder="0" scrolling="no" loading="lazy" style="width:100%;">
+</iframe>
+</p>
+<p data-sourcepos="75:1-75:178">ちなみにこれはProcessing風APIだけで、openFrameworks風APIの場合は、openFrameworksでもそうであるように、Appに直接変数を定義すればOKです。</p>
+<p data-sourcepos="77:1-77:311">※ 冒頭部にちょっと書いていた、draw関数がなぜ <code>draw()</code> ではなく <code>draw(_ voidptr)</code> （<code>voidptr</code>は汎用ポインタ）だったのかはこのためで、V言語ではポインタの型（参照型）は関数呼び出し時にキャストされるという性質を使っています。</p>
+<p data-sourcepos="79:1-79:150">この書き方が面倒に感じる場合は、オプションでグローバル変数を有効化して使っていただいても構いません。</p>
+<h2 data-sourcepos="81:1-81:12">
+<span id="まとめ" class="fragment"></span><a href="#%E3%81%BE%E3%81%A8%E3%82%81"><i class="fa fa-link"></i></a>まとめ</h2>
+<p data-sourcepos="83:1-83:162">今回はだいぶ早足でしたが、<a href="https://modules.vlang.io/gg.html" rel="nofollow noopener" target="_blank">gg</a> をよりProcessingやopenFrameworksっぽく使う方法をご紹介しました。</p>
+<p data-sourcepos="85:1-85:353">V言語はC言語にトランスパイルされるので、openFrameworks並に高速で動作し、C/C++のAPIも簡単にラップまたは変換することができ、それでありながらProcessingのようにメモリ管理などをあまり気にすることなく、やりたいことを書くことに専念することができます。<sup><a href="#fn-2" id="fnref-2">2</a></sup></p>
+<p data-sourcepos="87:1-87:321">個人的には夢のような言語だなと感じているのですが、まだアーリーステージであることから、ggやV言語の仕様も年々変更されていく可能性があり、安定していないので、あくまでホビーユースで楽しんでもらえるといいかなと思います。</p>
+<p data-sourcepos="89:1-89:236">ちなみに <a href="https://github.com/cc4v/cc4v" rel="nofollow noopener" target="_blank">cc (cc4v)</a> は MPL-2.0 ライセンスで公開しています（exampleの利用等には一部例外規定を設けています）。PR (Pull Request) などは随時歓迎しています。</p>
+<p data-sourcepos="91:1-91:242">今後、3Dやシェーダーなどに関しても便利な関数を追加していければと思っていますが、時間があるときに少しずつ拡充しているのであまり期待しないでもらえればとは思います。</p>
+<p data-sourcepos="93:1-93:217">gg 自体、ラップせずとも十分にコードが書きやすいAPI設計だと感じているので、ライセンス等気にせず好きに書きたい方は直接 gg を使うのも楽しいと思います。</p>
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p data-sourcepos="95:7-95:536">お気づきの方もいるかもしれませんが、cc 自体、内部でグローバル変数の "ようなもの" を使っているおかげで簡便に書けるようにしていて、グローバル変数オプション (<code>-enable-globals</code>) を使わなくても良いトリックを使っているので通常時でも問題なく利用できます。（トリックと言っても、言語仕様に即しているので心配はありませんが、今後のV言語の動向には注意が必要かもしれません。） <a href="#fnref-1" class="">↩</a></p>
+</li>
+<li id="fn-2">
+<p data-sourcepos="97:7-97:234">余談として、<a href="https://nelua.io/" rel="nofollow noopener" target="_blank">Nelua</a> など、最近この系統の言語が増えている気がする。若干乱立気味な感は否めないけれど、いずれはどれかに人気が集まるのだろうか…？ <a href="#fnref-2" class="">↩</a></p>
+</li>
+</ol>
+</section>

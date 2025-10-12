@@ -1,0 +1,180 @@
+<h2 data-sourcepos="1:1-1:15">
+<span id="先に結論" class="fragment"></span><a href="#%E5%85%88%E3%81%AB%E7%B5%90%E8%AB%96"><i class="fa fa-link"></i></a>先に結論</h2>
+<ul data-sourcepos="3:1-5:0">
+<li data-sourcepos="3:1-3:162">ファイルから大きなバイト列の固まりを読もうとして <code>reader.read()</code> で失敗するときは、<code>file.read()</code> を試してみると良い。</li>
+<li data-sourcepos="4:1-5:0">
+<code>StreamSource</code> でファイルをラップするのは、現状（Zig 0.13.0）では避けるべきかもしれない。</li>
+</ul>
+<div data-sourcepos="6:1-8:3" class="note warn">
+<span class="fa fa-fw fa-exclamation-circle"></span><div>
+<p data-sourcepos="7:1-7:273">以下、実際の原因については不明で未検証です。これが原因かな？と本文中に書いていたとしても、もっと複雑な要因によるものかもしれませんし、将来のアップデートで改善される可能性もあります。</p>
+</div>
+</div>
+<h2 data-sourcepos="10:1-10:9">
+<span id="概要" class="fragment"></span><a href="#%E6%A6%82%E8%A6%81"><i class="fa fa-link"></i></a>概要</h2>
+<p data-sourcepos="12:1-12:229">Zig 0.13.0において、おそらくバグの一種ではないかと思うのだけれど、ファイルおよびメモリのバイトの読み書きについてのコードを書いていたときに、盛大にハマった。</p>
+<p data-sourcepos="14:1-14:84">例えば、以下のようなコードはよく書くのではないかと思う。</p>
+<div class="code-frame" data-lang="zig" data-sourcepos="16:1-39:3"><div class="highlight"><pre><code><span class="k">const</span> <span class="n">std</span> <span class="o">=</span> <span class="nb">@import</span><span class="p">(</span><span class="s">"std"</span><span class="p">);</span>
+
+<span class="k">pub</span> <span class="k">fn</span> <span class="n">main</span><span class="p">()</span> <span class="o">!</span><span class="k">void</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="n">file</span> <span class="o">=</span> <span class="k">try</span> <span class="n">std</span><span class="p">.</span><span class="py">fs</span><span class="p">.</span><span class="nf">cwd</span><span class="p">().</span><span class="nf">openFile</span><span class="p">(</span><span class="s">"test.bin"</span><span class="p">,</span> <span class="o">.</span><span class="p">{});</span>
+    <span class="k">defer</span> <span class="n">file</span><span class="p">.</span><span class="nf">close</span><span class="p">();</span>
+
+    <span class="k">const</span> <span class="n">reader</span> <span class="o">=</span> <span class="n">file</span><span class="p">.</span><span class="nf">reader</span><span class="p">();</span>
+
+    <span class="k">const</span> <span class="n">a</span> <span class="o">=</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">readInt</span><span class="p">(</span><span class="kt">i32</span><span class="p">,</span> <span class="p">.</span><span class="py">little</span><span class="p">);</span>
+    <span class="k">const</span> <span class="n">b</span> <span class="o">=</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">readInt</span><span class="p">(</span><span class="kt">i32</span><span class="p">,</span> <span class="p">.</span><span class="py">little</span><span class="p">);</span>
+    <span class="k">const</span> <span class="n">c</span> <span class="o">=</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">readInt</span><span class="p">(</span><span class="kt">i32</span><span class="p">,</span> <span class="p">.</span><span class="py">little</span><span class="p">);</span>
+
+
+    <span class="k">const</span> <span class="n">bytes</span> <span class="o">=</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">readBytesNoEof</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+
+    <span class="n">std</span><span class="p">.</span><span class="py">debug</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">"a: {}, b: {}, c: {}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="o">.</span><span class="p">{</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="p">});</span>
+
+    <span class="n">std</span><span class="p">.</span><span class="py">debug</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">"bytes.len: {}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="o">.</span><span class="p">{</span><span class="n">bytes</span><span class="p">.</span><span class="py">len</span><span class="p">});</span>
+<span class="p">}</span>
+
+<span class="c">// a: 335544320, b: 1887007846, c: 538997873</span>
+<span class="c">// bytes.len: 1000</span>
+</code></pre></div></div>
+<p data-sourcepos="41:1-41:147">これ自体は特に何も問題ない。ただ、ここにファイルのシークと、<code>read()</code> が加わってくると話が違ってくる。</p>
+<div class="code-frame" data-lang="zig" data-sourcepos="43:1-81:3"><div class="highlight"><pre><code><span class="k">const</span> <span class="n">std</span> <span class="o">=</span> <span class="nb">@import</span><span class="p">(</span><span class="s">"std"</span><span class="p">);</span>
+
+<span class="k">pub</span> <span class="k">fn</span> <span class="n">main</span><span class="p">()</span> <span class="o">!</span><span class="k">void</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="n">file</span> <span class="o">=</span> <span class="k">try</span> <span class="n">std</span><span class="p">.</span><span class="py">fs</span><span class="p">.</span><span class="nf">cwd</span><span class="p">().</span><span class="nf">openFile</span><span class="p">(</span><span class="s">"test.bin"</span><span class="p">,</span> <span class="o">.</span><span class="p">{});</span>
+    <span class="k">defer</span> <span class="n">file</span><span class="p">.</span><span class="nf">close</span><span class="p">();</span>
+
+    <span class="k">const</span> <span class="n">reader</span> <span class="o">=</span> <span class="n">file</span><span class="p">.</span><span class="nf">reader</span><span class="p">();</span>
+
+    <span class="k">const</span> <span class="n">a</span> <span class="o">=</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">readInt</span><span class="p">(</span><span class="kt">i32</span><span class="p">,</span> <span class="p">.</span><span class="py">little</span><span class="p">);</span>
+    <span class="k">const</span> <span class="n">b</span> <span class="o">=</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">readInt</span><span class="p">(</span><span class="kt">i32</span><span class="p">,</span> <span class="p">.</span><span class="py">little</span><span class="p">);</span>
+    <span class="k">const</span> <span class="n">c</span> <span class="o">=</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">readInt</span><span class="p">(</span><span class="kt">i32</span><span class="p">,</span> <span class="p">.</span><span class="py">little</span><span class="p">);</span>
+
+    <span class="n">std</span><span class="p">.</span><span class="py">debug</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">"a: {}, b: {}, c: {}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="o">.</span><span class="p">{</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="p">});</span>
+
+    <span class="k">const</span> <span class="n">end</span> <span class="o">=</span> <span class="k">try</span> <span class="n">file</span><span class="p">.</span><span class="nf">getEndPos</span><span class="p">();</span>
+
+    <span class="k">try</span> <span class="n">file</span><span class="p">.</span><span class="nf">seekTo</span><span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="mi">10</span><span class="p">);</span>
+
+    <span class="k">const</span> <span class="n">d</span> <span class="o">=</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">readInt</span><span class="p">(</span><span class="kt">i32</span><span class="p">,</span> <span class="p">.</span><span class="py">little</span><span class="p">);</span>
+    <span class="n">std</span><span class="p">.</span><span class="py">debug</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">"d: {}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="o">.</span><span class="p">{</span><span class="n">d</span><span class="p">});</span>
+
+    <span class="k">try</span> <span class="n">file</span><span class="p">.</span><span class="nf">seekTo</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+    <span class="k">const</span> <span class="n">allocator</span> <span class="o">=</span> <span class="n">std</span><span class="p">.</span><span class="py">heap</span><span class="p">.</span><span class="py">page_allocator</span><span class="p">;</span>
+    <span class="k">const</span> <span class="n">bytes</span> <span class="o">=</span> <span class="k">try</span> <span class="n">allocator</span><span class="p">.</span><span class="nf">alloc</span><span class="p">(</span><span class="kt">u8</span><span class="p">,</span> <span class="mi">1000</span><span class="p">);</span>
+    <span class="k">defer</span> <span class="n">allocator</span><span class="p">.</span><span class="nf">free</span><span class="p">(</span><span class="n">bytes</span><span class="p">);</span>
+
+    <span class="k">const</span> <span class="n">size</span> <span class="o">=</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">read</span><span class="p">(</span><span class="n">bytes</span><span class="p">);</span> <span class="c">// &lt;-- !! 注意の必要な箇所 !!</span>
+
+    <span class="n">std</span><span class="p">.</span><span class="py">debug</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">"bytes.len: {}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="o">.</span><span class="p">{</span><span class="n">bytes</span><span class="p">.</span><span class="py">len</span><span class="p">});</span>
+    <span class="n">std</span><span class="p">.</span><span class="py">debug</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">"size: {}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="o">.</span><span class="p">{</span><span class="n">size</span><span class="p">});</span>
+<span class="p">}</span>
+
+<span class="c">// a: 335544320, b: 1887007846, c: 538997873</span>
+<span class="c">// d: 842675250</span>
+<span class="c">// bytes.len: 1000</span>
+<span class="c">// size: 1000</span>
+</code></pre></div></div>
+<p data-sourcepos="83:1-83:288">この例では実際に問題は起きていないものの、これと同様のコードを書き進めていたところ、 <code>try reader.read(bytes);</code> で実際にはバイト列が読めないというエラー（あるいは応答がフリーズするなど）が多々発生した。</p>
+<p data-sourcepos="85:1-85:193">（ <code>try reader.readAllAlloc()</code> 等のAlloc系はさらに多くのエラー事例が報告されていて、GitHub Issueでいくつか報告を見ることができる。原因は様々。）</p>
+<p data-sourcepos="87:1-87:188">自分はこれで半日近くハマってしまったのだけれど、実は、<code>reader.read(bytes)</code> を <code>file.read(bytes)</code> に単純に置き換えたところ、問題が解消した。</p>
+<div class="code-frame" data-lang="zig" data-sourcepos="89:1-95:3"><div class="highlight"><pre><code><span class="c">// const size = try reader.read(bytes); // これがダメなときは</span>
+<span class="k">const</span> <span class="n">size</span> <span class="o">=</span> <span class="k">try</span> <span class="n">file</span><span class="p">.</span><span class="nf">read</span><span class="p">(</span><span class="n">bytes</span><span class="p">);</span> <span class="c">// こうすると動く（かもしれない）</span>
+
+<span class="n">std</span><span class="p">.</span><span class="py">debug</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">"bytes.len: {}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="o">.</span><span class="p">{</span><span class="n">bytes</span><span class="p">.</span><span class="py">len</span><span class="p">});</span>
+<span class="n">std</span><span class="p">.</span><span class="py">debug</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">"size: {}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="o">.</span><span class="p">{</span><span class="n">size</span><span class="p">});</span>
+</code></pre></div></div>
+<p data-sourcepos="97:1-97:192">原因やどういう条件下で発生しているかは不明なものの、今のところ <code>file.read()</code> では確実に成功するのでそういうものなのだと理解している。</p>
+<p data-sourcepos="99:1-99:176">（なお、<code>reader.readInt</code> 等では同様のエラーに出くわしたことはないので、読み込むバイト数の大きさ等にも依るのかもしれない。）</p>
+<h2 data-sourcepos="101:1-101:36">
+<span id="streamsourceでさらにハマる" class="fragment"></span><a href="#streamsource%E3%81%A7%E3%81%95%E3%82%89%E3%81%AB%E3%83%8F%E3%83%9E%E3%82%8B"><i class="fa fa-link"></i></a>StreamSourceでさらにハマる</h2>
+<p data-sourcepos="103:1-103:158">実は、上記でハマるさらに前に、<code>StreamSource</code>を使っていてハマってしまっていたのでこちらも一応メモしておきたい。</p>
+<p data-sourcepos="105:1-105:259"><a href="https://zenn.dev/tetsu_koba/articles/1e3832a9b5b247" rel="nofollow noopener" target="_blank">以下の記事</a>をみて、「読み書きする対象としてファイルとメモリ中のバッファとを統一的に扱いたい」ときは、StreamSourceを使えば良いのだなと知った。</p>
+<p data-sourcepos="107:1-107:51"><iframe id="qiita-embed-content__94131ba1225a40ec9dd12ae60e47fc86" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__94131ba1225a40ec9dd12ae60e47fc86" data-content="https%3A%2F%2Fzenn.dev%2Ftetsu_koba%2Farticles%2F1e3832a9b5b247" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="109:1-109:138">そして、ファイルとメモリを統一的に扱いたいニーズがあったの前述の例を以下のように書き換えた。</p>
+<div class="code-frame" data-lang="zig" data-sourcepos="111:1-150:3"><div class="highlight"><pre><code><span class="k">const</span> <span class="n">std</span> <span class="o">=</span> <span class="nb">@import</span><span class="p">(</span><span class="s">"std"</span><span class="p">);</span>
+
+<span class="k">pub</span> <span class="k">fn</span> <span class="n">main</span><span class="p">()</span> <span class="o">!</span><span class="k">void</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="n">file</span> <span class="o">=</span> <span class="k">try</span> <span class="n">std</span><span class="p">.</span><span class="py">fs</span><span class="p">.</span><span class="nf">cwd</span><span class="p">().</span><span class="nf">openFile</span><span class="p">(</span><span class="s">"test.bin"</span><span class="p">,</span> <span class="o">.</span><span class="p">{});</span>
+    <span class="k">defer</span> <span class="n">file</span><span class="p">.</span><span class="nf">close</span><span class="p">();</span>
+
+    <span class="k">var</span> <span class="n">source</span> <span class="o">=</span> <span class="n">std</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="py">StreamSource</span><span class="p">{</span> <span class="p">.</span><span class="py">file</span> <span class="o">=</span> <span class="n">file</span> <span class="p">};</span>
+    <span class="c">// ↓  file.reader() ではない点に注意。file自体には以降アクセスさせない。</span>
+    <span class="k">const</span> <span class="n">reader</span> <span class="o">=</span> <span class="n">source</span><span class="p">.</span><span class="nf">reader</span><span class="p">();</span>
+
+    <span class="k">const</span> <span class="n">a</span> <span class="o">=</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">readInt</span><span class="p">(</span><span class="kt">i32</span><span class="p">,</span> <span class="p">.</span><span class="py">little</span><span class="p">);</span>
+    <span class="k">const</span> <span class="n">b</span> <span class="o">=</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">readInt</span><span class="p">(</span><span class="kt">i32</span><span class="p">,</span> <span class="p">.</span><span class="py">little</span><span class="p">);</span>
+    <span class="k">const</span> <span class="n">c</span> <span class="o">=</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">readInt</span><span class="p">(</span><span class="kt">i32</span><span class="p">,</span> <span class="p">.</span><span class="py">little</span><span class="p">);</span>
+
+    <span class="n">std</span><span class="p">.</span><span class="py">debug</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">"a: {}, b: {}, c: {}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="o">.</span><span class="p">{</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="p">});</span>
+
+    <span class="k">const</span> <span class="n">end</span> <span class="o">=</span> <span class="k">try</span> <span class="n">file</span><span class="p">.</span><span class="nf">getEndPos</span><span class="p">();</span>
+
+    <span class="k">try</span> <span class="n">source</span><span class="p">.</span><span class="nf">seekTo</span><span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="mi">10</span><span class="p">);</span>
+
+    <span class="k">const</span> <span class="n">d</span> <span class="o">=</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">readInt</span><span class="p">(</span><span class="kt">i32</span><span class="p">,</span> <span class="p">.</span><span class="py">little</span><span class="p">);</span>
+    <span class="n">std</span><span class="p">.</span><span class="py">debug</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">"d: {}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="o">.</span><span class="p">{</span><span class="n">d</span><span class="p">});</span>
+
+    <span class="k">try</span> <span class="n">source</span><span class="p">.</span><span class="nf">seekTo</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+    <span class="k">const</span> <span class="n">allocator</span> <span class="o">=</span> <span class="n">std</span><span class="p">.</span><span class="py">heap</span><span class="p">.</span><span class="py">page_allocator</span><span class="p">;</span>
+    <span class="k">const</span> <span class="n">bytes</span> <span class="o">=</span> <span class="k">try</span> <span class="n">allocator</span><span class="p">.</span><span class="nf">alloc</span><span class="p">(</span><span class="kt">u8</span><span class="p">,</span> <span class="mi">1000</span><span class="p">);</span>
+    <span class="k">defer</span> <span class="n">allocator</span><span class="p">.</span><span class="nf">free</span><span class="p">(</span><span class="n">bytes</span><span class="p">);</span>
+
+    <span class="k">const</span> <span class="n">size</span> <span class="o">=</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">read</span><span class="p">(</span><span class="n">bytes</span><span class="p">);</span> <span class="c">// &lt;-- !! 注意の必要な箇所 !!</span>
+
+    <span class="n">std</span><span class="p">.</span><span class="py">debug</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">"bytes.len: {}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="o">.</span><span class="p">{</span><span class="n">bytes</span><span class="p">.</span><span class="py">len</span><span class="p">});</span>
+    <span class="n">std</span><span class="p">.</span><span class="py">debug</span><span class="p">.</span><span class="nf">print</span><span class="p">(</span><span class="s">"size: {}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="o">.</span><span class="p">{</span><span class="n">size</span><span class="p">});</span>
+<span class="p">}</span>
+<span class="c">// a: 335544320, b: 1887007846, c: 538997873</span>
+<span class="c">// d: 842675250</span>
+<span class="c">// bytes.len: 1000</span>
+<span class="c">// size: 1000</span>
+</code></pre></div></div>
+<p data-sourcepos="152:1-152:285">これまた例のなかでは特に問題は起きていないのだけれど、やはり、実際に書き進めていくと同じく <code>try reader.read(bytes);</code> が失敗するケースに出くわした。しかも、毎回のように起こるエラーが違っていて大混乱。</p>
+<p data-sourcepos="154:1-154:337">StreamSourceなら、以下のようにファイルに限らずメモリの読み書きもできるので、便利で良いと考えていたのに、困った事態になった。（※ ただし、問題が起きたのはファイル読み込み時のみで、メモリ読み込み時は問題は発生しないことには注意。）</p>
+<div class="code-frame" data-lang="zig" data-sourcepos="156:1-159:3"><div class="highlight"><pre><code><span class="k">var</span> <span class="n">source</span> <span class="o">=</span> <span class="n">std</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="py">StreamSource</span><span class="p">{</span> <span class="p">.</span><span class="py">const_buffer</span> <span class="o">=</span> <span class="n">std</span><span class="p">.</span><span class="py">io</span><span class="p">.</span><span class="nf">fixedBufferStream</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span> <span class="p">};</span>
+<span class="c">// var source = std.io.StreamSource{ .buffer = std.io.fixedBufferStream(buf_allocated) };</span>
+</code></pre></div></div>
+<p data-sourcepos="161:1-161:219">さらに困ったことに、Fileの場合と違って、StreamSourceから直接read（つまり <code>source.read(bytes)</code> ）しようとすると、<code>NotOpenForReading</code> エラーが出るという事態になった<sup><a href="#fn-2" id="fnref-2">1</a></sup>。</p>
+<p data-sourcepos="163:1-163:437"><code>NotOpenForReading</code>についてはさておき、おそらく、<code>reader.read()</code> ができなかった理由は、読み込むバイト数が多かったりなど特定の条件下で発生する問題ではないかと感じているのだけれど、結局埒が明かなかったので、StreamSourceでラップするのをやめて、例えば以下のように、シンプルに条件分岐するコードを書くことにした。</p>
+<div class="code-frame" data-lang="zig" data-sourcepos="165:1-187:3"><div class="highlight"><pre><code><span class="k">fn</span> <span class="n">readInt</span><span class="p">(</span><span class="n">self</span><span class="p">:</span> <span class="o">*</span><span class="n">MyClazz</span><span class="p">,</span> <span class="k">comptime</span> <span class="n">T</span><span class="p">:</span> <span class="k">type</span><span class="p">,</span> <span class="n">endian</span><span class="p">:</span> <span class="n">std</span><span class="p">.</span><span class="py">builtin</span><span class="p">.</span><span class="py">Endian</span><span class="p">)</span> <span class="o">!</span><span class="n">T</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="py">stream_reader</span><span class="p">)</span> <span class="p">|</span><span class="n">reader</span><span class="p">|</span> <span class="p">{</span>
+        <span class="k">const</span> <span class="n">bytes</span> <span class="o">=</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">readInt</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">endian</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nb">@as</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="nb">@bitCast</span><span class="p">(</span><span class="n">bytes</span><span class="p">));</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="py">file_reader</span><span class="p">)</span> <span class="p">|</span><span class="n">reader</span><span class="p">|</span> <span class="p">{</span>
+        <span class="k">const</span> <span class="n">bytes</span> <span class="o">=</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">readInt</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">endian</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nb">@as</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="nb">@bitCast</span><span class="p">(</span><span class="n">bytes</span><span class="p">));</span>
+    <span class="p">}</span>
+    <span class="k">unreachable</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">fn</span> <span class="n">read</span><span class="p">(</span><span class="n">self</span><span class="p">:</span> <span class="o">*</span><span class="n">MyClazz</span><span class="p">,</span> <span class="n">buffer</span><span class="p">:</span> <span class="p">[]</span><span class="kt">u8</span><span class="p">)</span> <span class="o">!</span><span class="kt">usize</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="py">stream_reader</span><span class="p">)</span> <span class="p">|</span><span class="n">reader</span><span class="p">|</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">try</span> <span class="n">reader</span><span class="p">.</span><span class="nf">read</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="py">file</span><span class="p">)</span> <span class="p">|</span><span class="n">file</span><span class="p">|</span> <span class="p">{</span> <span class="c">// ※ readerではない点に注意。</span>
+        <span class="k">return</span> <span class="k">try</span> <span class="n">file</span><span class="p">.</span><span class="nf">read</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">unreachable</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c">// 他の関数も同様。割愛。</span>
+</code></pre></div></div>
+<p data-sourcepos="189:1-189:242">もっと良い書き方はあるはずだと思うし、あまり美しくはないのだけれど、これで問題は解消され、一応、メモリからのreadとファイルからのreadを両方達成できるようにはなった。</p>
+<h2 data-sourcepos="191:1-191:12">
+<span id="まとめ" class="fragment"></span><a href="#%E3%81%BE%E3%81%A8%E3%82%81"><i class="fa fa-link"></i></a>まとめ</h2>
+<p data-sourcepos="193:1-193:222">Zigはまだまだ発展途上の言語というのもあり、まだ全般的にドキュメントが不足していたり、破壊的変更が多かったり、バグと思われる事例に出くわすことがある。</p>
+<p data-sourcepos="195:1-195:310">実際にバグなのかどうかはわからないし<sup><a href="#fn-1" id="fnref-1">2</a></sup>、使用事例も多くないので一般的にはこう書くべきというコード自体もよくわかっていないのだけれど、こうした問題は言語の発展とともに少しずつ解消されていくのではないかと思う。</p>
+<section class="footnotes">
+<ol>
+<li id="fn-2">
+<p data-sourcepos="197:7-197:257">今思うと、StreamSourceは内部にfileを保持しているので、条件分岐でこのfileにアクセスして<code>read()</code>するという手もあったかもしれない。未検証。（<code>NotOpenForReading</code>の原因についても未検証。） <a href="#fnref-2" class="">↩</a></p>
+</li>
+<li id="fn-1">
+<p data-sourcepos="199:7-199:222">本当にバグだったとしたら、問題の起こるバイナリファイルなどをもっと特定して、バグ報告を上げるべきかもしれない。これについては今後検討していきたい <a href="#fnref-1" class="">↩</a></p>
+</li>
+</ol>
+</section>

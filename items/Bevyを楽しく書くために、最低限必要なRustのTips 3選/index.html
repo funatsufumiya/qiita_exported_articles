@@ -1,0 +1,183 @@
+<h2 data-sourcepos="1:1-1:9">
+<span id="概要" class="fragment"></span><a href="#%E6%A6%82%E8%A6%81"><i class="fa fa-link"></i></a>概要</h2>
+<p data-sourcepos="3:1-3:160">Bevy Engineを初めて使う人にとって、Rust言語特有の壁があります。今回は特にハマりがちな点を3つ挙げてご紹介します。</p>
+<h2 data-sourcepos="5:1-5:12">
+<span id="前置き" class="fragment"></span><a href="#%E5%89%8D%E7%BD%AE%E3%81%8D"><i class="fa fa-link"></i></a>前置き</h2>
+<p data-sourcepos="7:1-7:256"><a href="https://bevyengine.org/" rel="nofollow noopener" target="_blank">Bevy Engine</a>は、ゲームエンジンと紹介されることが多いですが、個人的には<a href="https://openframeworks.cc/ja/" rel="nofollow noopener" target="_blank">openFrameworks</a>などと同様に、汎用的な開発フレームワークと捉えています。</p>
+<p data-sourcepos="9:1-9:311">Bevy Engineはとてもよく設計されていて、幅広い用途に活用できるのですが、良くも悪くも現状はRust言語専用に作られていて、Rust言語以外でも使えるようにしようとする動きはなくはないものの、現状ではRustで書かざるをえません。</p>
+<p data-sourcepos="11:1-11:206">Rustは、C++やJavaと比べても難易度は高く、Bevyは難易度を緩和する仕組みを設けてくれてはいますが、BevyとRustにはいくつかのハマりポイントがあります。</p>
+<p data-sourcepos="13:1-13:48"><iframe id="qiita-embed-content__6a7f8bada8db7021ea6fd36bcf727334" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__6a7f8bada8db7021ea6fd36bcf727334" data-content="https%3A%2F%2Fzenn.dev%2Fmsakuta%2Farticles%2F40c1ad41b1c62e" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="15:1-15:198">当記事では、特にRust言語特有の事情に焦点をあて、Bevyに初めて触れる際に、特に抑えておくべき、Tipsともいえるコツをいくつか挙げていきます。</p>
+<h2 data-sourcepos="17:1-17:46">
+<span id="1-可変参照はスコープで1つだけ" class="fragment"></span><a href="#1-%E5%8F%AF%E5%A4%89%E5%8F%82%E7%85%A7%E3%81%AF%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%97%E3%81%A71%E3%81%A4%E3%81%A0%E3%81%91"><i class="fa fa-link"></i></a>1. 可変参照はスコープで1つだけ</h2>
+<p data-sourcepos="19:1-19:137">所有権は、RustをRustたらしめているものでありながら、プログラマを最も苦しめるものでもあります。</p>
+<p data-sourcepos="21:1-21:231">特に、他のプログラミング言語ではほとんど意識することがない事柄を意識せねばならず、意外な箇所でエラーに阻まれ、思ったようなコードが書けないことがあります。</p>
+<p data-sourcepos="23:1-23:68"><iframe id="qiita-embed-content__6f0c96d2f163a77766542d43d111da42" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__6f0c96d2f163a77766542d43d111da42" data-content="https%3A%2F%2Fdoc.rust-jp.rs%2Fbook-ja%2Fch04-02-references-and-borrowing.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="25:1-25:254">今回は特に、 <strong>「可変参照はスコープで1つだけ」</strong> というルールを挙げておきます。下記のSlackOverflowのやり取りがわかりやすいので、コードを参考にして少し改変しながらみていきます。</p>
+<p data-sourcepos="27:1-27:98"><iframe id="qiita-embed-content__0cd565af7fc87ed6d8863783cad85eb4" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__0cd565af7fc87ed6d8863783cad85eb4" data-content="https%3A%2F%2Fstackoverflow.com%2Fquestions%2F51511114%2Fborrowing-mutable-twice-while-using-the-same-variable" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="29:1-29:104">以下のコードは、<code>do_stuff</code>の2回目でエラーになり、コンパイルが通りません。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="31:1-48:3"><div class="highlight"><pre><code><span class="k">fn</span> <span class="nf">do_stuff</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="nb">usize</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">*</span><span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">fn</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">v</span> <span class="o">=</span> <span class="nd">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">];</span>
+    <span class="k">let</span> <span class="n">current1</span> <span class="o">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+    <span class="nf">do_stuff</span><span class="p">(</span><span class="n">current1</span><span class="p">);</span>
+    
+    <span class="k">let</span> <span class="n">current2</span> <span class="o">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+    <span class="nf">do_stuff</span><span class="p">(</span><span class="n">current2</span><span class="p">);</span>
+    
+    <span class="nf">do_stuff</span><span class="p">(</span><span class="n">current1</span><span class="p">);</span> <span class="c1">// error[E0499]: cannot borrow `v` as mutable more than once at a time</span>
+    
+    <span class="nd">println!</span><span class="p">(</span><span class="s">"{:?}"</span><span class="p">,</span> <span class="n">v</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<div class="code-frame" data-lang="text" data-sourcepos="50:1-63:3"><div class="highlight"><pre><code>error[E0499]: cannot borrow `v` as mutable more than once at a time
+  --&gt; src/main.rs:10:25
+   |
+7  |     let current1 = &amp;mut v[1];
+   |                         - first mutable borrow occurs here
+...
+10 |     let current2 = &amp;mut v[0];
+   |                         ^ second mutable borrow occurs here
+...
+13 |     do_stuff(current1);
+   |              -------- first borrow later used here
+
+</code></pre></div></div>
+<p data-sourcepos="65:1-65:215">このケースの場合は、1回目の借用と2回目の借用で、スコープが被ってしまっているのが原因です。以下のように修正すればコンパイルが通るようになります。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="67:1-89:3"><div class="highlight"><pre><code><span class="k">fn</span> <span class="nf">do_stuff</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="nb">usize</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">*</span><span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">fn</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="k">mut</span> <span class="n">v</span> <span class="o">=</span> <span class="nd">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">];</span>
+    <span class="p">{</span>
+        <span class="k">let</span> <span class="n">current1</span> <span class="o">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+        <span class="nf">do_stuff</span><span class="p">(</span><span class="n">current1</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="p">{</span>
+        <span class="k">let</span> <span class="n">current2</span> <span class="o">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+        <span class="nf">do_stuff</span><span class="p">(</span><span class="n">current2</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="p">{</span>
+        <span class="k">let</span> <span class="n">current3</span> <span class="o">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+        <span class="nf">do_stuff</span><span class="p">(</span><span class="n">current3</span><span class="p">);</span>
+    <span class="p">}</span>
+    
+    <span class="nd">println!</span><span class="p">(</span><span class="s">"{:?}"</span><span class="p">,</span> <span class="n">v</span><span class="p">);</span> <span class="c1">// [2, 4, 3, 4]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p data-sourcepos="91:1-91:256">この、<code>&amp;mut</code>を使いたいのにコンパイルが通らないというのが、Bevyを使っていて一番遭遇率が高いケースだと思いますので、これを知っているか否かでハマり時間がだいぶ変わると思います。</p>
+<p data-sourcepos="93:1-93:176">ちなみにどうしてもこれによりコンパイルが通らない場合、Bevyでは<strong>システムを分割する</strong>ことで対応できることが多くあります。</p>
+<p data-sourcepos="95:1-95:243">なおBevy固有の事項としては <strong>クエリ (Query)</strong> でも、同様の問題が発生することがあります。こちらは<code>Without</code>を利用することで回避できます。詳しくは下記記事を参照してください。</p>
+<p data-sourcepos="97:1-97:191"><a href="https://zenn.dev/msakuta/articles/40c1ad41b1c62e#component-%E3%81%AE%E5%90%8C%E6%99%82%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9" rel="nofollow noopener" target="_blank">[Rust] Bevyのはまりどころ - Componentの同時アクセス</a></p>
+<h2 data-sourcepos="99:1-99:65">
+<span id="2-再借用トリック-可変参照と不変参照の共存" class="fragment"></span><a href="#2-%E5%86%8D%E5%80%9F%E7%94%A8%E3%83%88%E3%83%AA%E3%83%83%E3%82%AF-%E5%8F%AF%E5%A4%89%E5%8F%82%E7%85%A7%E3%81%A8%E4%B8%8D%E5%A4%89%E5%8F%82%E7%85%A7%E3%81%AE%E5%85%B1%E5%AD%98"><i class="fa fa-link"></i></a>2. 再借用トリック: 可変参照と不変参照の共存</h2>
+<p data-sourcepos="101:1-101:247">再び所有権まわりですが、先ほどの問題と似ていて次に多いエラーが、<strong>一度immutable (不変) で借用するとmutable (可変) で借用できない</strong>というものです。逆パターンのこともあります。</p>
+<p data-sourcepos="103:1-103:60"><iframe id="qiita-embed-content__c731b72668704b69e3e0e965acd94bc3" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__c731b72668704b69e3e0e965acd94bc3" data-content="https%3A%2F%2Fbevy-cheatbook.github.io%2Fpitfalls%2Fsplit-borrows.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="105:1-105:15">コード例：</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="107:1-123:3"><div class="highlight"><pre><code><span class="nd">#[derive(Component)]</span>
+<span class="k">struct</span> <span class="n">MyThing</span> <span class="p">{</span>
+    <span class="n">a</span><span class="p">:</span> <span class="n">Foo</span><span class="p">,</span>
+    <span class="n">b</span><span class="p">:</span> <span class="n">Bar</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">fn</span> <span class="nf">my_system</span><span class="p">(</span><span class="k">mut</span> <span class="n">q</span><span class="p">:</span> <span class="n">Query</span><span class="o">&lt;&amp;</span><span class="k">mut</span> <span class="n">MyThing</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="n">thing</span> <span class="k">in</span> <span class="n">q</span><span class="nf">.iter_mut</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nf">helper_func</span><span class="p">(</span><span class="o">&amp;</span><span class="n">thing</span><span class="py">.a</span><span class="p">,</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">thing</span><span class="py">.b</span><span class="p">);</span> <span class="c1">// ERROR!</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">fn</span> <span class="nf">helper_func</span><span class="p">(</span><span class="n">foo</span><span class="p">:</span> <span class="o">&amp;</span><span class="n">Foo</span><span class="p">,</span> <span class="n">bar</span><span class="p">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">Bar</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// do something</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p data-sourcepos="125:1-125:18">エラー内容：</p>
+<div class="code-frame" data-lang="text" data-sourcepos="127:1-148:3"><div class="highlight"><pre><code>error[E0502]: cannot borrow `thing` as mutable because it is also borrowed as immutable
+  --&gt; src/main.rs:14:36
+   |
+14 |         helper_func(&amp;thing.a, &amp;mut thing.b); // ERROR!
+   |         -----------  -----         ^^^^^ mutable borrow occurs here
+   |         |            |
+   |         |            immutable borrow occurs here
+   |         immutable borrow later used by call
+
+error[E0596]: cannot borrow `thing` as mutable, as it is not declared as mutable
+  --&gt; src/main.rs:14:36
+   |
+14 |         helper_func(&amp;thing.a, &amp;mut thing.b); // ERROR!
+   |                                    ^^^^^ cannot borrow as mutable
+   |
+help: consider changing this to be mutable
+   |
+13 |     for mut thing in q.iter_mut() {
+   |         +++
+
+</code></pre></div></div>
+<p data-sourcepos="150:1-150:175">ご丁寧に解決策のヒントまで書かれているのですが、このヒントでは実は解決しません。（Rustはこういうことが多いのです…。）</p>
+<p data-sourcepos="152:1-152:103">本当の解決策は先程の記事にかかれていて、<strong>再借用トリック</strong>を使います。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="154:1-161:3"><div class="highlight"><pre><code><span class="k">for</span> <span class="n">thing</span> <span class="k">in</span> <span class="n">q</span><span class="nf">.iter_mut</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="n">thing</span> <span class="o">=</span> <span class="n">thing</span><span class="nf">.into_inner</span><span class="p">();</span>
+    <span class="c1">// または</span>
+    <span class="c1">// let thing = &amp;mut *thing;</span>
+    <span class="nf">helper_func</span><span class="p">(</span><span class="o">&amp;</span><span class="n">thing</span><span class="py">.a</span><span class="p">,</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">thing</span><span class="py">.b</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p data-sourcepos="163:1-163:384">このトラブルの原因は、Bevyが提供する<code>Res&lt;T&gt;</code>や<code>ResMut&lt;T&gt;</code>などのスマートポインタに起因するものです。詳細は<a href="https://bevy-cheatbook.github.io/pitfalls/split-borrows.html" rel="nofollow noopener" target="_blank">元記事</a>に<a href="https://bevy-cheatbook.github.io/pitfalls/split-borrows.html#explanation" rel="nofollow noopener" target="_blank">解説</a>がありますので、脚注にその翻訳だけ載せておきます <sup><a href="#fn-3" id="fnref-3">1</a></sup>。</p>
+<h2 data-sourcepos="165:1-165:66">
+<span id="3-システムがどうしてもコンパイルを通らない" class="fragment"></span><a href="#3-%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%81%8C%E3%81%A9%E3%81%86%E3%81%97%E3%81%A6%E3%82%82%E3%82%B3%E3%83%B3%E3%83%91%E3%82%A4%E3%83%AB%E3%82%92%E9%80%9A%E3%82%89%E3%81%AA%E3%81%84"><i class="fa fa-link"></i></a>3. システムがどうしてもコンパイルを通らない</h2>
+<p data-sourcepos="167:1-167:226">次に多いトラブルが、自作の関数をBevyのシステムとして <code>add_systems()</code> したいのにコンパイルを通せない、あるいは <code>.run_if()</code> の前の部分でエラーが出るというものです。</p>
+<p data-sourcepos="169:1-169:58"><iframe id="qiita-embed-content__e2c7682bbc0785da440f2be47b7db2a4" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__e2c7682bbc0785da440f2be47b7db2a4" data-content="https%3A%2F%2Fbevy-cheatbook.github.io%2Fpitfalls%2Finto-system.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="171:1-171:106">これはBevy固有の内容が多いので、上記記事の翻訳をそのまま載せておきます。</p>
+<blockquote data-sourcepos="173:1-183:137">
+<p data-sourcepos="173:3-173:35">初心者にありがちなミス</p>
+<ul data-sourcepos="174:3-182:1">
+<li data-sourcepos="174:3-174:83">
+<code>mut commands: Commands</code> の代わりに <code>commands: &amp;mut Commands</code> を使う。</li>
+<li data-sourcepos="175:3-175:98">
+<code>Query&lt;&amp;MyStuff&gt;</code> や <code>Query&lt;&amp;mut MyStuff&gt;</code> の代わりに<code>Query&lt;MyStuff&gt;</code> を使用する。</li>
+<li data-sourcepos="176:3-177:80">
+<code>Query&lt;(&amp;ComponentA, &amp;ComponentB)&gt;</code> の代わりに<br>
+<code>Query&lt;&amp;ComponentA, &amp;ComponentB&gt;</code> を使用する（タプルを忘れる）。</li>
+<li data-sourcepos="178:3-178:74">
+<code>Res</code>や<code>ResMut</code>を使わずにリソース型を直接使用する。</li>
+<li data-sourcepos="179:3-179:71">コンポーネント型を<code>Query</code>を使わず直接使用する。</li>
+<li data-sourcepos="180:3-180:112">クエリでバンドル型を使用する。（個々のコンポーネントを使うのが正しい。）</li>
+<li data-sourcepos="181:3-182:1">関数内で他の任意の型を使用する。</li>
+</ul>
+<p data-sourcepos="183:3-183:137">ただし、エンティティーは特別なものであり、コンポーネントではないので、<code>Query&lt;Entity&gt;</code>は正しい。</p>
+</blockquote>
+<p data-sourcepos="185:1-185:182">上記には含まれていませんが、システムの引数が16個を超えると謎のエラーが出たりします。これについては別記事で解説しています。</p>
+<p data-sourcepos="187:1-187:58"><iframe id="qiita-embed-content__ef524f74f38791a0b857d48752cbb6cb" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__ef524f74f38791a0b857d48752cbb6cb" data-content="https%3A%2F%2Fqiita.com%2Ffunatsufumiya%2Fitems%2F4b3ba3b8b2d23eca7b05" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="189:1-189:106">また、<code>ResMut</code>にはしているものの<code>mut</code>を付け忘れるなんてこともよくあります。</p>
+<p data-sourcepos="191:1-191:141">この他、Rust固有ではないBevy Engineで抑えておくべきポイントについては、下記記事を参照してください。</p>
+<p data-sourcepos="193:1-193:58"><iframe id="qiita-embed-content__dff8daa028bf365ac1c2815513e13ee4" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__dff8daa028bf365ac1c2815513e13ee4" data-content="https%3A%2F%2Fqiita.com%2Ffunatsufumiya%2Fitems%2Fa59603ac8d636362f3d7" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<h2 data-sourcepos="195:1-195:60">
+<span id="まとめ-tipsを挙げるとキリがないけれど" class="fragment"></span><a href="#%E3%81%BE%E3%81%A8%E3%82%81-tips%E3%82%92%E6%8C%99%E3%81%92%E3%82%8B%E3%81%A8%E3%82%AD%E3%83%AA%E3%81%8C%E3%81%AA%E3%81%84%E3%81%91%E3%82%8C%E3%81%A9"><i class="fa fa-link"></i></a>まとめ: Tipsを挙げるとキリがないけれど…</h2>
+<p data-sourcepos="197:1-197:113">今回はあくまで最低限のTipsを挙げるならという観点で、3つだけ厳選してみました。</p>
+<p data-sourcepos="199:1-199:160">これだけで避けられるエラーは多いはずですが、他にもライフタイム周りなど、Rustはハマりどころが本当に多いです。</p>
+<p data-sourcepos="201:1-201:331">特にライフタイムについてはBevyの恩恵を一番受けられるところだと思いますが、ライフタイム周りのエラーについて挙げるとキリがなく、かつケースバイケースのことが多いので、それについてはまた別記事でまとめる機会があればと思います。</p>
+<section class="footnotes">
+<ol>
+<li id="fn-3">
+<p data-sourcepos="203:7-203:1592">「再借用トリック」<a href="https://bevy-cheatbook.github.io/pitfalls/split-borrows.html#explanation" rel="nofollow noopener" target="_blank">解説文</a>の機械翻訳: <br> </p>
+<blockquote>Bevy は通常、特別なラッパー型 ( <a href="https://docs.rs/bevy/0.13.0/bevy/ecs/system/struct.Res.html" rel="nofollow noopener" target="_blank"><code>Res&lt;T&gt;</code></a>, <a href="https://docs.rs/bevy/0.13.0/bevy/ecs/system/struct.ResMut.html" rel="nofollow noopener" target="_blank"><code>ResMut&lt;T&gt;</code></a>や<a href="https://docs.rs/bevy/0.13.0/bevy/ecs/world/struct.Mut.html" rel="nofollow noopener" target="_blank"><code>Mut&lt;T&gt;</code></a>(コンポーネントをミュータブルに問い合わせる場合) ) を使ってデータにアクセスできます。 <br><br> これにより、Bevyはデータへのアクセスを追跡することができます。これらはRustの<a href="https://doc.rust-lang.org/stable/std/ops/trait.Deref.html" rel="nofollow noopener" target="_blank"><code>Deref</code></a>特性を使用する「スマート・ポインタ」型です。通常はシームレスに動作するので、気づかないことも多いです。 <br><br> しかし、ある意味、コンパイラにとっては不透明です。Rust言語では、構造体に直接アクセスできる場合は、構造体のフィールドを個別に借用できますが、構造体が別の型にラップされている場合は、これが機能しません。 <br><br> 上に示した再借用トリックは、効果的にラッパーを通常のRust参照に変換します。<code>*thing</code>は<a href="https://doc.rust-lang.org/stable/std/ops/trait.DerefMut.html" rel="nofollow noopener" target="_blank">DerefMut</a>でラッパーを参照解除し、<code>&amp;mut</code> がそれをミュータブルに借用します。これで、<code>Mut&lt;MyStuff&gt;</code> の代わりに<code>&amp;mut MyStuff</code> を持つことになります。</blockquote> <a href="#fnref-3" class="">↩</a>
+</li>
+</ol>
+</section>

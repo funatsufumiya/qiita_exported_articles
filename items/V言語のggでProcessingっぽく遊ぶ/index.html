@@ -1,0 +1,185 @@
+<div data-sourcepos="1:1-3:3" class="note info">
+<span class="fa fa-fw fa-check-circle"></span><div>
+<p data-sourcepos="2:1-2:132">当記事はGIFアニメーションを多く含みます。自動再生されないときは画像をタップしてください。</p>
+</div>
+</div>
+<p data-sourcepos="5:1-5:146"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F5a57e865-cdd8-4aa5-a540-bb27096caa4a.gif?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8c598f674b9b2e447c4b26519e28651e" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F5a57e865-cdd8-4aa5-a540-bb27096caa4a.gif?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8c598f674b9b2e447c4b26519e28651e" alt="画面収録 2025-09-10 9.34.21.gif" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F5a57e865-cdd8-4aa5-a540-bb27096caa4a.gif?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=f506a02aa677b7e91bc41cc67dbd919a 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/5a57e865-cdd8-4aa5-a540-bb27096caa4a.gif" loading="lazy"></a></p>
+<p data-sourcepos="7:1-7:21">（↑GIFアニメ）</p>
+<h2 data-sourcepos="9:1-9:22">
+<span id="v言語について" class="fragment"></span><a href="#v%E8%A8%80%E8%AA%9E%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><i class="fa fa-link"></i></a>V言語について</h2>
+<p data-sourcepos="11:1-11:302">2021年頃に一度話題になった<a href="https://vlang.io/" rel="nofollow noopener" target="_blank">V言語</a>ですが、その時点ではちょっと<a href="https://zenn.dev/zakuro9715/articles/vlang-from-contributor-perspective" rel="nofollow noopener" target="_blank">誇大広告気味だった</a>のもあってか、その後下火になりあまり話題にならなくなりました。</p>
+<p data-sourcepos="13:1-13:641">2025年になって改めてウォッチしてみると、言語としての安定度も高まってきており <sup><a href="#fn-1" id="fnref-1">1</a></sup>、<a href="https://docs.vlang.io/memory-management.html" rel="nofollow noopener" target="_blank">GCがデフォルトでオンになっていたり</a> <sup><a href="#fn-2" id="fnref-2">2</a></sup>、当時OpenGLだけ標準でサポートされていたのが、Metal, D3D11, WebGL2などに対応できる<a href="https://github.com/floooh/sokol" rel="nofollow noopener" target="_blank">Sokol</a>ベースの<a href="https://modules.vlang.io/gg.html" rel="nofollow noopener" target="_blank">gg</a>というフレームワークができたり、それをベースにした<a href="https://github.com/vlang/gui" rel="nofollow noopener" target="_blank">新たなGUIフレームワーク</a>ができたりと、気づかぬうちにいろいろ進化しています。</p>
+<h2 data-sourcepos="16:1-16:18">
+<span id="gg-について" class="fragment"></span><a href="#gg-%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><i class="fa fa-link"></i></a>gg について</h2>
+<p data-sourcepos="18:1-18:147"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F7ec11566-24b0-4fdf-a7db-c4cddd9023b8.gif?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=301b02cd76d68e24df89ca8c754cfc0a" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F7ec11566-24b0-4fdf-a7db-c4cddd9023b8.gif?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=301b02cd76d68e24df89ca8c754cfc0a" alt="画面収録 2025-09-10 10.40.52.gif" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F7ec11566-24b0-4fdf-a7db-c4cddd9023b8.gif?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=ddca5e67dceb14778d35da8476ead7ab 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/7ec11566-24b0-4fdf-a7db-c4cddd9023b8.gif" loading="lazy"></a></p>
+<p data-sourcepos="20:1-20:140">（↑ <a href="https://github.com/vlang/v/blob/bae7684276f5e56a9293a38bb286df3644157109/examples/gg/stars.v" rel="nofollow noopener" target="_blank">examples/gg/stars.v</a>、GIFアニメ）</p>
+<p data-sourcepos="22:1-22:393"><a href="https://modules.vlang.io/gg.html" rel="nofollow noopener" target="_blank">gg</a>は、<a href="https://github.com/floooh/sokol" rel="nofollow noopener" target="_blank">Sokol</a>ベースの描画フレームワークで、基本的に2D用ですが、<a href="https://modules.vlang.io/sokol.sgl.html" rel="nofollow noopener" target="_blank">Sokol GL (sgl)</a> というOpenGL互換（OpenGL風）レイヤーの上に構築されているので、3Dにも対応できます。基本的にSokolにできることはggでもできます。</p>
+<p data-sourcepos="24:1-24:185">なんとなく<a href="https://p5js.org/" rel="nofollow noopener" target="_blank">p5.js</a> (<a href="https://processing.org/" rel="nofollow noopener" target="_blank">Processing</a>、Proce55ing) に似たAPIになっていて、それが今回の記事の動機になっています。</p>
+<p data-sourcepos="26:1-26:370">V言語は<a href="https://nim-lang.org/" rel="nofollow noopener" target="_blank">Nim</a>と同じくC言語へのトランスパイラ <sup><a href="#fn-a" id="fnref-a">3</a></sup> で、爆速かつ省メモリなので、ggと合わせて、Processingや<a href="https://openframeworks.cc/ja/" rel="nofollow noopener" target="_blank">openFrameworks</a> に代わる（あるいは<a href="https://love2d.org/" rel="nofollow noopener" target="_blank">LÖVE 2D</a>の代替など）、新たな存在となる可能性もあるように私は感じています。</p>
+<h2 data-sourcepos="28:1-28:27">
+<span id="開発環境について" class="fragment"></span><a href="#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><i class="fa fa-link"></i></a>開発環境について</h2>
+<p data-sourcepos="30:1-30:49">V言語のインストール自体は簡単で、</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="32:1-37:3"><div class="highlight"><pre><code><span class="nv">$ </span>git clone <span class="nt">--depth</span><span class="o">=</span>1 https://github.com/vlang/v
+<span class="nv">$ </span><span class="nb">cd </span>v
+<span class="nv">$ </span>make
+<span class="nv">$ </span>./v symlink
+</code></pre></div></div>
+<p data-sourcepos="39:1-39:307">ですぐに完了します。makeとありますが、makeは内包されているので何も他にインストールする必要はありません。gccなどの別のコンパイラも基本的には要りません。TCC（Tiny C Compiler）というコンパイラが自動で内包されます。 <sup><a href="#fn-1" id="fnref-1-2">1</a></sup></p>
+<p data-sourcepos="41:1-41:83">あとは <code>v</code> と打つと、インタプリタ（対話環境）で遊べます。</p>
+<p data-sourcepos="43:1-43:161"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F69194246-1067-4a15-ac57-37672d15b6d8.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=d140009491d2b700dd420198156033a0" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F69194246-1067-4a15-ac57-37672d15b6d8.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=d140009491d2b700dd420198156033a0" alt="スクリーンショット 2025-09-10 9.12.05.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F69194246-1067-4a15-ac57-37672d15b6d8.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=dffa99219b980a1a4bad2b6bada4adf9 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/69194246-1067-4a15-ac57-37672d15b6d8.png" loading="lazy"></a></p>
+<p data-sourcepos="45:1-45:70"><code>v run hello.v</code> でファイルを実行することもできます。</p>
+<p data-sourcepos="47:1-47:185">IDEがほしいときは、VSCodeに<a href="https://marketplace.visualstudio.com/items?itemName=VOSCA.vscode-v-analyzer" rel="nofollow noopener" target="_blank">v-analyzer</a>をインストールすれば、もうバッチリです。</p>
+<div data-sourcepos="49:1-51:3" class="note warn">
+<span class="fa fa-fw fa-exclamation-circle"></span><div>
+<p data-sourcepos="50:1-50:145">【追記】v-analyzerの正しいインストール方法を誤って記載していたので、詳しくは下記を参照してください。</p>
+</div>
+</div>
+<p data-sourcepos="53:1-53:58"><iframe id="qiita-embed-content__d67466a3f54009dd8b6a3617c1b56a65" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__d67466a3f54009dd8b6a3617c1b56a65" data-content="https%3A%2F%2Fqiita.com%2Ffunatsufumiya%2Fitems%2F4f2824d304f006d3a366" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="55:1-55:161"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fae3da200-7cf0-4d87-985e-74b2d31c93d3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=4e9c6bf33a153f2b03f5dcffcf976088" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fae3da200-7cf0-4d87-985e-74b2d31c93d3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=4e9c6bf33a153f2b03f5dcffcf976088" alt="スクリーンショット 2025-09-10 9.18.48.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fae3da200-7cf0-4d87-985e-74b2d31c93d3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=94fd2298466aac503e74350cb78ef615 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/ae3da200-7cf0-4d87-985e-74b2d31c93d3.png" loading="lazy"></a></p>
+<p data-sourcepos="57:1-57:398"><del>v-analyzerのバイナリのインストールが途中で促されますが、環境によっては失敗してしまうこともあるので、その場合は<a href="https://github.com/v-analyzer/v-analyzer/releases" rel="nofollow noopener" target="_blank">v-analyzer/releases</a>からダウンロードして解凍してPATHに配置すればOKです。</del> (先の追記の通り、正しいインストール手順に従ってください。)</p>
+<p data-sourcepos="59:1-59:203">（v-analyzer、たまにおかしな現象に見舞われるのですが、そういうときはv-analyzerやVSCodeの再起動をすれば直ります。脚注 <sup><a href="#fn-4" id="fnref-4">4</a></sup> も参考にしてください。）</p>
+<h2 data-sourcepos="61:1-61:14">
+<span id="hello-world" class="fragment"></span><a href="#hello-world"><i class="fa fa-link"></i></a>Hello World</h2>
+<p data-sourcepos="63:1-63:74">百聞は一見に如かずなので、Hello Worldを書いてみます。</p>
+<p data-sourcepos="65:1-65:161"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F34d7d941-7e6c-45ef-a624-a172840ab9ed.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=6c9d296d7ea0aab8a574ccdaa66a9906" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F34d7d941-7e6c-45ef-a624-a172840ab9ed.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=6c9d296d7ea0aab8a574ccdaa66a9906" alt="スクリーンショット 2025-09-10 9.26.30.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F34d7d941-7e6c-45ef-a624-a172840ab9ed.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=7e366929c9c1ef8bc73bb2bb33484ca0 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/34d7d941-7e6c-45ef-a624-a172840ab9ed.png" loading="lazy"></a></p>
+<div data-sourcepos="67:1-69:3" class="note warn">
+<span class="fa fa-fw fa-exclamation-circle"></span><div>
+<p data-sourcepos="68:1-68:93">現時点でV言語はQiitaではシンタックスハイライトされないようです。</p>
+</div>
+</div>
+<p data-sourcepos="71:1-71:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F32c3f31a-653e-45f1-80a0-20c4b7f8c416.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=90367e1d25c4c93f02c4e25a66aa93af" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F32c3f31a-653e-45f1-80a0-20c4b7f8c416.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=90367e1d25c4c93f02c4e25a66aa93af" alt="スクリーンショット 2025-09-10 11.28.41.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F32c3f31a-653e-45f1-80a0-20c4b7f8c416.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=6a6b07583b060f5577b0144e43725d1d 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/32c3f31a-653e-45f1-80a0-20c4b7f8c416.png" loading="lazy"></a></p>
+<div class="code-frame" data-lang="v" data-sourcepos="73:1-110:3"><div class="highlight"><pre><code>import gg
+
+const win_width = 600
+const win_height = 300
+
+struct App {
+mut:
+	gg    &amp;gg.Context = unsafe { nil }
+}
+
+fn main() {
+	mut app := &amp;App{}
+	app.gg = gg.new_context(
+		bg_color:      gg.white
+		width:         win_width
+		height:        win_height
+		create_window: true
+		window_title:  'Hello'
+		frame_fn:      frame
+		user_data:     app
+	)
+	app.gg.run()
+}
+
+fn frame(mut app App) {
+	app.gg.begin()
+	app.draw()
+	app.gg.end()
+}
+
+fn (mut app App) draw() {
+	g := app.gg
+	g.draw_text_def(10, 10, 'hello world!')
+	g.draw_rect_filled(30, 30, 40, 40, gg.blue)
+	g.draw_rect_empty(25, 25, 50, 50, gg.black)
+}
+</code></pre></div></div>
+<p data-sourcepos="112:1-112:55"><code>v run hello.v</code> で実行することができます。</p>
+<p data-sourcepos="114:1-114:69">基本的には最後の <code>draw()</code> の中身だけ見ればOKです。</p>
+<p data-sourcepos="116:1-116:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fd775c599-0f39-49a6-8efe-3adc14833c0c.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=0e17cf25f0a7adabcacae0e03c4a7a57" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fd775c599-0f39-49a6-8efe-3adc14833c0c.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=0e17cf25f0a7adabcacae0e03c4a7a57" alt="スクリーンショット 2025-09-10 11.29.42.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fd775c599-0f39-49a6-8efe-3adc14833c0c.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=c5df0fea3837449c6189d4f7dfdbabeb 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/d775c599-0f39-49a6-8efe-3adc14833c0c.png" loading="lazy"></a></p>
+<div class="code-frame" data-lang="v" data-sourcepos="118:1-125:3"><div class="highlight"><pre><code>fn (mut app App) draw() {
+	g := app.gg
+	g.draw_text_def(10, 10, 'hello world!')
+	g.draw_rect_filled(30, 30, 40, 40, gg.blue)
+	g.draw_rect_empty(25, 25, 50, 50, gg.black)
+}
+</code></pre></div></div>
+<p data-sourcepos="127:1-127:134">ggでは <code>draw_xxx_filled</code> で塗りつぶし図形の描画、<code>draw_xxx_empty</code> で枠線だけの図形描画になるようです。</p>
+<p data-sourcepos="129:1-129:138">draw系関数は他に、ellipse (楕円) / circle (円) / bezier (ベジェ曲線) など豊富に種類があり、楽しそうです。</p>
+<h2 data-sourcepos="131:1-131:36">
+<span id="マウスに追従させてみる" class="fragment"></span><a href="#%E3%83%9E%E3%82%A6%E3%82%B9%E3%81%AB%E8%BF%BD%E5%BE%93%E3%81%95%E3%81%9B%E3%81%A6%E3%81%BF%E3%82%8B"><i class="fa fa-link"></i></a>マウスに追従させてみる</h2>
+<p data-sourcepos="133:1-133:146"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F5a57e865-cdd8-4aa5-a540-bb27096caa4a.gif?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8c598f674b9b2e447c4b26519e28651e" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F5a57e865-cdd8-4aa5-a540-bb27096caa4a.gif?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8c598f674b9b2e447c4b26519e28651e" alt="画面収録 2025-09-10 9.34.21.gif" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F5a57e865-cdd8-4aa5-a540-bb27096caa4a.gif?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=f506a02aa677b7e91bc41cc67dbd919a 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/5a57e865-cdd8-4aa5-a540-bb27096caa4a.gif" loading="lazy"></a></p>
+<p data-sourcepos="135:1-135:21">（↑GIFアニメ）</p>
+<p data-sourcepos="137:1-137:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F12cdf825-584a-4488-bb5b-4a8b71dc9889.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=22af30378e63af5827f749579b4c5595" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F12cdf825-584a-4488-bb5b-4a8b71dc9889.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=22af30378e63af5827f749579b4c5595" alt="スクリーンショット 2025-09-10 11.36.10.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F12cdf825-584a-4488-bb5b-4a8b71dc9889.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=6f8bfdb116916db407fb5df583616de0 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/12cdf825-584a-4488-bb5b-4a8b71dc9889.png" loading="lazy"></a></p>
+<div class="code-frame" data-lang="v" data-sourcepos="139:1-150:3"><div class="highlight"><pre><code>fn (app &amp;App) draw() {
+	g := app.gg
+
+	x := g.mouse_pos_x
+	y := g.mouse_pos_y
+
+	g.draw_text_def(x - 10, y - 20, 'hello world!')
+	g.draw_rect_filled(x + 10, y + 10, 40, 40, gg.blue)
+	g.draw_rect_empty(x + 5, y + 5, 50, 50, gg.black)
+}
+</code></pre></div></div>
+<p data-sourcepos="152:1-152:46">ノリはProcessingとそっくりですね。</p>
+<h2 data-sourcepos="154:1-154:27">
+<span id="キーボードを使う" class="fragment"></span><a href="#%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%82%92%E4%BD%BF%E3%81%86"><i class="fa fa-link"></i></a>キーボードを使う</h2>
+<p data-sourcepos="156:1-156:147"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F733ded53-570d-4d9c-8e61-500adec1be22.gif?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=7845ebdfca58cf46c9b225909a1f5f91" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F733ded53-570d-4d9c-8e61-500adec1be22.gif?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=7845ebdfca58cf46c9b225909a1f5f91" alt="画面収録 2025-09-10 11.00.12.gif" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F733ded53-570d-4d9c-8e61-500adec1be22.gif?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=6a9f3e716f6b99f0ca5289b8d1adf142 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/733ded53-570d-4d9c-8e61-500adec1be22.gif" loading="lazy"></a></p>
+<p data-sourcepos="158:1-158:21">（↑GIFアニメ）</p>
+<p data-sourcepos="160:1-160:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F053484d1-ef45-4d9f-aae0-7fff77a26cb0.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=0350d88047412d586023943f6a312630" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F053484d1-ef45-4d9f-aae0-7fff77a26cb0.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=0350d88047412d586023943f6a312630" alt="スクリーンショット 2025-09-10 11.33.23.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F053484d1-ef45-4d9f-aae0-7fff77a26cb0.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=f21efe1dde33e8a848760c4c8b86077a 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/053484d1-ef45-4d9f-aae0-7fff77a26cb0.png" loading="lazy"></a></p>
+<div class="code-frame" data-lang="v" data-sourcepos="162:1-174:3"><div class="highlight"><pre><code>fn (mut app App) draw() {
+	mut g := app.gg
+	
+	if g.is_key_down(gg.KeyCode.space) {
+		g.draw_text_def(10, 110, 'space key press')
+		g.draw_rect_filled(10, 10, 100, 100, gg.blue)
+	}else{
+		g.draw_text_def(10, 110, 'space key release')
+		g.draw_rect_empty(10, 10, 100, 100, gg.black)
+	}
+}
+</code></pre></div></div>
+<p data-sourcepos="176:1-176:412">こちらもなんとなくProcessingと似ていますね。<del><code>fn key_pressed()</code> などのイベント関数はありませんが、必要なら作れそうな雰囲気です</del> (<strong>【追記】</strong> ドキュメントを読んでいると、コールバックはちゃんとありました: <a href="https://modules.vlang.io/gg.html#Config" rel="nofollow noopener" target="_blank">参考</a>。<code>frame_fn</code> と同じように <code>keyup_fn</code> などを設定できます)。</p>
+<h2 data-sourcepos="178:1-178:24">
+<span id="回転させてみる" class="fragment"></span><a href="#%E5%9B%9E%E8%BB%A2%E3%81%95%E3%81%9B%E3%81%A6%E3%81%BF%E3%82%8B"><i class="fa fa-link"></i></a>回転させてみる</h2>
+<p data-sourcepos="180:1-180:146"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fdde94ecd-d2c1-4653-9cd3-240834c6f642.gif?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=bdc1e0805de5e1092947291f7cf5aa50" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fdde94ecd-d2c1-4653-9cd3-240834c6f642.gif?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=bdc1e0805de5e1092947291f7cf5aa50" alt="画面収録 2025-09-10 9.45.55.gif" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fdde94ecd-d2c1-4653-9cd3-240834c6f642.gif?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=44054d2e77f73e6157e8b1dff968ba51 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/dde94ecd-d2c1-4653-9cd3-240834c6f642.gif" loading="lazy"></a></p>
+<p data-sourcepos="182:1-182:21">（↑GIFアニメ）</p>
+<p data-sourcepos="184:1-184:142">ggだけでは回転できないので、sgl (Sokol GL) を呼び出します。コードの最上部に <code>import sokol.sgl</code> が要ります。</p>
+<p data-sourcepos="186:1-186:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F13860733-8272-445b-b655-30600b9d3d42.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=ab3a6ea1daa09b98886427370b1063a7" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F13860733-8272-445b-b655-30600b9d3d42.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=ab3a6ea1daa09b98886427370b1063a7" alt="スクリーンショット 2025-09-10 11.34.39.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F13860733-8272-445b-b655-30600b9d3d42.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=f3f241f870cf06c1f70b94987e2678ad 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/13860733-8272-445b-b655-30600b9d3d42.png" loading="lazy"></a></p>
+<div class="code-frame" data-lang="v" data-sourcepos="188:1-197:3"><div class="highlight"><pre><code>fn (mut app App) draw() {
+	g := app.gg
+    
+	r := g.mouse_pos_x
+	sgl.translate(200, 200, 0)
+	sgl.rotate(sgl.rad(r), 0, 0, 1)
+	g.draw_text_def(0, 0, 'hello world!')
+}
+</code></pre></div></div>
+<p data-sourcepos="199:1-199:289"><a href="https://modules.vlang.io/sokol.sgl.html" rel="nofollow noopener" target="_blank">sglの関数一覧</a>を見てみるとわかるのですが、できることは基本的にOpenGLと同じなので、例えば <code>glPushMatrix()</code> は <code>push_matrix</code> であったりと、読み替えができる作りになっているようです。</p>
+<h2 data-sourcepos="201:1-201:12">
+<span id="まとめ" class="fragment"></span><a href="#%E3%81%BE%E3%81%A8%E3%82%81"><i class="fa fa-link"></i></a>まとめ</h2>
+<p data-sourcepos="203:1-203:298">今回はこの辺で終わりたいと思いますが、<a href="https://modules.vlang.io/sokol.sgl.html" rel="nofollow noopener" target="_blank">sglのドキュメント</a>や、<a href="https://modules.vlang.io/gg.html" rel="nofollow noopener" target="_blank">ggのドキュメント</a> をざっと眺めてみると、どんなことができるかなんとなくわかるかと思います。</p>
+<p data-sourcepos="205:1-205:289"><a href="https://github.com/vlang/v/tree/master/examples/gg" rel="nofollow noopener" target="_blank">ggのexamples</a> （V言語インストール時のフォルダに <code>v/examples/gg</code> に入っている）には、3Dの例などもあるので、参考にされてみると良いかと思います。（ <code>v run xxx.v</code> で実行可能。）</p>
+<p data-sourcepos="207:1-207:249">なお、V言語自体の情報は後述のように2021年に流行ったときとだいぶ変わっているので、<a href="https://docs.vlang.io/introduction.html" rel="nofollow noopener" target="_blank">英語の公式ドキュメント</a>を参考にされることをおすすめします。</p>
+<h2 data-sourcepos="209:1-209:51">
+<span id="補足-v言語の当初との違いについて" class="fragment"></span><a href="#%E8%A3%9C%E8%B6%B3-v%E8%A8%80%E8%AA%9E%E3%81%AE%E5%BD%93%E5%88%9D%E3%81%A8%E3%81%AE%E9%81%95%E3%81%84%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><i class="fa fa-link"></i></a>補足: V言語の当初との違いについて</h2>
+<p data-sourcepos="211:1-211:356">補足になりますが、V言語では<a href="https://docs.vlang.io/global-variables.html" rel="nofollow noopener" target="_blank">グローバル変数はデフォルトでは無効になっている</a>ことなどもあり、2021年当初は<a href="https://zenn.dev/zakuro9715/articles/vlang-no-closure" rel="nofollow noopener" target="_blank">V言語にはクロージャがない</a>というのが懸念となっていたりもしていました。</p>
+<p data-sourcepos="213:1-213:126">しかし現時点では<a href="https://docs.vlang.io/functions-2.html#closures" rel="nofollow noopener" target="_blank">クロージャは既に実装されています</a>。</p>
+<p data-sourcepos="215:1-215:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F14e2c69a-bcee-4011-ba97-da4de8aa044b.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=908e842d5baa46dcb034a44bdd6c57e3" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F14e2c69a-bcee-4011-ba97-da4de8aa044b.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=908e842d5baa46dcb034a44bdd6c57e3" alt="スクリーンショット 2025-09-10 10.37.51.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F14e2c69a-bcee-4011-ba97-da4de8aa044b.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=c77885731dc1c0dbdb2ee73e9f058533 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/14e2c69a-bcee-4011-ba97-da4de8aa044b.png" loading="lazy"></a></p>
+<div class="code-frame" data-lang="v" data-sourcepos="217:1-223:3"><div class="highlight"><pre><code>my_int := 1
+my_closure := fn [my_int] () {
+    println(my_int)
+}
+my_closure() // prints 1
+</code></pre></div></div>
+<p data-sourcepos="225:1-225:254">このように、2021年頃にはあった様々な懸念事項の多くが、2025年現在では解消されているので、当時微妙だなと感じた方はまた改めてウォッチされてみると楽しいのではないかと思います。</p>
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p data-sourcepos="227:7-227:550">V言語のデフォルト（TCC）では、サードパーティのライブラリを使うときに、C言語のヘッダインクルード時（<code>#include "xxx.h"</code>）に正しくパースされないというエラー報告がとても多い印象で、実際にそれで困ることもあるのですが、V言語というよりTCC（Tiny C Compiler）の問題なので、<code>v -cc clang</code> や <code>v -cc gcc</code> などしてCコンパイラを切り替えれば（<code>v run</code>の代わりに<code>v -cc clang run</code>など）、比較的安定して使えます。 <a href="#fnref-1" class="">↩</a> <a href="#fnref-1-2" class="">↩<sup>2</sup></a></p>
+</li>
+<li id="fn-2">
+<p data-sourcepos="229:7-229:499">GCは重くなるなどいろんな懸念がある方もいるかと思いますが、<a href="https://github.com/vlang/v/discussions/17419" rel="nofollow noopener" target="_blank">開発者本人も当初はGCに懐疑的だった様子</a>で、アンチGCだったらしいのですが、実際に導入してみると実用上全く問題なかったとのことで、導入が決まったようです。（GCはオフにすることもできますし、9割くらいを静的解析で自動開放できる <code>-autofree</code> もあります。） <a href="#fnref-2" class="">↩</a></p>
+</li>
+<li id="fn-a">
+<p data-sourcepos="233:7-233:459">Nim言語とV言語の違う点はいろいろありますが、個人的にV言語の出力するC言語のほうが自然で読みやすく、C言語側でトラブルがあった際にデバッグがしやすい印象です。NimのようにC++連携は強くないのですが、<code>v translate</code>や<code>v translate wrapper</code>で自動的にC言語のラッパーが書けるのは強みで、うまく使い分けていくと良いのかなと思います。 <a href="#fnref-a" class="">↩</a></p>
+</li>
+<li id="fn-4">
+<p data-sourcepos="231:7-231:390">v-analyzerは、現時点では、<code>module main</code> など、main関数を持つvファイルが<strong>1つのフォルダに複数</strong>あると、アルファベット順で最初のファイル以外はどうやらパースがおかしくなってしまうようです。（サンプルでは複数の.vファイルがそのままフォルダの中にあることも多いのですが…。） <a href="#fnref-4" class="">↩</a></p>
+</li>
+</ol>
+</section>

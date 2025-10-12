@@ -1,0 +1,108 @@
+<p data-sourcepos="1:1-1:162">DNSサーバを自分で設置したり、設定をいじっていると、サーバを明示的に指定して<code>nslookup</code>や<code>dig</code>したいことがあります。</p>
+<p data-sourcepos="3:1-3:63">いつもやり方を忘れるのでリストにしました。</p>
+<h2 data-sourcepos="5:1-5:68">
+<span id="dnsサーバを指定して解決後のipアドレスを取得" class="fragment"></span><a href="#dns%E3%82%B5%E3%83%BC%E3%83%90%E3%82%92%E6%8C%87%E5%AE%9A%E3%81%97%E3%81%A6%E8%A7%A3%E6%B1%BA%E5%BE%8C%E3%81%AEip%E3%82%A2%E3%83%89%E3%83%AC%E3%82%B9%E3%82%92%E5%8F%96%E5%BE%97"><i class="fa fa-link"></i></a>DNSサーバを指定して、解決後のIPアドレスを取得</h2>
+<div class="code-frame" data-lang="bash" data-sourcepos="7:1-18:3"><div class="highlight"><pre><code>nslookup google.com 8.8.8.8
+<span class="c"># nslookup [調べたいドメイン名] [DNSサーバのアドレス]</span>
+
+<span class="c"># --- 実行結果 (`nslookup google.com 8.8.8.8`) ---</span>
+<span class="c"># Server:		8.8.8.8</span>
+<span class="c"># Address:	8.8.8.8#53</span>
+<span class="c">#</span>
+<span class="c"># Non-authoritative answer:</span>
+<span class="c"># Name:	google.com</span>
+<span class="c"># Address: 172.217.26.46</span>
+</code></pre></div></div>
+<p data-sourcepos="20:1-20:113">nslookupをインタラクティブモードで使う場合は、以下のようにハイフンを入れます。</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="22:1-32:3"><div class="highlight"><pre><code>nslookup - 8.8.8.8
+<span class="c"># &gt; google.com (解決したいドメイン名を入れてエンターを押すと、インタラクティブに結果が返ってくる)</span>
+<span class="c">## Server:		8.8.8.8</span>
+<span class="c">## Address:	8.8.8.8#53</span>
+<span class="c">##</span>
+<span class="c">## Non-authoritative answer:</span>
+<span class="c">## Name:	google.com</span>
+<span class="c">## Address: 172.217.25.78</span>
+<span class="c"># &gt; ...</span>
+</code></pre></div></div>
+<h2 data-sourcepos="34:1-34:48">
+<span id="digコマンドで同じことをするには" class="fragment"></span><a href="#dig%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%A7%E5%90%8C%E3%81%98%E3%81%93%E3%81%A8%E3%82%92%E3%81%99%E3%82%8B%E3%81%AB%E3%81%AF"><i class="fa fa-link"></i></a>digコマンドで同じことをするには</h2>
+<div class="code-frame" data-lang="bash" data-sourcepos="36:1-60:3"><div class="highlight"><pre><code>dig @8.8.8.8 google.com
+<span class="c"># dig @[DNSサーバのアドレス] [調べたいドメイン名]</span>
+
+<span class="c"># --- 実行結果 (`dig @8.8.8.8 google.com`) ---</span>
+<span class="c"># ; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; @8.8.8.8 google.com</span>
+<span class="c"># ; (1 server found)</span>
+<span class="c"># ;; global options: +cmd</span>
+<span class="c"># ;; Got answer:</span>
+<span class="c"># ;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 23813</span>
+<span class="c"># ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1</span>
+<span class="c">#</span>
+<span class="c"># ;; OPT PSEUDOSECTION:</span>
+<span class="c"># ; EDNS: version: 0, flags:; udp: 512</span>
+<span class="c"># ;; QUESTION SECTION:</span>
+<span class="c"># ;google.com.			IN	A</span>
+<span class="c">#</span>
+<span class="c"># ;; ANSWER SECTION:</span>
+<span class="c"># google.com.		69	IN	A	172.217.26.46</span>
+<span class="c">#</span>
+<span class="c"># ;; Query time: 36 msec</span>
+<span class="c"># ;; SERVER: 8.8.8.8#53(8.8.8.8)</span>
+<span class="c"># ;; WHEN: Thu Oct 03 12:17:25 JST 2019</span>
+<span class="c"># ;; MSG SIZE  rcvd: 55</span>
+</code></pre></div></div>
+<p data-sourcepos="62:1-62:59">nslookupよりも詳細なデータが表示されます。</p>
+<h3 data-sourcepos="64:1-64:84">
+<span id="おまけ-どのdnsサーバから返ってきた情報なのかを得る方法" class="fragment"></span><a href="#%E3%81%8A%E3%81%BE%E3%81%91-%E3%81%A9%E3%81%AEdns%E3%82%B5%E3%83%BC%E3%83%90%E3%81%8B%E3%82%89%E8%BF%94%E3%81%A3%E3%81%A6%E3%81%8D%E3%81%9F%E6%83%85%E5%A0%B1%E3%81%AA%E3%81%AE%E3%81%8B%E3%82%92%E5%BE%97%E3%82%8B%E6%96%B9%E6%B3%95"><i class="fa fa-link"></i></a>おまけ: どのDNSサーバから返ってきた情報なのかを得る方法</h3>
+<p data-sourcepos="66:1-66:108">ANSWER SECTION が返答に追加されて、ネームサーバの詳細がわかるようになります。</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="68:1-93:3"><div class="highlight"><pre><code>dig google.com ns
+
+<span class="c"># --- 実行結果 (`dig google.com ns`) ---</span>
+<span class="c"># ; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; google.com ns</span>
+<span class="c"># ;; global options: +cmd</span>
+<span class="c"># ;; Got answer:</span>
+<span class="c"># ;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 33847</span>
+<span class="c"># ;; flags: qr rd ra; QUERY: 1, ANSWER: 4, AUTHORITY: 0, ADDITIONAL: 1</span>
+<span class="c">#</span>
+<span class="c"># ;; OPT PSEUDOSECTION:</span>
+<span class="c"># ; EDNS: version: 0, flags:; udp: 512</span>
+<span class="c"># ;; QUESTION SECTION:</span>
+<span class="c"># ;google.com.			IN	NS</span>
+<span class="c">#</span>
+<span class="c"># ;; ANSWER SECTION:</span>
+<span class="c"># google.com.		21599	IN	NS	ns3.google.com.</span>
+<span class="c"># google.com.		21599	IN	NS	ns1.google.com.</span>
+<span class="c"># google.com.		21599	IN	NS	ns4.google.com.</span>
+<span class="c"># google.com.		21599	IN	NS	ns2.google.com.</span>
+<span class="c">#</span>
+<span class="c"># ;; Query time: 102 msec</span>
+<span class="c"># ;; SERVER: 8.8.8.8#53(8.8.8.8)</span>
+<span class="c"># ;; WHEN: Thu Oct 03 12:12:08 JST 2019</span>
+<span class="c"># ;; MSG SIZE  rcvd: 111</span>
+</code></pre></div></div>
+<p data-sourcepos="95:1-95:69">ネームサーバ指定と組み合わせることも可能です。</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="97:1-123:3"><div class="highlight"><pre><code>dig @8.8.8.8 google.com ns
+
+<span class="c"># --- 実行結果 (`dig @8.8.8.8 google.com ns`) ---</span>
+<span class="c"># ; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; @8.8.8.8 google.com ns</span>
+<span class="c"># ; (1 server found)</span>
+<span class="c"># ;; global options: +cmd</span>
+<span class="c"># ;; Got answer:</span>
+<span class="c"># ;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 26086</span>
+<span class="c"># ;; flags: qr rd ra; QUERY: 1, ANSWER: 4, AUTHORITY: 0, ADDITIONAL: 1</span>
+<span class="c">#</span>
+<span class="c"># ;; OPT PSEUDOSECTION:</span>
+<span class="c"># ; EDNS: version: 0, flags:; udp: 512</span>
+<span class="c"># ;; QUESTION SECTION:</span>
+<span class="c"># ;google.com.			IN	NS</span>
+<span class="c">#</span>
+<span class="c"># ;; ANSWER SECTION:</span>
+<span class="c"># google.com.		21599	IN	NS	ns3.google.com.</span>
+<span class="c"># google.com.		21599	IN	NS	ns1.google.com.</span>
+<span class="c"># google.com.		21599	IN	NS	ns2.google.com.</span>
+<span class="c"># google.com.		21599	IN	NS	ns4.google.com.</span>
+<span class="c">#</span>
+<span class="c"># ;; Query time: 76 msec</span>
+<span class="c"># ;; SERVER: 8.8.8.8#53(8.8.8.8)</span>
+<span class="c"># ;; WHEN: Thu Oct 03 12:13:16 JST 2019</span>
+<span class="c"># ;; MSG SIZE  rcvd: 111</span>
+</code></pre></div></div>

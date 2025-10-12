@@ -1,0 +1,122 @@
+<blockquote data-sourcepos="1:1-1:130">
+<p data-sourcepos="1:3-1:130">(以下、まだ未完成の記事ですが、何かの役に立つかもしれないので、一旦公開しておきます。)</p>
+</blockquote>
+<p data-sourcepos="3:1-3:131">3DCGで回転計算をしようとすると、大抵、<strong>クォータニオン (Quarternion)</strong> という概念が出てきます。</p>
+<p data-sourcepos="5:1-5:182">ところが、このクォータニオン、3次元の回転を計算するはずのに <strong>4次元</strong> の計算になっているため、非常に理解しづらいんですよね。</p>
+<p data-sourcepos="7:1-7:205">人間って、3次元を超える概念は簡単には理解できないといいますが、今回はそのクォータニオンを出来る限りわかりやすく説明してみようと思います。</p>
+<p data-sourcepos="9:1-9:207">（あくまで直感的な説明ですので、多少数学的に厳密ではないところがありますが、わかりやすさを最優先させているので、その点はご了承ください。）</p>
+<h2 data-sourcepos="11:1-11:51">
+<span id="そもそもクオータニオンって何" class="fragment"></span><a href="#%E3%81%9D%E3%82%82%E3%81%9D%E3%82%82%E3%82%AF%E3%82%AA%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%A3%E3%81%A6%E4%BD%95"><i class="fa fa-link"></i></a>そもそも、クオータニオンって何？</h2>
+<p data-sourcepos="13:1-13:242"><strong>クォータニオン (Quarternion、四元数)</strong> とは、<code>quarter-</code> (クォーター) という言葉がついていることからもわかるように、$ (w, x, y, z) $ の4つの数字（4つの<strong>次元</strong>）で表される数です。</p>
+<p data-sourcepos="15:1-15:73">$$ w + x , \boldsymbol{i} + y , \boldsymbol{j} + z , \boldsymbol{k} $$</p>
+<p data-sourcepos="17:1-17:134">なお、ここでの $ \boldsymbol{i}, \boldsymbol{j}, \boldsymbol{k} $ は、以下のような、3本の軸を表しています。</p>
+<p data-sourcepos="19:1-19:147"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F231f52df-8be3-f4ea-1517-fbcd7837c6f5.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=147cf7e29a25b5621de6142aeffb4bf9" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F231f52df-8be3-f4ea-1517-fbcd7837c6f5.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=147cf7e29a25b5621de6142aeffb4bf9" alt="スクリーンショット 2018-12-05 21.56.48.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F231f52df-8be3-f4ea-1517-fbcd7837c6f5.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=2a438f2ea1d9f755377f158254f34a5f 1x" data-canonical-src="https://qiita-image-store.s3.amazonaws.com/0/44103/231f52df-8be3-f4ea-1517-fbcd7837c6f5.png" loading="lazy"></a></p>
+<p data-sourcepos="21:1-21:182">この図を3D空間だとイメージしてください。 $ \boldsymbol{i} $ が x方向の軸、$ \boldsymbol{j} $ が y方向の軸、$ \boldsymbol{k} $ がz方向の軸です。</p>
+<p data-sourcepos="23:1-23:146"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F5b947684-d1da-e73f-3999-090485b4ad19.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=a34bb9ebf09439ab0584aec0467ea601" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F5b947684-d1da-e73f-3999-090485b4ad19.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=a34bb9ebf09439ab0584aec0467ea601" alt="スクリーンショット 2018-12-07 1.26.35.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F5b947684-d1da-e73f-3999-090485b4ad19.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=490d372c3771ef848690c8bce679a935 1x" data-canonical-src="https://qiita-image-store.s3.amazonaws.com/0/44103/5b947684-d1da-e73f-3999-090485b4ad19.png" loading="lazy"></a></p>
+<p data-sourcepos="25:1-25:133">今回はたまたまx方向が上ですが、軸の向きや、軸のとり方はいろいろバリエーションがあります。</p>
+<p data-sourcepos="27:1-27:212">ちなみに、$ w $ の部分は4次元目なので、ここでは一旦、見えないものだと思ってもらえばいいです。見えないのですが、軸としては存在するので4次元です。</p>
+<p data-sourcepos="29:1-29:285">この、一見よくわからない定義のクォータニオンですが、<strong>3次元の回転や変形を表す</strong>のに非常に便利な概念です。なので、3DCG関係のプログラミングを始めると、大抵クォータニオンに出くわすことになります。</p>
+<h3 data-sourcepos="31:1-31:27">
+<span id="i-j-k-を使う理由" class="fragment"></span><a href="#i-j-k-%E3%82%92%E4%BD%BF%E3%81%86%E7%90%86%E7%94%B1"><i class="fa fa-link"></i></a>i, j, k を使う理由</h3>
+<p data-sourcepos="33:1-33:235">ご存知の方にとっては蛇足かもしれませんが、どうしてこんな、$ \boldsymbol{i} $ みたいな文字をわざわざ使うかというと、これがないと単なる足し算になってしまうからです。</p>
+<p data-sourcepos="35:1-35:42">例えばもしクォータニオンが、</p>
+<p data-sourcepos="37:1-37:19">$$ w + x + y + z $$</p>
+<p data-sourcepos="39:1-39:91">こんな定義になっていたら、例えば w = 1、x = 3、y = 4、z = 5 のとき、</p>
+<div class="code-frame" data-lang="math" data-sourcepos="41:1-47:3"><div class="highlight"><pre><code>\begin{align}
+&amp;\quad w + x + y + z \\
+&amp;= 1 + 3 + 4 + 5 \\
+&amp;= 13
+\end{align}
+</code></pre></div></div>
+<p data-sourcepos="49:1-49:259">みたいに計算できて、最終的に1つの数、つまり1次元になってしまうのでダメなのです（目的は "3次元の回転や変形" を表すことですからね）。だから、以下のような定義になっているのです。</p>
+<p data-sourcepos="51:1-51:73">$$ w + x , \boldsymbol{i} + y , \boldsymbol{j} + z , \boldsymbol{k} $$</p>
+<p data-sourcepos="53:1-53:234">（ さらにいうと、$ 2 , \boldsymbol{i} + 3 , \boldsymbol{j} $ はこれ以上計算できず、 $ 2 , \boldsymbol{i} + 3 , \boldsymbol{j} $ のままです。$ 2 + 3 = 5 $ のようには計算できないものです。）</p>
+<p data-sourcepos="55:1-55:94">この $ \boldsymbol{i}, \boldsymbol{j}, \boldsymbol{k} $ があるおかげで、例えば、</p>
+<p data-sourcepos="57:1-57:135">$$ x , \boldsymbol{i} + y , \boldsymbol{j} + z , \boldsymbol{k} = 2 , \boldsymbol{i} + 3 , \boldsymbol{j} + 4 , \boldsymbol{k} $$</p>
+<p data-sourcepos="59:1-59:165">のとき、これをそのまま <code>(x,y,z) = (2,3,4)</code> のように、3次元の座標や3D回転などと対応させることができるというわけですね。</p>
+<p data-sourcepos="61:1-61:249">ちなみに、このような $ w $ の部分がない（ $ w = 0 $ の ）クォータニオンは、3次元上の座標を表すためにもよく使われるので、これをたまに<strong>純粋クォータニオン</strong>と呼んだりもします。</p>
+<h2 data-sourcepos="63:1-63:71">
+<span id="4次元だとイメージしづらいので2次元にしてみる" class="fragment"></span><a href="#4%E6%AC%A1%E5%85%83%E3%81%A0%E3%81%A8%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%E3%81%97%E3%81%A5%E3%82%89%E3%81%84%E3%81%AE%E3%81%A72%E6%AC%A1%E5%85%83%E3%81%AB%E3%81%97%E3%81%A6%E3%81%BF%E3%82%8B"><i class="fa fa-link"></i></a>4次元だとイメージしづらいので、2次元にしてみる</h2>
+<p data-sourcepos="65:1-65:229">さて、ここからの説明では、いきなり4つも数があるのはちょっと辛いので（3Dの図を書くのも大変ですし）、簡単のために、以下のような2次元の数を考えてみましょう。</p>
+<p data-sourcepos="67:1-67:28">$$ x + y ,\boldsymbol{i} $$</p>
+<p data-sourcepos="69:1-69:95">これは高校数学でも少し出てくる、<strong>複素数</strong> といわれるものですね。</p>
+<p data-sourcepos="71:1-71:92">これは、x, y と書いているのでわかるように、平面を表しています。</p>
+<p data-sourcepos="73:1-73:147"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F52f7c97b-de9a-65b9-c180-74332d724f8f.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=d17eb8fd2a7af6b536875508bb187ea8" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F52f7c97b-de9a-65b9-c180-74332d724f8f.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=d17eb8fd2a7af6b536875508bb187ea8" alt="スクリーンショット 2018-12-06 23.58.28.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F52f7c97b-de9a-65b9-c180-74332d724f8f.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=fc93b09444900212d0e78763b6ddbb22 1x" data-canonical-src="https://qiita-image-store.s3.amazonaws.com/0/44103/52f7c97b-de9a-65b9-c180-74332d724f8f.png" loading="lazy"></a></p>
+<p data-sourcepos="76:1-76:93">例えば $ 2 + 3 , \boldsymbol{i} $ は、以下のような2次元平面上の点です。</p>
+<p data-sourcepos="78:1-78:149"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F5ee94b5e-e810-6043-4d74-47cd4f2335f9.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=5e3e01dd53d08e7cdee24a649b70853c" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F5ee94b5e-e810-6043-4d74-47cd4f2335f9.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=5e3e01dd53d08e7cdee24a649b70853c" alt="スクリーンショット_2018-12-05_22.24.52_2.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F5ee94b5e-e810-6043-4d74-47cd4f2335f9.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=e5915fd34dd6ecc07025b8bf1651aad8 1x" data-canonical-src="https://qiita-image-store.s3.amazonaws.com/0/44103/5ee94b5e-e810-6043-4d74-47cd4f2335f9.png" loading="lazy"></a></p>
+<p data-sourcepos="80:1-80:64">これは、<strong>複素数平面</strong>と呼ばれるものですね。</p>
+<h3 data-sourcepos="82:1-82:27">
+<span id="i-は回転も表せる" class="fragment"></span><a href="#i-%E3%81%AF%E5%9B%9E%E8%BB%A2%E3%82%82%E8%A1%A8%E3%81%9B%E3%82%8B"><i class="fa fa-link"></i></a>i は回転も表せる</h3>
+<p data-sourcepos="84:1-84:253">実は $ \boldsymbol{i} $ には、軸を表すという意味以外に、$ \boldsymbol{i} \cdot \boldsymbol{i} = -1 $ という面白い定義がされています。（ちなみにこの $ \cdot $ は数字同士の掛け算を表しています。）</p>
+<p data-sourcepos="86:1-86:146"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F0e94fb21-bcbf-8d4e-d14e-23e27f682d7a.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=0fc31d45aa6d583e0277d812d0bc6210" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F0e94fb21-bcbf-8d4e-d14e-23e27f682d7a.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=0fc31d45aa6d583e0277d812d0bc6210" alt="スクリーンショット 2018-12-07 0.02.01.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F0e94fb21-bcbf-8d4e-d14e-23e27f682d7a.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=d60dd167a032de4ea513870e3eaec7f1 1x" data-canonical-src="https://qiita-image-store.s3.amazonaws.com/0/44103/0e94fb21-bcbf-8d4e-d14e-23e27f682d7a.png" loading="lazy"></a></p>
+<p data-sourcepos="88:1-88:174">2回かけてマイナスになるという数は、普通は存在しませんよね。なので、この $ \boldsymbol{i} $ を <strong>虚数</strong> と呼ぶこともあります。</p>
+<p data-sourcepos="90:1-90:177">この、$ \boldsymbol{i} \cdot \boldsymbol{i} = -1 $ というのを使って、$ 1 $に $ \boldsymbol{i} $ をどんどんかけていくと、なんと<strong>1に戻ります</strong>。</p>
+<div class="code-frame" data-lang="math" data-sourcepos="92:1-99:3"><div class="highlight"><pre><code>\begin{align}
+1 \cdot \boldsymbol{i} &amp;= \boldsymbol{i} \\
+\boldsymbol{i} \cdot \boldsymbol{i} &amp;= -1 \\
+-1 \cdot \boldsymbol{i} &amp;= - \,\boldsymbol{i} \\
+-\,\boldsymbol{i} \cdot \boldsymbol{i} &amp;= 1
+\end{align}
+</code></pre></div></div>
+<p data-sourcepos="101:1-101:78">まぁ、$ \boldsymbol{i} \cdot \boldsymbol{i} = -1 $ なわけですから、</p>
+<div class="code-frame" data-lang="math" data-sourcepos="103:1-110:3"><div class="highlight"><pre><code>\begin{align}
+&amp;\quad \boldsymbol{i} \cdot \boldsymbol{i} \cdot \boldsymbol{i} \cdot \boldsymbol{i} \\
+&amp;= (\, \boldsymbol{i} \cdot \boldsymbol{i} \,) \cdot (\, \boldsymbol{i} \cdot \boldsymbol{i} \,) \\
+&amp;= (\,-1\,) \cdot (\,-1\,) \\
+&amp;= 1
+\end{align}
+</code></pre></div></div>
+<p data-sourcepos="112:1-112:189">となるので、一見当たり前な気もしますが、この $ \boldsymbol{i} $ を4回かけた、一つ一つの計算結果を <strong>複素数平面</strong> にプロットしてみると、</p>
+<p data-sourcepos="114:1-114:149"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2Fe9a99dcf-eb7f-a19a-dbe4-afbb5e88a17f.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=d609c0b0e91f2b28cca87e7eaf6aab40" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2Fe9a99dcf-eb7f-a19a-dbe4-afbb5e88a17f.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=d609c0b0e91f2b28cca87e7eaf6aab40" alt="スクリーンショット 2018-12-05 22.48.57_2.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2Fe9a99dcf-eb7f-a19a-dbe4-afbb5e88a17f.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=310b384b6f82b4bd2ca4a6a0d3b61aea 1x" data-canonical-src="https://qiita-image-store.s3.amazonaws.com/0/44103/e9a99dcf-eb7f-a19a-dbe4-afbb5e88a17f.png" loading="lazy"></a></p>
+<p data-sourcepos="117:1-117:69">こんな風に、実はきれいに対称になってるんです。</p>
+<p data-sourcepos="119:1-119:94">ここに、$ \boldsymbol{i} $ を掛け算していった様子を矢印で書き込むと、</p>
+<p data-sourcepos="121:1-121:149"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F0b224f0f-a162-11d2-4670-3833b2bd7299.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=b8f82895155fd80b300c4eb2bbdfa332" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F0b224f0f-a162-11d2-4670-3833b2bd7299.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=b8f82895155fd80b300c4eb2bbdfa332" alt="スクリーンショット 2018-12-05 22.54.35_2.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F0b224f0f-a162-11d2-4670-3833b2bd7299.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=f8e52a9709446d15931cfe86b3cf165f 1x" data-canonical-src="https://qiita-image-store.s3.amazonaws.com/0/44103/0b224f0f-a162-11d2-4670-3833b2bd7299.png" loading="lazy"></a></p>
+<p data-sourcepos="123:1-123:308">こうなります。綺麗ですね。しかもこれって、<strong>90度ずつの回転を表しています！</strong> （注: 今回は $ \boldsymbol{i} $ を横軸にとったので時計回りになっていますが、軸のとり方・図の書き方をかえると反時計回りになったりします。）</p>
+<p data-sourcepos="125:1-125:119">そうなんです。複素数に $ \boldsymbol{i} $ を掛け算することで回転を表すことができます。</p>
+<h3 data-sourcepos="127:1-127:57">
+<span id="i-だけ-では回転を表すことができない" class="fragment"></span><a href="#i-%E3%81%A0%E3%81%91-%E3%81%A7%E3%81%AF%E5%9B%9E%E8%BB%A2%E3%82%92%E8%A1%A8%E3%81%99%E3%81%93%E3%81%A8%E3%81%8C%E3%81%A7%E3%81%8D%E3%81%AA%E3%81%84"><i class="fa fa-link"></i></a>i "だけ" では回転を表すことができない</h3>
+<p data-sourcepos="129:1-129:212">でも実をいうと、90度の半分である、45度の回転は $ \times , \boldsymbol{i} $ だけでは表すことができません。もう一つの数字（<strong>実数</strong>）も使う必要があります。</p>
+<p data-sourcepos="131:1-131:91">$$ \times , \bigl( , \frac{1}{\sqrt{2}}  + \frac{1}{\sqrt{2}} \boldsymbol{i} , \bigr) $$</p>
+<p data-sourcepos="133:1-133:147"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2Fbf6c0518-223e-aae6-88cb-f99fae763287.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=666b5b44e2221de55cc9b7ce9e9c62e0" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2Fbf6c0518-223e-aae6-88cb-f99fae763287.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=666b5b44e2221de55cc9b7ce9e9c62e0" alt="スクリーンショット 2018-12-05 23.06.51.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2Fbf6c0518-223e-aae6-88cb-f99fae763287.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=03c8cd83c2818be919877f2139237e20 1x" data-canonical-src="https://qiita-image-store.s3.amazonaws.com/0/44103/bf6c0518-223e-aae6-88cb-f99fae763287.png" loading="lazy"></a></p>
+<p data-sourcepos="135:1-135:66">（※ $ \frac{1}{\sqrt{2}} $ についてはすぐ後で説明）</p>
+<p data-sourcepos="137:1-137:412">この「実数と虚数の2つがセットで、1つの回転を表せる」というのが、クォータニオンが<strong>4次元である理由の1つ</strong>です。実数と虚数の2つの数字があれば、1方向の回転を表すことができるように、<strong>実数と3種類の虚数を使った、$ (w, x, y, z) $ の4種類の数字があれば、3方向の回転を表すことができる</strong>のです。</p>
+<p data-sourcepos="139:1-139:156">ちなみに、ここで $ \frac{1}{\sqrt{2}} $ という不思議な数が登場している理由は、あまり深く考える必要はありません。</p>
+<p data-sourcepos="141:1-141:133">一応説明すると、角度が45度のとき、<strong>単位円</strong>（原点が中心で大きさが1の円）の円周上の座標が、</p>
+<div class="code-frame" data-lang="math" data-sourcepos="143:1-148:3"><div class="highlight"><pre><code>\begin{align}
+(x, y) &amp;= (\cos45 ^\circ, \sin45 ^\circ) \\
+&amp;= \bigl( \frac{1}{\sqrt{2}}, \frac{1}{\sqrt{2}} \bigr)
+\end{align}
+</code></pre></div></div>
+<p data-sourcepos="150:1-150:185">になるためで、下図をみるとわかるように、<strong>原点からの距離が1になるように (単位円の円周上に乗るように)</strong>、調整されているのです。</p>
+<p data-sourcepos="152:1-152:44">(TODO: ここに単位円の図を入れる)</p>
+<p data-sourcepos="154:1-154:401">細かい計算よりも、この**「原点からの距離が1である」**というのがすごく重要です。実は、<em>原点からの距離が1で "ない" 複素数の掛け算</em> は、拡大・縮小・剪断など、<strong>回転以外の変形も表してしまう</strong>ことになります。この事実は重要で、クォータニオンの説明でも後々で触れることになります。</p>
+<h2 data-sourcepos="156:1-156:33">
+<span id="クォータニオン再登場" class="fragment"></span><a href="#%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E5%86%8D%E7%99%BB%E5%A0%B4"><i class="fa fa-link"></i></a>クォータニオン再登場</h2>
+<p data-sourcepos="158:1-158:75">さて、ここで満を持してクォータニオンが登場します。</p>
+<p data-sourcepos="160:1-160:73">$$ w + x , \boldsymbol{i} + y , \boldsymbol{j} + z , \boldsymbol{k} $$</p>
+<p data-sourcepos="162:1-162:138">ここで、$ \boldsymbol{i}, \boldsymbol{j}, \boldsymbol{k} $ は、複素数同様に、以下のような定義になっています。</p>
+<div class="code-frame" data-lang="math" data-sourcepos="164:1-171:3"><div class="highlight"><pre><code>\begin{align}
+\boldsymbol{i} \cdot \boldsymbol{i} &amp;= -1 \\
+\boldsymbol{j} \cdot \boldsymbol{j} &amp;= -1 \\
+\boldsymbol{k} \cdot \boldsymbol{k} &amp;= -1 \\
+\boldsymbol{i} \cdot \boldsymbol{j} \cdot \boldsymbol{k} &amp;= -1
+\end{align}
+</code></pre></div></div>
+<p data-sourcepos="173:1-173:233">最初の３つは、複素数における<strong>虚数の定義と同じ</strong>ですね。また、最後の１つは、複素数のときと違って虚数が３つあるので、<strong>その３つの虚数の関係性</strong>を示しています。</p>
+<p data-sourcepos="175:1-175:128">なお、最初に解説した通り、 $ \boldsymbol{i}, \boldsymbol{j}, \boldsymbol{k} $ は3つの軸を示しています。</p>
+<p data-sourcepos="177:1-177:147"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F872e42f1-e0b7-d588-9d3c-8336534f22c2.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=9d2a583d8d2f9d4e6aaa39efb914ed02" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F872e42f1-e0b7-d588-9d3c-8336534f22c2.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=9d2a583d8d2f9d4e6aaa39efb914ed02" alt="スクリーンショット 2018-12-05 21.56.48.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F872e42f1-e0b7-d588-9d3c-8336534f22c2.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=a79889b97db3755b23563a2304cbbf0c 1x" data-canonical-src="https://qiita-image-store.s3.amazonaws.com/0/44103/872e42f1-e0b7-d588-9d3c-8336534f22c2.png" loading="lazy"></a></p>
+<p data-sourcepos="179:1-179:169">しかし、複素数のときとは違って、3次元を表す<strong>3つすべての軸</strong>に、 $ \boldsymbol{i}, \boldsymbol{j}, \boldsymbol{k} $ がついています。</p>
+<p data-sourcepos="181:1-181:104">なぜ3軸ともに虚数がついているかというと、<strong>対称性をもたせるため</strong>です。</p>
+<h3 data-sourcepos="183:1-183:53">
+<span id="クォータニオンの3つの虚数と対称性" class="fragment"></span><a href="#%E3%82%AF%E3%82%A9%E3%83%BC%E3%82%BF%E3%83%8B%E3%82%AA%E3%83%B3%E3%81%AE3%E3%81%A4%E3%81%AE%E8%99%9A%E6%95%B0%E3%81%A8%E5%AF%BE%E7%A7%B0%E6%80%A7"><i class="fa fa-link"></i></a>クォータニオンの3つの虚数と対称性</h3>
+<p data-sourcepos="185:1-185:368">実は、<strong>実数だけでは回転を表すことはできません</strong>。例えば複素数の場合、虚数の掛け算、例えば $ \cdot , \boldsymbol{i} $ は90度の回転を表しますが、実数の掛け算 $ \cdot , 2 $ は、2倍の拡大を表しているだけで、<strong>虚数と組み合わせないと回転を表すことができない</strong>のです。</p>
+<p data-sourcepos="187:1-187:127">このことを（クォータニオンの3次元空間ではなく）複素数平面に図示すると、こうなります。</p>
+<p data-sourcepos="189:1-189:149"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F8cfe8c98-ae92-f0bb-008b-197597f2c77b.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=3d83d4c15f7923427cb0ac690bf06239" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F8cfe8c98-ae92-f0bb-008b-197597f2c77b.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=3d83d4c15f7923427cb0ac690bf06239" alt="スクリーンショット 2018-12-06 23.15.24_2.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F8cfe8c98-ae92-f0bb-008b-197597f2c77b.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=65430f08087d75bdaa862e5a37e04ea6 1x" data-canonical-src="https://qiita-image-store.s3.amazonaws.com/0/44103/8cfe8c98-ae92-f0bb-008b-197597f2c77b.png" loading="lazy"></a></p>
+<p data-sourcepos="191:1-191:238">上の図を見てもわかるように、<em>複素数の場合の</em> 2つの軸である、 実数軸と虚数軸は、一見対称的なように見えて、実は実数と虚数に対して (完全には) <strong>対称ではない</strong>のです。</p>
+<p data-sourcepos="194:1-194:311">そこでクォータニオンでは、<strong>3次元を表す3軸にそれぞれ虚数をもたせて</strong>、$ x, y, z $ 方向の3つの軸に対してそれぞれ綺麗に対称的な (回転などの) 計算が出来るようになっています。（これが色々な面で非常に都合が良いのです。）</p>
+<p data-sourcepos="196:1-196:147"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F59c9564a-87f0-a107-da92-a33ef24a8d0e.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=71884e587fa442f37e206b227b605d24" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F59c9564a-87f0-a107-da92-a33ef24a8d0e.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=71884e587fa442f37e206b227b605d24" alt="スクリーンショット 2018-12-06 23.21.04.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F59c9564a-87f0-a107-da92-a33ef24a8d0e.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=07696c0cac06601d3c5879c24d4e65b9 1x" data-canonical-src="https://qiita-image-store.s3.amazonaws.com/0/44103/59c9564a-87f0-a107-da92-a33ef24a8d0e.png" loading="lazy"></a></p>
+<p data-sourcepos="198:1-198:341">ちなみに、上の図を見てもわかるように、<strong>複素数平面とクォータニオンでは回転のさせ方が違う</strong> ことに気をつけてください。クォータニオンの回転は、基本的に <strong>右ねじの法則</strong> と同じです（軸のとり方によって、向きは逆になることがあります）。</p>
+<p data-sourcepos="200:1-200:149"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F79a1404a-8d4f-b2df-30c4-2f5b5f1741cd.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=5bc4e1d9df105664b644b071d7536bf7" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F79a1404a-8d4f-b2df-30c4-2f5b5f1741cd.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=5bc4e1d9df105664b644b071d7536bf7" alt="スクリーンショット 2018-12-06 23.45.25_2.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.amazonaws.com%2F0%2F44103%2F79a1404a-8d4f-b2df-30c4-2f5b5f1741cd.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=c7c154d80576f691db3a6e7bf747f8ad 1x" data-canonical-src="https://qiita-image-store.s3.amazonaws.com/0/44103/79a1404a-8d4f-b2df-30c4-2f5b5f1741cd.png" loading="lazy"></a></p>
+<p data-sourcepos="202:1-202:244">この回転のさせ方は、3DCGでいうところの、x軸方向の回転、y軸方向の回転、z軸方向の回転にそのまま対応しているので、逆に複素数平面よりも覚えやすいのではないかと思います。</p>
+<p data-sourcepos="204:1-204:20">(以下、未執筆)</p>
+<p data-sourcepos="206:1-206:23">(TODO: 続きを書く)</p>

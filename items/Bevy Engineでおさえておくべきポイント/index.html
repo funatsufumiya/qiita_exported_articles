@@ -1,0 +1,335 @@
+<h2 data-sourcepos="1:1-1:9">
+<span id="概要" class="fragment"></span><a href="#%E6%A6%82%E8%A6%81"><i class="fa fa-link"></i></a>概要</h2>
+<p data-sourcepos="3:1-3:441">この記事では、<a href="https://bevyengine.org/" rel="nofollow noopener" target="_blank">Bevy Engine</a>を活用していく上で、特におさえておくべきポイントをまとめています。実際にはそこからさらに深堀りして調べていく必要があるかと思いますが、入門記事の次の段階として、マイグレーションガイドとしての一助になれば幸いです。（なお執筆時点のBevyの最新版は<code>v0.13.2</code>です。）</p>
+<h2 data-sourcepos="5:1-5:30">
+<span id="この記事の対象読者" class="fragment"></span><a href="#%E3%81%93%E3%81%AE%E8%A8%98%E4%BA%8B%E3%81%AE%E5%AF%BE%E8%B1%A1%E8%AA%AD%E8%80%85"><i class="fa fa-link"></i></a>この記事の対象読者</h2>
+<ul data-sourcepos="7:1-11:0">
+<li data-sourcepos="7:1-7:99">Bevyのことを少し知っていて、実際に活用していきたいなと思っている人</li>
+<li data-sourcepos="8:1-8:157">Rustにあまり馴染みがなくてもOK。一方でC++やJava、JavaScriptやPythonなど、多少プログラミング経験があると望ましい。</li>
+<li data-sourcepos="9:1-9:189">ゲームプログラミング以外でもBevyの使い道はいろいろあると筆者は感じているので、ゲームプログラミングの知識は必須ではありません。</li>
+<li data-sourcepos="10:1-11:0">ECS (Entity Component System) については今回は触れず、解説は他記事に譲ることにします（<a href="https://qiita.com/aobat/items/262293651fbbd696c171" id="reference-b22a476f45dd46069c4b">→参考記事</a>）。</li>
+</ul>
+<h2 data-sourcepos="12:1-12:39">
+<span id="ポイント1-ハンドル-handle" class="fragment"></span><a href="#%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%881-%E3%83%8F%E3%83%B3%E3%83%89%E3%83%AB-handle"><i class="fa fa-link"></i></a>ポイント1: ハンドル (Handle)</h2>
+<p data-sourcepos="14:1-14:244">Bevyには、ハンドル(Handle)という概念が頻繁に登場します。このハンドルは、画像や3Dモデルなど、実体は重たいものを、IDなどとして参照したり、軽量に扱うための役割を持ちます。</p>
+<p data-sourcepos="16:1-16:52"><iframe id="qiita-embed-content__3e02894b43358bb41a24ab3d0d7279d3" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__3e02894b43358bb41a24ab3d0d7279d3" data-content="https%3A%2F%2Fbevy-cheatbook.github.io%2Fassets%2Fhandles.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="18:1-18:444">C++などの経験者は、ポインタや参照 (Reference) を利用すれば良いのではないかと思うことかと思います。実際Bevyでも、参照を利用することはありますが、Rustの所有権システムとの兼ね合いから、あまり参照を多用するとライフタイム表記などでコードが煩雑になる傾向にあり、ハンドルはそうした部分をうまく回避してくれます。</p>
+<p data-sourcepos="20:1-20:184">一方で、例えばマテリアル (色情報等) などの実体にアクセスしたいのに、どうしたらいいかわからない、ということも多く発生します。</p>
+<p data-sourcepos="22:1-22:236">ハンドルは必ず対応する<a href="https://bevy-cheatbook.github.io/builtins.html#assets" rel="nofollow noopener" target="_blank">アセット</a>が存在し、そのアセットから<code>.get()</code>または<code>.get_mut()</code>することで実体にアクセスすることができます。</p>
+<p data-sourcepos="24:1-24:77"><iframe id="qiita-embed-content__4ffc6aaf67224f13ef08eb6ed53d07ea" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__4ffc6aaf67224f13ef08eb6ed53d07ea" data-content="https%3A%2F%2Fgithub.com%2Fbevyengine%2Fbevy%2Fdiscussions%2F8487%23discussioncomment-5716877" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="26:1-26:84"><iframe id="qiita-embed-content__55e3fa997a9ee8ac890c9ba5e578ea11" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__55e3fa997a9ee8ac890c9ba5e578ea11" data-content="https%3A%2F%2Fstackoverflow.com%2Fquestions%2F75801912%2Fhow-to-modify-material-property-in-bevy" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="28:1-31:3"><div class="highlight"><pre><code><span class="k">let</span> <span class="n">material</span> <span class="o">=</span> <span class="n">materials</span><span class="nf">.get_mut</span><span class="p">(</span><span class="n">my_handle</span><span class="p">)</span><span class="nf">.unwrap</span><span class="p">();</span>
+<span class="n">material</span><span class="py">.base_color</span> <span class="o">=</span> <span class="nn">Color</span><span class="p">::</span><span class="n">RED</span><span class="p">;</span>
+</code></pre></div></div>
+<p data-sourcepos="33:1-33:228">逆にいえば、実体が不要な処理はハンドルだけで可能です。例えばある場所に画像を表示したい、フォントはこれにしたいなど、多くの処理がハンドルだけで可能です。</p>
+<p data-sourcepos="35:1-35:130">ちなみにアセットの読み込みは、<code>bevy_asset_loader</code>などのプラグインを活用するとさらに便利です。</p>
+<p data-sourcepos="37:1-37:45"><iframe id="qiita-embed-content__cee5a1c5e3d435dff38cb86dacc4d5e6" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__cee5a1c5e3d435dff38cb86dacc4d5e6" data-content="https%3A%2F%2Fgithub.com%2FNiklasEi%2Fbevy_asset_loader" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<h2 data-sourcepos="39:1-39:35">
+<span id="ポイント2-クエリ-query" class="fragment"></span><a href="#%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%882-%E3%82%AF%E3%82%A8%E3%83%AA-query"><i class="fa fa-link"></i></a>ポイント2: クエリ (Query)</h2>
+<p data-sourcepos="41:1-41:152">Bevyでは、クエリを書くことで欲しいエンティティ (ゲームオブジェクト) に簡単にアクセスすることができます。</p>
+<p data-sourcepos="43:1-43:57"><iframe id="qiita-embed-content__fef366ed7720b390c218044db76a8ac9" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__fef366ed7720b390c218044db76a8ac9" data-content="https%3A%2F%2Fbevy-cheatbook.github.io%2Fprogramming%2Fqueries.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="45:1-45:217">例えば <code>MyComponent</code> というコンポーネントがついたエンティティのTransform (位置・回転・大きさ) にアクセスしたい場合は、システムの引数に次のように書きます。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="47:1-49:3"><div class="highlight"><pre><code><span class="k">mut</span> <span class="n">transforms</span><span class="p">:</span> <span class="n">Query</span><span class="o">&lt;&amp;</span><span class="k">mut</span> <span class="n">Transform</span><span class="p">,</span> <span class="n">With</span><span class="o">&lt;</span><span class="n">MyComponent</span><span class="o">&gt;&gt;</span>
+</code></pre></div></div>
+<p data-sourcepos="51:1-51:126">もし、Transformを変更する必要がない（不変、<code>immutable</code>で良い）ならば、次のようにします。<sup><a href="#fn-1" id="fnref-1">1</a></sup></p>
+<div class="code-frame" data-lang="rust" data-sourcepos="53:1-55:3"><div class="highlight"><pre><code><span class="n">transforms</span><span class="p">:</span> <span class="n">Query</span><span class="o">&lt;&amp;</span><span class="n">Transform</span><span class="p">,</span> <span class="n">With</span><span class="o">&lt;</span><span class="n">MyComponent</span><span class="o">&gt;&gt;</span>
+</code></pre></div></div>
+<p data-sourcepos="57:1-57:144">さらに、<code>MyComponent2</code> もついた要素にアクセスしたいし、背景色にもアクセスしたいなら次のようにします。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="59:1-61:3"><div class="highlight"><pre><code><span class="n">query</span><span class="p">:</span> <span class="n">Query</span><span class="o">&lt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Transform</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">BackgroundColor</span><span class="p">),</span> <span class="p">(</span><span class="n">With</span><span class="o">&lt;</span><span class="n">MyComponent</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">With</span><span class="o">&lt;</span><span class="n">MyComponent2</span><span class="o">&gt;</span><span class="p">)</span><span class="o">&gt;</span>
+</code></pre></div></div>
+<p data-sourcepos="63:1-63:111">さらにさらに、<code>MyComponent3</code> は持っていないという条件をつけたい場合は以下です。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="65:1-67:3"><div class="highlight"><pre><code><span class="n">query</span><span class="p">:</span> <span class="n">Query</span><span class="o">&lt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Transform</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">BackgroundColor</span><span class="p">),</span> <span class="p">(</span><span class="n">With</span><span class="o">&lt;</span><span class="n">MyComponent</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">With</span><span class="o">&lt;</span><span class="n">MyComponent2</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Without</span><span class="o">&lt;</span><span class="n">MyComponent3</span><span class="o">&gt;</span><span class="p">)</span><span class="o">&gt;</span>
+</code></pre></div></div>
+<p data-sourcepos="69:1-69:259">もうおわかりかと思いますが、左のタプル（カッコ、簡易構造体）にあるものはアクセスしたいもの、右のタプルにあるものは条件です。左のものに<code>&amp;mut</code>をつけると可変 (<code>mutable</code>) にできます。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="71:1-73:3"><div class="highlight"><pre><code><span class="n">query</span><span class="p">:</span> <span class="n">Query</span><span class="o">&lt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">欲しいものA</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">欲しいものB</span><span class="p">,</span> <span class="o">...</span><span class="p">),</span> <span class="p">(</span><span class="n">With</span><span class="o">&lt;</span><span class="n">条件1</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">With</span><span class="o">&lt;</span><span class="n">条件2</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Without</span><span class="o">&lt;</span><span class="n">条件3</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span><span class="o">&gt;</span>
+</code></pre></div></div>
+<p data-sourcepos="75:1-75:573">ちなみに、Rustでは単一所有者の原則から、<code>Without</code>をうまく使わないと実行時エラー (= パニック) になってしまうことがあります（<a href="https://zenn.dev/msakuta/articles/40c1ad41b1c62e#component-%E3%81%AE%E5%90%8C%E6%99%82%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9" rel="nofollow noopener" target="_blank">→参考記事</a> <sup><a href="#fn-a" id="fnref-a">2</a></sup>）。同じ理由で似たクエリ文を複数の引数として分割するとエラーになってしまうことがありますので、タプルを活用してできるだけ同じ条件のものは同時に取得するのがポイントです。</p>
+<h2 data-sourcepos="77:1-77:38">
+<span id="ポイント3-イベント-event" class="fragment"></span><a href="#%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%883-%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88-event"><i class="fa fa-link"></i></a>ポイント3: イベント (Event)</h2>
+<p data-sourcepos="79:1-79:275">Bevyは、様々なことをイベントにより処理します。例えばマウスの位置を取得したい場合、ウィンドウにアクセスして位置を取得する方法と、<code>CursorMoved</code>などのイベントを受信して読み取る方法があります。</p>
+<p data-sourcepos="81:1-81:278">ちなみに他のフレームワークでよくある、イベントハンドラの登録などの作業は特に必要はありません。クエリ(Query)と同じく、引数に<code>EventReader</code>などを書けば自動的にバインドされる仕組みになっています。</p>
+<p data-sourcepos="83:1-83:56"><iframe id="qiita-embed-content__a4555ddebea6b070ac7939e8843f9e01" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__a4555ddebea6b070ac7939e8843f9e01" data-content="https%3A%2F%2Fbevy-cheatbook.github.io%2Fprogramming%2Fevents.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="85:1-93:3"><div class="highlight"><pre><code><span class="k">fn</span> <span class="nf">debug_levelups</span><span class="p">(</span>
+    <span class="k">mut</span> <span class="n">ev_levelup</span><span class="p">:</span> <span class="n">EventReader</span><span class="o">&lt;</span><span class="n">LevelUpEvent</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="n">ev</span> <span class="k">in</span> <span class="n">ev_levelup</span><span class="nf">.read</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nd">eprintln!</span><span class="p">(</span><span class="s">"Entity {:?} leveled up!"</span><span class="p">,</span> <span class="n">ev</span><span class="na">.0</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p data-sourcepos="95:1-95:440">なお、<code>.read()</code> しているループはイベント待ちで処理がブロックされるとかそういうことはなく、イベントが何もないときは空の配列が渡されると思えば良いです。1フレームに複数のイベントが起きる場合があるのでイテレータになっています。なのでイベント処理以外 (<code>Update</code>など) と同じシステム上に書いて問題ありません。</p>
+<p data-sourcepos="97:1-97:135">ちなみに、非公式チートブックにも書いてあるように、カスタムイベントを登録するのも簡単です。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="99:1-106:3"><div class="highlight"><pre><code><span class="nd">#[derive(Event)]</span>
+<span class="k">struct</span> <span class="n">LevelUpEvent</span><span class="p">;</span>
+
+<span class="c1">// (中略)</span>
+
+<span class="n">app</span><span class="py">.add_event</span><span class="p">::</span><span class="o">&lt;</span><span class="n">LevelUpEvent</span><span class="o">&gt;</span><span class="p">();</span>
+</code></pre></div></div>
+<p data-sourcepos="108:1-108:140">例えばサウンド再生など、複数のシステムをまたぐような処理は、イベント化してしまうと楽です <sup><a href="#fn-2" id="fnref-2">3</a></sup>。</p>
+<h2 data-sourcepos="110:1-110:66">
+<span id="ポイント4-ローカル-local-と-リソース-resource" class="fragment"></span><a href="#%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%884-%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%AB-local-%E3%81%A8-%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9-resource"><i class="fa fa-link"></i></a>ポイント4: ローカル (Local) と リソース (Resource)</h2>
+<p data-sourcepos="112:1-112:224">Bevyで、システム内だけでいわゆる<code>static</code>な変数がほしいと思うとき、<code>Local</code>を利用します。複数のシステムで共通の変数や定数がほしい場合は、<code>Resource</code>を利用します。</p>
+<p data-sourcepos="114:1-114:55"><iframe id="qiita-embed-content__b20ba9e42b2e4d9cf656ab9349cb774a" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__b20ba9e42b2e4d9cf656ab9349cb774a" data-content="https%3A%2F%2Fbevy-cheatbook.github.io%2Fprogramming%2Flocal.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="116:1-116:53"><iframe id="qiita-embed-content__de7347860c731ef5e75c801a8f516fb3" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__de7347860c731ef5e75c801a8f516fb3" data-content="https%3A%2F%2Fbevy-cheatbook.github.io%2Fprogramming%2Fres.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="118:1-118:282">例えば、あるシステム内で処理するたびに前の値を残しておき、次の処理に使いたいようなときは <code>Local</code> が最適です。一方で例えばプレイヤーの状態など、ゲーム内で共通して使う情報は <code>Resource</code> が最適です。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="120:1-128:3">
+<div class="code-lang"><span class="bold">Localの例</span></div>
+<div class="highlight"><pre><code><span class="k">fn</span> <span class="nf">my_system</span> <span class="p">(</span>
+    <span class="k">mut</span> <span class="n">my_time</span><span class="p">:</span> <span class="n">Local</span><span class="o">&lt;</span><span class="nb">f32</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="n">time</span><span class="p">:</span> <span class="n">Res</span><span class="o">&lt;</span><span class="n">Time</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 毎回経過時間を記録しておく、など</span>
+    <span class="o">*</span><span class="n">my_time</span> <span class="o">+=</span> <span class="n">time</span><span class="nf">.delta_seconds</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+<div class="code-frame" data-lang="rust" data-sourcepos="130:1-139:3">
+<div class="code-lang"><span class="bold">Resourceの定義例</span></div>
+<div class="highlight"><pre><code><span class="nd">#[derive(Resource)]</span>
+<span class="k">struct</span> <span class="n">GameProgress</span> <span class="p">{</span>
+    <span class="n">game_completed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">secrets_unlocked</span><span class="p">:</span> <span class="nb">u32</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="nd">#[derive(Resource)]</span>
+<span class="k">struct</span> <span class="nf">StartingLevel</span><span class="p">(</span><span class="nb">usize</span><span class="p">);</span>
+</code></pre></div>
+</div>
+<div class="code-frame" data-lang="rust" data-sourcepos="141:1-153:3">
+<div class="code-lang"><span class="bold">Resourceの使用例</span></div>
+<div class="highlight"><pre><code><span class="k">fn</span> <span class="nf">my_system</span><span class="p">(</span>
+    <span class="k">mut</span> <span class="n">goals</span><span class="p">:</span> <span class="n">ResMut</span><span class="o">&lt;</span><span class="n">GoalsReached</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="n">other</span><span class="p">:</span> <span class="n">Res</span><span class="o">&lt;</span><span class="n">MyOtherResource</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="k">mut</span> <span class="n">fancy</span><span class="p">:</span> <span class="nb">Option</span><span class="o">&lt;</span><span class="n">ResMut</span><span class="o">&lt;</span><span class="n">MyFancyResource</span><span class="o">&gt;&gt;</span><span class="p">,</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 訳注: fancyが存在していたらifの中に入る</span>
+    <span class="k">if</span> <span class="k">let</span> <span class="nf">Some</span><span class="p">(</span><span class="n">fancy</span><span class="p">)</span> <span class="o">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">fancy</span> <span class="p">{</span>
+        <span class="c1">// TODO: do things with `fancy`</span>
+    <span class="p">}</span>
+    <span class="c1">// TODO: do things with `goals` and `other`</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+<p data-sourcepos="155:1-155:429">ちなみになぜ<code>Local</code>という、他のプログラミング言語では馴染みのない型がBevyに準備されているかというと、一つはRustでは<code>static</code>な変数を作るのに苦労するという背景があります。また、Bevyではシステムは並列処理される可能性があるため、安易に<code>static</code>な変数を作ると<code>Mutex</code>などの排他処理にハマる可能性もあります。</p>
+<p data-sourcepos="157:1-157:166">無闇にグローバル変数を増やさないためにも、<code>Local</code>をうまく使っていくと、システム固有の変数管理が楽になるはずです。</p>
+<h2 data-sourcepos="159:1-159:38">
+<span id="ポイント5-ステート-state" class="fragment"></span><a href="#%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%885-%E3%82%B9%E3%83%86%E3%83%BC%E3%83%88-state"><i class="fa fa-link"></i></a>ポイント5: ステート (State)</h2>
+<p data-sourcepos="161:1-161:154">Bevyにはステート (State) というものが準備されていて、特に状態に応じてシステムを切り替えたい場合に便利です。</p>
+<p data-sourcepos="163:1-163:56"><iframe id="qiita-embed-content__7b7fe91ee7c4bea6284c63741519ee2a" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__7b7fe91ee7c4bea6284c63741519ee2a" data-content="https%3A%2F%2Fbevy-cheatbook.github.io%2Fprogramming%2Fstates.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="165:1-170:3"><div class="highlight"><pre><code><span class="c1">// メニューがメイン状態のときだけ実行されるシステム</span>
+<span class="n">app</span><span class="nf">.add_systems</span><span class="p">(</span><span class="n">Update</span><span class="p">,</span> <span class="n">my_system1</span><span class="nf">.run_if</span><span class="p">(</span><span class="nf">in_state</span><span class="p">(</span><span class="nn">MenuState</span><span class="p">::</span><span class="n">MainMenu</span><span class="p">)));</span>
+<span class="c1">// アプリがゲーム中のときだけ実行されるシステム</span>
+<span class="n">app</span><span class="nf">.add_systems</span><span class="p">(</span><span class="n">Update</span><span class="p">,</span> <span class="n">my_system2</span><span class="nf">.run_if</span><span class="p">(</span><span class="nf">in_state</span><span class="p">(</span><span class="nn">AppState</span><span class="p">::</span><span class="n">InGame</span><span class="p">)));</span>
+</code></pre></div></div>
+<p data-sourcepos="172:1-172:273">リソース (Resource) だけでもいろんなことができますが、特にステートはシステムまわりで便利に活用でき、例えばあるステートのときだけ特定のシステムを走らせたいなどを容易に書くことができます。</p>
+<p data-sourcepos="174:1-174:85">実行スケジュールについては、ポイント8で詳しく解説します。</p>
+<h2 data-sourcepos="176:1-176:38">
+<span id="ポイント6-タイマー-timer" class="fragment"></span><a href="#%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%886-%E3%82%BF%E3%82%A4%E3%83%9E%E3%83%BC-timer"><i class="fa fa-link"></i></a>ポイント6: タイマー (Timer)</h2>
+<p data-sourcepos="178:1-178:194">時間経過による処理を扱いたい場合は多くあると思いますが、例えば経過時間などを知るための <code>Time</code> と並んで便利なのがタイマー (Timer) です。</p>
+<p data-sourcepos="180:1-180:55"><iframe id="qiita-embed-content__4b2ae0059865223132e5d73086921607" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__4b2ae0059865223132e5d73086921607" data-content="https%3A%2F%2Fbevy-cheatbook.github.io%2Ffundamentals%2Ftime.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="182:1-218:3">
+<div class="code-lang"><span class="bold">タイマーの使用例</span></div>
+<div class="highlight"><pre><code><span class="nd">#[derive(Resource)]</span>
+<span class="k">struct</span> <span class="n">BombsSpawnConfig</span> <span class="p">{</span>
+    <span class="n">timer</span><span class="p">:</span> <span class="n">Timer</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1">// ゲーム起動時のセットアップ</span>
+<span class="k">fn</span> <span class="nf">setup_bomb_spawning</span><span class="p">(</span>
+    <span class="k">mut</span> <span class="n">commands</span><span class="p">:</span> <span class="n">Commands</span><span class="p">,</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="n">commands</span><span class="nf">.insert_resource</span><span class="p">(</span><span class="n">BombsSpawnConfig</span> <span class="p">{</span>
+        <span class="c1">// 10秒で繰り返すタイマーを設置</span>
+        <span class="n">timer</span><span class="p">:</span> <span class="nn">Timer</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="nn">Duration</span><span class="p">::</span><span class="nf">from_secs</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="nn">TimerMode</span><span class="p">::</span><span class="n">Repeating</span><span class="p">),</span>
+    <span class="p">})</span>
+<span class="p">}</span>
+
+<span class="c1">// 時限爆弾をスポーン(生成)させるシステム</span>
+<span class="k">fn</span> <span class="nf">spawn_bombs</span><span class="p">(</span>
+    <span class="k">mut</span> <span class="n">commands</span><span class="p">:</span> <span class="n">Commands</span><span class="p">,</span>
+    <span class="n">time</span><span class="p">:</span> <span class="n">Res</span><span class="o">&lt;</span><span class="n">Time</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="k">mut</span> <span class="n">config</span><span class="p">:</span> <span class="n">ResMut</span><span class="o">&lt;</span><span class="n">BombsSpawnConfig</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 10秒で繰り返すタイマーを進める (tick)</span>
+    <span class="n">config</span><span class="py">.timer</span><span class="nf">.tick</span><span class="p">(</span><span class="n">time</span><span class="nf">.delta</span><span class="p">());</span>
+
+    <span class="c1">// もしタイマーが終わったら</span>
+    <span class="k">if</span> <span class="n">config</span><span class="py">.timer</span><span class="nf">.finished</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">commands</span><span class="nf">.spawn</span><span class="p">((</span>
+            <span class="n">FuseTime</span> <span class="p">{</span>
+                <span class="c1">// 5秒の時限爆弾タイマーをスポーン(生成)させる</span>
+                <span class="n">timer</span><span class="p">:</span> <span class="nn">Timer</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="nn">Duration</span><span class="p">::</span><span class="nf">from_secs</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="nn">TimerMode</span><span class="p">::</span><span class="n">Once</span><span class="p">),</span>
+            <span class="p">},</span>
+            <span class="c1">// ...</span>
+        <span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+<p data-sourcepos="220:1-220:84">注意点は、タイマーは<code>tick</code>させないと時間経過しない点です。</p>
+<p data-sourcepos="222:1-222:165">タイマーは指定時間のどれくらいが経ったかを比率で取得できたり (<code>fraction()</code>)、残り時間を取得したりが便利にできます。</p>
+<p data-sourcepos="224:1-224:208">タイマーをうまく活用すると、複数のシステムで時間共有したりできますが、<code>tick</code>やスポーン(生成)・デスポーン(削除)の管理が一つポイントになります。</p>
+<h2 data-sourcepos="226:1-226:68">
+<span id="ポイント7-スポーン-spawn-と-デスポーン-despawn" class="fragment"></span><a href="#%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%887-%E3%82%B9%E3%83%9D%E3%83%BC%E3%83%B3-spawn-%E3%81%A8-%E3%83%87%E3%82%B9%E3%83%9D%E3%83%BC%E3%83%B3-despawn"><i class="fa fa-link"></i></a>ポイント7: スポーン (spawn) と デスポーン (despawn)</h2>
+<p data-sourcepos="228:1-228:156">Bevyには <code>Commands</code> というものがあり、<code>Commands</code>を使ってエンティティのスポーン(作成)とデスポーン(削除)を行います。</p>
+<p data-sourcepos="230:1-230:58"><iframe id="qiita-embed-content__16874c421471195fe3d0cb3407d35aed" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__16874c421471195fe3d0cb3407d35aed" data-content="https%3A%2F%2Fbevy-cheatbook.github.io%2Fprogramming%2Fcommands.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="232:1-232:376">注意点は、コマンドの実処理は最大で1フレームの遅延が起こることです。コマンドにキューを登録して、その処理がすぐに行われるとは限りません。なので例えば、エンティティの存在を仮定して行うような処理は、スポーン処理とは別システムで行うなどする必要があります。</p>
+<p data-sourcepos="234:1-234:459">ちなみに、このような時間的な前後関係を考えていくと、Unityでいうところの<a href="https://docs.unity3d.com/ja/2018.4/Manual/Coroutines.html" rel="nofollow noopener" target="_blank">コルーチン</a>がほしくなることがあります。これに該当するのは<code>await</code>/<code>async</code>を使った非同期処理です。ゆくゆくは公式APIが便利になると思いますが、執筆時点では<code>bevy_flurx</code>や<code>bevy_tweening</code>などのアドオンを使うと便利です。</p>
+<p data-sourcepos="236:1-236:37"><iframe id="qiita-embed-content__4433cc9fba34e85d28a4fe66a1e6acc0" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__4433cc9fba34e85d28a4fe66a1e6acc0" data-content="https%3A%2F%2Fgithub.com%2Fnot-elm%2Fbevy_flurx" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="238:1-238:40"><iframe id="qiita-embed-content__5f20cbc95d6c510aa04f7c981b43b389" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__5f20cbc95d6c510aa04f7c981b43b389" data-content="https%3A%2F%2Fgithub.com%2Fdjeedai%2Fbevy_tweening" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="240:1-240:103">例えば<code>bevy_flurx</code>を使って、1秒後に <code>Hello</code> と出力するには次のようにします。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="242:1-251:3"><div class="highlight"><pre><code><span class="n">commands</span><span class="nf">.spawn</span><span class="p">(</span><span class="nn">Reactor</span><span class="p">::</span><span class="nf">schedule</span><span class="p">(|</span><span class="n">task</span><span class="p">|</span> <span class="k">async</span> <span class="k">move</span> <span class="p">{</span>
+    <span class="n">task</span><span class="nf">.will</span><span class="p">(</span><span class="n">Update</span><span class="p">,</span> <span class="p">{</span>
+        <span class="nn">delay</span><span class="p">::</span><span class="nf">time</span><span class="p">()</span><span class="nf">.with</span><span class="p">(</span><span class="nn">Duration</span><span class="p">::</span><span class="nf">from_secs_f32</span><span class="p">(</span><span class="mf">1.0</span><span class="p">))</span>
+            <span class="nf">.then</span><span class="p">(</span><span class="nn">once</span><span class="p">::</span><span class="nf">run</span><span class="p">(||</span> <span class="p">{</span>
+                <span class="nd">println!</span><span class="p">(</span><span class="s">"Hello"</span><span class="p">);</span>
+            <span class="p">}))</span>
+    <span class="p">})</span><span class="k">.await</span><span class="p">;</span>
+<span class="p">}));</span>
+</code></pre></div></div>
+<p data-sourcepos="253:1-253:44"><iframe id="qiita-embed-content__3338a3cd7e325402ca2a46a1e6dbd65b" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__3338a3cd7e325402ca2a46a1e6dbd65b" data-content="https%3A%2F%2Fzenn.dev%2Felm%2Farticles%2F34d89e52839715" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="255:1-255:311">他にも<code>Commands</code>によるスポーン・デスポーンを活用すると、アイディア次第で単一システムの枠を超えたいろんなことができます。特にエンティティ以外にも、リソースの追加や削除も<code>Commands</code>からできるので、可能性は無限大です。</p>
+<h2 data-sourcepos="257:1-257:57">
+<span id="ポイント8-システムの実行スケジュール" class="fragment"></span><a href="#%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%888-%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%81%AE%E5%AE%9F%E8%A1%8C%E3%82%B9%E3%82%B1%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB"><i class="fa fa-link"></i></a>ポイント8: システムの実行スケジュール</h2>
+<p data-sourcepos="259:1-259:265">Bevyのシステムは、基本的に <code>Startup</code> と <code>Update</code> の大きく2種類のスケジュールで実行することができ、<code>Startup</code>に初期セットアップ（スポーンなど）、<code>Update</code>に毎フレーム処理したい内容を登録します。</p>
+<p data-sourcepos="261:1-261:59"><iframe id="qiita-embed-content__7b17b6de0646e37d46bab9c9db5a271b" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__7b17b6de0646e37d46bab9c9db5a271b" data-content="https%3A%2F%2Fbevy-cheatbook.github.io%2Fprogramming%2Fschedules.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="263:1-269:3">
+<div class="code-lang"><span class="bold">システムの実行スケジュールの例</span></div>
+<div class="highlight"><pre><code><span class="c1">// 毎フレーム実行したい処理 (Update)</span>
+<span class="n">app</span><span class="nf">.add_systems</span><span class="p">(</span><span class="n">Update</span><span class="p">,</span> <span class="n">camera_movement</span><span class="p">);</span>
+
+<span class="c1">// 起動時に実行したい処理 (Startup)</span>
+<span class="n">app</span><span class="nf">.add_systems</span><span class="p">(</span><span class="n">Startup</span><span class="p">,</span> <span class="n">setup_camera</span><span class="p">);</span>
+</code></pre></div>
+</div>
+<p data-sourcepos="271:1-271:334"><code>PreUpdate</code>や<code>PostUpdate</code>などの細かな制御も可能ですが、実際にはそれよりも、前述のステートと連動した、<code>OnExit(State)</code>と<code>OnEnter(State)</code>のほうがよく利用されます。この2つは指定のステートに状態が切り替わったとき、状態が変化するときに呼ばれます。</p>
+<p data-sourcepos="273:1-273:306">例えばよく使うのは、アセットがすべて読み込まれたあとに何かを処理する場合で、<a href="https://github.com/NiklasEi/bevy_asset_loader" rel="nofollow noopener" target="_blank">bevy_asset_loader</a>などのプラグインを使うと、そのあたりの実行スケジュール・ステート管理が楽にできます。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="275:1-288:3">
+<div class="code-lang"><span class="bold">bevy_asset_loaderを使った、アセット読み込みの例</span></div>
+<div class="highlight"><pre><code><span class="n">app</span>
+    <span class="c1">// ステートを登録</span>
+    <span class="py">.init_state</span><span class="p">::</span><span class="o">&lt;</span><span class="n">MyStates</span><span class="o">&gt;</span><span class="p">()</span>
+    <span class="nf">.add_loading_state</span><span class="p">(</span>
+        <span class="nn">LoadingState</span><span class="p">::</span><span class="nf">new</span><span class="p">(</span><span class="nn">MyStates</span><span class="p">::</span><span class="n">AssetLoading</span><span class="p">)</span>
+            <span class="c1">// 読み込み終わったら AssetLoaded ステートにする</span>
+            <span class="nf">.continue_to_state</span><span class="p">(</span><span class="nn">MyStates</span><span class="p">::</span><span class="n">AssetLoaded</span><span class="p">)</span>
+            <span class="c1">// オーディオ関係のアセットを読み込み</span>
+            <span class="py">.load_collection</span><span class="p">::</span><span class="o">&lt;</span><span class="n">AudioAssets</span><span class="o">&gt;</span><span class="p">(),</span> 
+    <span class="p">)</span>
+    <span class="c1">// 読み込みが終わったタイミングで、BGMを再生するシステム</span>
+    <span class="nf">.add_systems</span><span class="p">(</span><span class="nf">OnEnter</span><span class="p">(</span><span class="nn">MyStates</span><span class="p">::</span><span class="n">AssetLoaded</span><span class="p">),</span> <span class="n">start_background_audio</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<p data-sourcepos="290:1-290:343">また、実行スケジュールとは書き方は異なるものの、エンティティやコンポーネントの追加や削除、変更のタイミングを検知して何かを実行することも可能で、<code>Added&lt;T&gt;</code>や<code>Changed&lt;T&gt;</code>をクエリ内に書くことで、イベントみたいにトリガーすることができます。</p>
+<p data-sourcepos="292:1-292:66"><iframe id="qiita-embed-content__a00b7e8e416af7df40e42c211d90a833" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__a00b7e8e416af7df40e42c211d90a833" data-content="https%3A%2F%2Fbevy-cheatbook.github.io%2Fprogramming%2Fchange-detection.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="294:1-311:3">
+<div class="code-lang"><span class="bold">変更検知の例</span></div>
+<div class="highlight"><pre><code><span class="k">fn</span> <span class="nf">debug_stats_change</span><span class="p">(</span>
+    <span class="n">query</span><span class="p">:</span> <span class="n">Query</span><span class="o">&lt;</span>
+        <span class="c1">// コンポーネント</span>
+        <span class="p">(</span><span class="o">&amp;</span><span class="n">Health</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">PlayerXp</span><span class="p">),</span>
+        <span class="c1">// フィルター</span>
+        <span class="p">(</span><span class="n">Without</span><span class="o">&lt;</span><span class="n">Enemy</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Or</span><span class="o">&lt;</span><span class="p">(</span><span class="n">Changed</span><span class="o">&lt;</span><span class="n">Health</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Changed</span><span class="o">&lt;</span><span class="n">PlayerXp</span><span class="o">&gt;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">),</span> 
+    <span class="o">&gt;</span><span class="p">,</span>
+<span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">health</span><span class="p">,</span> <span class="n">xp</span><span class="p">)</span> <span class="k">in</span> <span class="n">query</span><span class="nf">.iter</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">// 変更時のみ実行される</span>
+        <span class="nd">eprintln!</span><span class="p">(</span>
+            <span class="s">"hp: {}+{}, xp: {}"</span><span class="p">,</span>
+            <span class="n">health</span><span class="py">.hp</span><span class="p">,</span> <span class="n">health</span><span class="py">.extra</span><span class="p">,</span> <span class="n">xp</span><span class="na">.0</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+<h2 data-sourcepos="313:1-313:34">
+<span id="ポイント9-uiと2dの違い" class="fragment"></span><a href="#%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%889-ui%E3%81%A82d%E3%81%AE%E9%81%95%E3%81%84"><i class="fa fa-link"></i></a>ポイント9: UIと2Dの違い</h2>
+<p data-sourcepos="315:1-315:266">Bevyでは、UI処理と2D処理は分かれています。それぞれに似た<a href="https://bevy-cheatbook.github.io/programming/bundle.html" rel="nofollow noopener" target="_blank">バンドル</a>が準備されていて、例えばテキストはUIでは<code>TextBundle</code>、2Dでは<code>Text2dBundle</code>を使います。</p>
+<p data-sourcepos="317:1-317:318">UIと2Dの一番の違いは、Flexboxがレイアウトに使えるか否かですが、その他にも、2Dを前提にしたアドオン、UIを前提にしたアドオンなど、どちらを利用するかで使えるアドオンも変わってきたり、マテリアルの処理などに違いがあります。</p>
+<p data-sourcepos="319:1-319:478">Flexboxは非常に柔軟なレイアウトができる一方で、CSSなどと同じく難しい部分もあり、シンプルな2Dとどちらを使うべきかはケースバイケースです。基本的にはゲームオブジェクトは2D、メニューなどはUIと分けておくと良いかと思いますが、Bevyのバージョンを重ねるごとにUIもカメラドリブンになっているので、両者を混在させた使い方もできたりします。</p>
+<h2 data-sourcepos="321:1-321:43">
+<span id="ポイント10-プラグイン-plugin" class="fragment"></span><a href="#%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%8810-%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3-plugin"><i class="fa fa-link"></i></a>ポイント10: プラグイン (Plugin)</h2>
+<p data-sourcepos="323:1-323:310">ふつうプラグインというと、外部のアドオンのようなものをイメージすると思いますが、BevyでのPluginは、システムやリソースの登録などをまとめるためにも使えます。（もちろん外部のプラグインを利用する場合にも使います。）</p>
+<p data-sourcepos="325:1-325:57"><iframe id="qiita-embed-content__d2fa189d7b1432a473b1413ea0ec7ea2" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__d2fa189d7b1432a473b1413ea0ec7ea2" data-content="https%3A%2F%2Fbevy-cheatbook.github.io%2Fprogramming%2Fplugins.html" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="327:1-327:246">なので、ある程度の機能別にプラグインにまとめるようにしておくと、関連するリソースやシステム登録を一箇所のソースにまとめることができるので、見た目上も綺麗になります。</p>
+<div class="code-frame" data-lang="rust" data-sourcepos="329:1-340:3"><div class="highlight"><pre><code><span class="k">struct</span> <span class="n">MyPlugin</span><span class="p">;</span>
+
+<span class="k">impl</span> <span class="n">Plugin</span> <span class="k">for</span> <span class="n">MyPlugin</span> <span class="p">{</span>
+    <span class="k">fn</span> <span class="nf">build</span><span class="p">(</span><span class="o">&amp;</span><span class="k">self</span><span class="p">,</span> <span class="n">app</span><span class="p">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">App</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">app</span><span class="py">.init_resource</span><span class="p">::</span><span class="o">&lt;</span><span class="n">MyOtherResource</span><span class="o">&gt;</span><span class="p">();</span>
+        <span class="n">app</span><span class="py">.add_event</span><span class="p">::</span><span class="o">&lt;</span><span class="n">MyEvent</span><span class="o">&gt;</span><span class="p">();</span>
+        <span class="n">app</span><span class="nf">.add_systems</span><span class="p">(</span><span class="n">Startup</span><span class="p">,</span> <span class="n">plugin_init</span><span class="p">);</span>
+        <span class="n">app</span><span class="nf">.add_systems</span><span class="p">(</span><span class="n">Update</span><span class="p">,</span> <span class="n">my_system</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p data-sourcepos="342:1-342:237">こうして作ったプラグインを、別のゲームなどで活用することも簡単にできますし、一つのアドオンとして分離したり、クレートとしてライブラリに公開することもできます。</p>
+<p data-sourcepos="344:1-344:198">プログラムをパーツに分けていく利点は再利用の面でとても大きいと感じていて、ECSの大きな恩恵はこの「モジュラー」な部分にあると思います。</p>
+<h2 data-sourcepos="346:1-346:68">
+<span id="ポイント11-ギズモ-gizmos-や-egui-などの即時描画" class="fragment"></span><a href="#%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%8811-%E3%82%AE%E3%82%BA%E3%83%A2-gizmos-%E3%82%84-egui-%E3%81%AA%E3%81%A9%E3%81%AE%E5%8D%B3%E6%99%82%E6%8F%8F%E7%94%BB"><i class="fa fa-link"></i></a>ポイント11: ギズモ (Gizmos) や egui などの即時描画</h2>
+<p data-sourcepos="348:1-348:279">Bevyは基本的にはUnityなどと同じく、エンティティやコンポーネントなどの構造体を制御して描画をコントロールしていきますが、即時描画も可能です。その代表格がギズモ (Gizmos) と egui (immediate-mode GUI)です。</p>
+<p data-sourcepos="350:1-350:57"><iframe id="qiita-embed-content__37a17f848e089e9aa4aad846607636f9" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__37a17f848e089e9aa4aad846607636f9" data-content="https%3A%2F%2Fbevyengine.org%2Fexamples%2F2D%2520Rendering%2F2d-gizmos%2F" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="352:1-352:57"><iframe id="qiita-embed-content__f4dbc38fd2324fb2202f881008f11be8" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__f4dbc38fd2324fb2202f881008f11be8" data-content="https%3A%2F%2Fbevyengine.org%2Fexamples%2F3D%2520Rendering%2F3d-gizmos%2F" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="354:1-354:36"><iframe id="qiita-embed-content__a79683ddb5ba4b3a56d7d83b764ef1bc" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__a79683ddb5ba4b3a56d7d83b764ef1bc" data-content="https%3A%2F%2Fgithub.com%2Fmvlabat%2Fbevy_egui" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="356:1-356:416">特にデバッグなどの試行錯誤において、即時描画はとても便利です。C++やOpenGLでもImGuiという、eguiに似た即時描画できるGUIがよく使われていますが、eguiは同じように使えますし、他にも<code>bevy-debug-text-overlay</code>など、即時描画できるものをいくつか知っておくと、デバッグと試行錯誤が非常に楽になると思います。</p>
+<p data-sourcepos="358:1-358:50"><iframe id="qiita-embed-content__cbe9cfbee24bb59d6996981b5d821daa" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__cbe9cfbee24bb59d6996981b5d821daa" data-content="https%3A%2F%2Fgithub.com%2Fnicopap%2Fbevy-debug-text-overlay" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="360:1-360:440">ちなみに執筆時点ではまだ開発段階ですが、クリエイティブ・コーディング向けフレームワークである<a href="https://nannou.cc/" rel="nofollow noopener" target="_blank">nannou</a>がBevyプラグインとして生まれ変わると、さらなる即時描画APIの選択肢が増えることになるので、こちらも将来性が楽しみです。（Unity×Processing = Unicessingと似たノリの使い方ができるようになるのでは。）</p>
+<p data-sourcepos="362:1-362:47"><iframe id="qiita-embed-content__09ec07544a4a4fbd2ebb70502d5207aa" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__09ec07544a4a4fbd2ebb70502d5207aa" data-content="https%3A%2F%2Fgithub.com%2Fnannou-org%2Fnannou%2Fissues%2F953" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<section class="footnotes">
+<ol>
+<li id="fn-1">
+<p data-sourcepos="365:7-365:795">可変・不変・定数の違いはJavaScriptの<code>var</code>,<code>let</code>,<code>const</code>の違いと似ていると考えて差し支えありませんが、Rustの定数 (<code>const</code>) は実行時に変更できない点が違っていて、その意味ではJavaScriptの<code>const</code>は不変（イミュータブル）に近いです。また、Rustでは<code>mut</code>を多用すると所有権まわりのエラーに悩まされがちなのもあり、できるだけ<code>immutable</code> (不変) にすることが望まれます。この辺は<a href="https://ja.wikipedia.org/wiki/%E5%8F%82%E7%85%A7%E9%80%8F%E9%81%8E%E6%80%A7" rel="nofollow noopener" target="_blank">参照透過性</a>を重視する<a href="https://ja.wikipedia.org/wiki/%E9%96%A2%E6%95%B0%E5%9E%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0" rel="nofollow noopener" target="_blank">関数型言語</a>らしい部分でもあります。 <a href="#fnref-1" class="">↩</a></p>
+</li>
+<li id="fn-a">
+<p data-sourcepos="369:7-369:197"><a href="https://zenn.dev/msakuta/articles/40c1ad41b1c62e#component-%E3%81%AE%E5%90%8C%E6%99%82%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9" rel="nofollow noopener" target="_blank">[Rust] Bevyのはまりどころ - Componentの同時アクセス</a> <a href="#fnref-a" class="">↩</a></p>
+</li>
+<li id="fn-2">
+<p data-sourcepos="367:7-367:308"><a href="https://github.com/bevyengine/bevy/blob/main/examples/ecs/one_shot_systems.rs" rel="nofollow noopener" target="_blank">ワンショットシステム</a>を使うというのも一つの手ですが、<code>SystemId</code> を管理しなければならなかったりするので、特定用途以外はイベントが簡単で便利だと思います。 <a href="#fnref-2" class="">↩</a></p>
+</li>
+</ol>
+</section>

@@ -1,0 +1,30 @@
+<p data-sourcepos="1:1-1:273">ネットワークのメトリック値 (接続優先度、低いほど優先) を適切に設定することで、複数のネットワークに同時接続しても安定して使用できるようになる（例えばWi-Fiを常に有線LANより優先するなど）。</p>
+<p data-sourcepos="3:1-3:181"><code>ifmetric</code> コマンドでメトリック値を変更しても、一時的にしか反映されないので、Network Managerを使っている場合は <code>nmcli</code>から変更する。</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="5:1-21:3"><div class="highlight"><pre><code><span class="c"># 確認</span>
+<span class="nb">sudo </span>nmcli connection show <span class="c"># 接続一覧</span>
+<span class="nb">sudo </span>nmcli connection show <span class="s2">"Wired connection 1"</span> <span class="c"># 設定値一覧</span>
+<span class="nb">sudo </span>nmcli connection show <span class="s2">"Wired connection 1"</span> | <span class="nb">grep </span>metric <span class="c"># メトリック値確認</span>
+
+<span class="c"># 設定変更</span>
+<span class="nb">sudo </span>nmcli connection modify <span class="s2">"Wired connection 1"</span> ipv4.route-metric 100
+<span class="nb">sudo </span>nmcli connection modify <span class="s2">"Wired connection 2"</span> ipv4.route-metric 200
+
+<span class="c"># 適用</span>
+<span class="nb">sudo </span>nmcli connection up <span class="s2">"Wired connection 1"</span>
+<span class="nb">sudo </span>nmcli connection up <span class="s2">"Wired connection 2"</span>
+
+<span class="c"># メトリック値を ip route で確認</span>
+ip route
+</code></pre></div></div>
+<p data-sourcepos="23:1-23:138">なお、ipコマンドやifconfigコマンドが入っていない場合は、<code>apt install dnsutils</code> からインストールできる。</p>
+<h2 data-sourcepos="25:1-25:20">
+<span id="20220516-追記" class="fragment"></span><a href="#20220516-%E8%BF%BD%E8%A8%98"><i class="fa fa-link"></i></a>2022/05/16 追記</h2>
+<p data-sourcepos="27:1-27:171">最近 Ubuntu 22.04 を使ったところ、上記設定だけではDNSの解決がうまく行かず、以下のように<code>ipv4.dns-priority</code>の設定も必要だった。</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="29:1-37:3"><div class="highlight"><pre><code><span class="c"># 設定変更</span>
+<span class="nb">sudo </span>nmcli connection modify <span class="s2">"Wired connection 1"</span> ipv4.dns-priority 100
+<span class="nb">sudo </span>nmcli connection modify <span class="s2">"Wired connection 2"</span> ipv4.dns-priority 200
+
+<span class="c"># 適用</span>
+<span class="nb">sudo </span>nmcli connection up <span class="s2">"Wired connection 1"</span>
+<span class="nb">sudo </span>nmcli connection up <span class="s2">"Wired connection 2"</span>
+</code></pre></div></div>

@@ -1,0 +1,99 @@
+<p data-sourcepos="1:1-1:206"><strong>完全なる独断と偏見</strong>で、自分が個人的に2025年に使っていきたい、クリエイティブコーディング関連のフレームワークについてまとめていこうと思う。</p>
+<p data-sourcepos="3:1-3:164">（プロプライエタリ = 非オープンソース のものは、TouchDesignerのみ一応紹介して、あとは選定から外している点に注意。）</p>
+<p data-sourcepos="5:1-5:81">なお、半年以上前にまとめた以下の記事も参考になるはず。</p>
+<p data-sourcepos="7:1-7:58"><iframe id="qiita-embed-content__aeee9b91081d51743f38143448eac60a" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__aeee9b91081d51743f38143448eac60a" data-content="https%3A%2F%2Fqiita.com%2Ffunatsufumiya%2Fitems%2F9088905c7e6f9a1531bc" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<h2 data-sourcepos="9:1-9:58">
+<span id="とにかくスクラッチで書きたい--lövr" class="fragment"></span><a href="#%E3%81%A8%E3%81%AB%E3%81%8B%E3%81%8F%E3%82%B9%E3%82%AF%E3%83%A9%E3%83%83%E3%83%81%E3%81%A7%E6%9B%B8%E3%81%8D%E3%81%9F%E3%81%84--l%C3%B6vr"><i class="fa fa-link"></i></a>とにかくスクラッチで書きたい！ → LÖVR</h2>
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/V31VfV84FvY?si=nxDbUUuyCbtQN0xr" frameborder="0" allowfullscreen></iframe>
+<p data-sourcepos="13:1-13:17"><iframe id="qiita-embed-content__5f347ef54d1e364e84f0a2d59ada0782" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__5f347ef54d1e364e84f0a2d59ada0782" data-content="https%3A%2F%2Flovr.org%2F" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="15:1-15:160">上記動画で、<a href="https://lovr.org/" rel="nofollow noopener" target="_blank">LÖVR</a>が最も簡単な3Dゲームエンジンではないかと紹介されているけれど、自分も同意する。</p>
+<p data-sourcepos="17:1-17:339">元々人気のあったLua用ゲームエンジンである<a href="https://love2d.org/" rel="nofollow noopener" target="_blank">Love2D (LÖVE)</a>を、Vulkan対応などによって3Dに進化させたもの。同様の亜種は複数あるものの、ドキュメントが豊富で、スター数なども考慮して、一番安定して使いやすいものではないかと思う。</p>
+<p data-sourcepos="19:1-19:399">現時点のデメリットとしてはiOS非対応なことだけれど、Androidには既に対応しているし、時間の問題かもと一瞬思ったが、このフレームワークの主眼はVR/XRにあるようで、<a href="https://github.com/bjornbytes/lovr/issues/654" rel="nofollow noopener" target="_blank">今のところ対応予定はない</a>とのこと。ただ、visionOSの存在もあるので、今後の動向に注目。</p>
+<h2 data-sourcepos="21:1-21:52">
+<span id="エディタがやっぱりほしい--godot" class="fragment"></span><a href="#%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF%E3%81%8C%E3%82%84%E3%81%A3%E3%81%B1%E3%82%8A%E3%81%BB%E3%81%97%E3%81%84--godot"><i class="fa fa-link"></i></a>エディタがやっぱりほしい！ → Godot</h2>
+<p data-sourcepos="23:1-23:24"><iframe id="qiita-embed-content__a94795897f2ed3ef0974d8998bbfeefc" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__a94795897f2ed3ef0974d8998bbfeefc" data-content="https%3A%2F%2Fgodotengine.org%2F" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="25:1-25:309">ゲームエンジンについては多種多様に存在するので、正直自由に選んでもらえればと思うのだけれど、GDScriptの完成度や、C#も併用したり、C++（や他の言語）で自由に拡張したりといった総合評価で、自分はGodotをおすすめしたい。</p>
+<p data-sourcepos="27:1-27:370">前述のLÖVR同様、書いていて楽しいと思うのはGodotも間違いないと思う。例えばシェーダ言語が書けなくても、ビジュアルエディタが豊富にあり、アニメーションやスプライトについてもエディタでサクサク作っていけるので、初心者にも上級者にもおすすめできると感じる。</p>
+<p data-sourcepos="29:1-29:395">ただし、LÖVRもそうかもしれないけれど、Vulkan対応等によって必須スペックは過去のゲームエンジンに比べて上がっていて、もし旧来のマシンやGPU、古いスマホにも対応したいという思惑があるのであれば、レンダラーを変更したり、他のOpenGL対応のゲームエンジンも検討するなどしてほしい。</p>
+<h2 data-sourcepos="31:1-31:54">
+<span id="ecsでバリバリ書いていきたい--bevy" class="fragment"></span><a href="#ecs%E3%81%A7%E3%83%90%E3%83%AA%E3%83%90%E3%83%AA%E6%9B%B8%E3%81%84%E3%81%A6%E3%81%84%E3%81%8D%E3%81%9F%E3%81%84--bevy"><i class="fa fa-link"></i></a>ECSでバリバリ書いていきたい！ → Bevy</h2>
+<p data-sourcepos="33:1-33:23"><iframe id="qiita-embed-content__bc75d75bb4fdbfcf025a5a4edb0d1e5a" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__bc75d75bb4fdbfcf025a5a4edb0d1e5a" data-content="https%3A%2F%2Fbevyengine.org%2F" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="35:1-35:314">LÖVRの存在を知るまでは、スクラッチで書くならこれしかないとすら思っていた。先進的な機能と拡張性を併せ持っていて、Rust以外の何もインストールを必要としないのも嬉しい。(VSCodeさえあれば完璧に補完が効くのもありがたい。)</p>
+<p data-sourcepos="37:1-37:545">注意点としては、Bevyフレームワークのおかげでコーディングが比較的簡単になっているとはいえ、Rustの難易度は低くはないこと。そして、Rustの特徴として関連ライブラリを含めてすべてビルドするので、プロジェクトフォルダのサイズが大きく、（最初の）ビルド時間が大きい（【2025/5/6 追記】改善方法があったので脚注にて紹介<sup><a href="#fn-3" id="fnref-3">1</a></sup>）。これについては諸刃の剣であるし、sccache等の対応策も一応ある。</p>
+<p data-sourcepos="39:1-39:628">また、先進的な機能を次々に取り入れている結果、破壊的変更が多いことに注意。セマンティックバージョニング (<code>0.xx.yy</code>) で、<code>0.xx</code> (例えば 0.14) が変わらなければAPIは維持されているが、例えば 0.14 と 0.15 はもはや別物レベルで違う。（ただし、<a href="https://bevyengine.org/learn/migration-guides/0-14-to-0-15/" rel="nofollow noopener" target="_blank">マイグレーションガイド</a>という丁寧なドキュメントや、豊富なコミュニティサポートにより、移行自体は個人的にはそこまで苦労はしないと感じている。ただ、英語中心。）</p>
+<p data-sourcepos="41:1-41:523">古き良き<a href="https://openframeworks.cc/" rel="nofollow noopener" target="_blank">OpenFrameworks</a>などと同じように、<a href="https://bevyengine.org/assets/" rel="nofollow noopener" target="_blank">Bevy Assets</a>と呼ばれる拡張機能が多数存在するので、「これってできないのかな？」と思うことはたいてい拡張機能で対応できるのも嬉しい。コミュニティが厚いというのはこの辺が嬉しいところ。<a href="https://bevyengine.org/examples/" rel="nofollow noopener" target="_blank">Examples</a>もブラウザで動いているものを確認しながらコードも見れるのが楽しい。</p>
+<p data-sourcepos="43:1-43:401">ちなみにBevyは、ECSのおかげもあって<a href="https://bevy-cheatbook.github.io/setup/perf.html" rel="nofollow noopener" target="_blank">自動的にマルチスレッドかつパイプライン対応</a>してくれるのがありがたい。つまり、自然なコードを書けばフレームワーク側が自動でパフォーマンスを最適化してくれるので、ゲーム開発者にとっては助かる部分だと思う。</p>
+<h2 data-sourcepos="45:1-45:89">
+<span id="バランス良く書いていきたい--delve-framework-および-zig-gamedev" class="fragment"></span><a href="#%E3%83%90%E3%83%A9%E3%83%B3%E3%82%B9%E8%89%AF%E3%81%8F%E6%9B%B8%E3%81%84%E3%81%A6%E3%81%84%E3%81%8D%E3%81%9F%E3%81%84--delve-framework-%E3%81%8A%E3%82%88%E3%81%B3-zig-gamedev"><i class="fa fa-link"></i></a>バランス良く書いていきたい！ → Delve Framework (および zig-gamedev)</h2>
+<p data-sourcepos="47:1-47:161"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fb02ef8cc-6018-2098-213b-019cea8b0d64.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=fffdec004fb9d96ffd39b52f368c987e" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fb02ef8cc-6018-2098-213b-019cea8b0d64.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=fffdec004fb9d96ffd39b52f368c987e" alt="300164821-45b64806-7829-4542-80d5-5a892eebf80d.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fb02ef8cc-6018-2098-213b-019cea8b0d64.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=70d7416e53f9c58c83344a273d420415 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/b02ef8cc-6018-2098-213b-019cea8b0d64.png" loading="lazy"></a></p>
+<p data-sourcepos="50:1-50:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F58241be6-dc52-09bd-47ad-04ad4d3d9e20.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=1277c6b9d146f3392b4cc66c8d9ea16d" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F58241be6-dc52-09bd-47ad-04ad4d3d9e20.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=1277c6b9d146f3392b4cc66c8d9ea16d" alt="スクリーンショット 2025-01-14 13.16.41.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F58241be6-dc52-09bd-47ad-04ad4d3d9e20.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=7407c7d366e2edf1702ec89ca194196f 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/58241be6-dc52-09bd-47ad-04ad4d3d9e20.png" loading="lazy"></a></p>
+<p data-sourcepos="52:1-52:162"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F74f50e54-d4da-0aa6-1755-7c03015e05dc.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=4de30aa93af8f27741bef06ef6c0f82a" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F74f50e54-d4da-0aa6-1755-7c03015e05dc.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=4de30aa93af8f27741bef06ef6c0f82a" alt="スクリーンショット 2025-01-14 14.32.29.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2F74f50e54-d4da-0aa6-1755-7c03015e05dc.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=808d3e452de5e9213a3711d638a5e591 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/74f50e54-d4da-0aa6-1755-7c03015e05dc.png" loading="lazy"></a></p>
+<p data-sourcepos="54:1-54:44"><iframe id="qiita-embed-content__976abefd50f9af85ddab7ec82cb74732" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__976abefd50f9af85ddab7ec82cb74732" data-content="https%3A%2F%2Fgithub.com%2FInterrupt%2Fdelve-framework" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="56:1-56:30"><iframe id="qiita-embed-content__b4d3ddcb2d397a6eceb83282e0b3e74d" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__b4d3ddcb2d397a6eceb83282e0b3e74d" data-content="https%3A%2F%2Fgithub.com%2Fzig-gamedev" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="58:1-58:279">こちらは追記にあたるのだけれど、元々後述の「今後に期待シリーズ」に入れていたもののなかで、<a href="https://github.com/Interrupt/delve-framework" rel="nofollow noopener" target="_blank">Delve Framework</a>は特に光るものがあったので、ピックアップしておきたい。</p>
+<p data-sourcepos="60:1-60:305"><a href="https://ziglang.org/" rel="nofollow noopener" target="_blank">Zig言語</a>というのは言語のなかでも比較的新しいもので、近年ではRustやC/C++に次いでよく使われているのではないかと思う。（<a href="https://bun.sh/" rel="nofollow noopener" target="_blank">bun</a>というJavaScript処理系がZigで書かれていることでも知られている。）</p>
+<p data-sourcepos="62:1-62:482">手動でメモリ管理を行う言語ではありながら、自分が以前書いたアリーナ・アロケータに関する記事のように、いくつか注意していれば、普通に書き進めていくことのできるバランスのとれた言語。（その他、deferといったメモリ解放忘れを防ぐ仕組みが元々あったり、<a href="https://github.com/Aandreba/zigrc" rel="nofollow noopener" target="_blank">zigrc</a>のようなスマートポインタ実装も最近は登場している。）</p>
+<p data-sourcepos="64:1-64:54"><iframe id="qiita-embed-content__0f96ffcbf7da6a20714c10e22d293c53" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__0f96ffcbf7da6a20714c10e22d293c53" data-content="https%3A%2F%2Fzenn.dev%2Ffunatsufumiya%2Farticles%2Fb3935504dd1e97" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="66:1-66:268">今回、2025年らしい先進的なフレームワークに的を絞って集めたつもりなのだけれど、Delve Frameworkは特にバランスが良いと感じていて、Zigのおかげでビルドはすごく高速だし、Luaを使うこともできる。</p>
+<p data-sourcepos="68:1-68:609">Delve Frameworkでは<a href="https://github.com/floooh/sokol" rel="nofollow noopener" target="_blank">Sokol</a>という描画エンジンが使われていて、Metal/DX11/OpenGL/WebGL（<a href="https://x.com/FlohOfWoe/status/1005377054320332800" rel="nofollow noopener" target="_blank">Vulkanは非対応</a>）に自然と対応しながらも、とてもサクサク書き進めていける。一方でSokolは並列での描画には基本的に向いていないので、Delve Framework自身がなにか今後工夫をする可能性はありつつ、本気でマルチスレッドのパフォーマンスやスケーラビリティを求める場合は前述のBevyの方が良いかなとは思う。</p>
+<p data-sourcepos="70:1-70:414">プログラミング言語の好みもあると思うので、そういう意味でもZig言語のゲームエンジンを一つ紹介してみた。Zig言語の他のゲームエンジンとしては、本当はいつか<a href="https://machengine.org/" rel="nofollow noopener" target="_blank">Mach Engine</a>が完成してほしいと期待している。（Rustの難しさに悩んでいる人は、Zigを一度試してみると良いかもしれない。）</p>
+<h2 data-sourcepos="72:1-72:48">
+<span id="ノーコードがいい--touchdesigner" class="fragment"></span><a href="#%E3%83%8E%E3%83%BC%E3%82%B3%E3%83%BC%E3%83%89%E3%81%8C%E3%81%84%E3%81%84--touchdesigner"><i class="fa fa-link"></i></a>ノーコードがいい！ → TouchDesigner</h2>
+<p data-sourcepos="74:1-74:22"><iframe id="qiita-embed-content__f3e0b8e321de8e74af11778fa5af0edf" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__f3e0b8e321de8e74af11778fa5af0edf" data-content="https%3A%2F%2Fderivative.ca%2F" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="76:1-76:291">TouchDesignerはオープンソースでも無料でもないので、紹介程度に留めておきたいけれど、ゲームエンジンでいうところのUnityくらい、デファクト・スタンダードとなっているので、紹介だけはしておくべきかなと思う。</p>
+<p data-sourcepos="78:1-78:356">TouchDesignerのオープンソース的代替候補については<a href="https://qiita.com/funatsufumiya/items/9088905c7e6f9a1531bc">冒頭で紹介した記事</a>で挙げているし、きっと他にもいろいろあるはず。ちなみに元々TouchDesignerはバックエンドとしてOpenGLを使っていたが、2022年頃にVulkanに刷新された。</p>
+<p data-sourcepos="80:1-80:209">プロプライエタリとはいえ、コミュニティは大きいので、ノーコードで制作したい、VJやりたいというときには真っ先に選択肢に挙げて良いものだと思う。</p>
+<h2 data-sourcepos="82:1-82:42">
+<span id="その他-今後に期待シリーズ" class="fragment"></span><a href="#%E3%81%9D%E3%81%AE%E4%BB%96-%E4%BB%8A%E5%BE%8C%E3%81%AB%E6%9C%9F%E5%BE%85%E3%82%B7%E3%83%AA%E3%83%BC%E3%82%BA"><i class="fa fa-link"></i></a>その他 (今後に期待シリーズ)</h2>
+<p data-sourcepos="84:1-84:156">以下、自分が個人的にウォッチしていて、今後のアップデートや動向次第では積極的に使っていきたいものリスト。</p>
+<ul data-sourcepos="86:1-95:0">
+<li data-sourcepos="86:1-86:77">
+<a href="https://www.cocos.com/en/creator" rel="nofollow noopener" target="_blank">Cocos Creator</a> ※ Cocos2d-xとは別物</li>
+<li data-sourcepos="87:1-87:65">
+<a href="https://wiki.libsdl.org/SDL3/NewFeatures" rel="nofollow noopener" target="_blank">SDL3</a> (C++ほか。)</li>
+<li data-sourcepos="88:1-88:137">
+<a href="https://github.com/RavEngine/RavEngine/" rel="nofollow noopener" target="_blank">RavEngine</a> (C++。<a href="https://qiita.com/funatsufumiya/items/4a154378e490fdde42a8" id="reference-0f783652b143b3ef7e06">紹介記事</a>)</li>
+<li data-sourcepos="89:1-89:126">
+<a href="https://github.com/astomih/sinen" rel="nofollow noopener" target="_blank">Sinen</a> (C++。<a href="https://qiita.com/funatsufumiya/items/db1e13033ca071425cf6" id="reference-33341e97bd6b1878aa70">紹介記事</a>)</li>
+<li data-sourcepos="90:1-90:142">
+<a href="https://github.com/roman01la/minimax" rel="nofollow noopener" target="_blank">minimax</a> (Clojure言語。<a href="https://qiita.com/funatsufumiya/items/e41df266eb72b097074a" id="reference-a05da044a8229c8e20a7">紹介記事</a>)</li>
+<li data-sourcepos="91:1-91:58">
+<a href="https://github.com/OGRECave/ogre-next" rel="nofollow noopener" target="_blank">OGRE-Next</a> (C++)</li>
+<li data-sourcepos="92:1-92:52">
+<a href="https://machengine.org/" rel="nofollow noopener" target="_blank">Mach Engine</a> (Zig言語)</li>
+<li data-sourcepos="93:1-93:59">
+<a href="https://odin-lang.org/" rel="nofollow noopener" target="_blank">Odin Language</a> (Odin言語 <sup><a href="#fn-1" id="fnref-1">2</a></sup>)</li>
+<li data-sourcepos="94:1-95:0">
+<a href="https://github.com/nannou-org/nannou/issues/953" rel="nofollow noopener" target="_blank">nannou - Bevy Plugin Rework</a> (Rust言語)</li>
+</ul>
+<p data-sourcepos="96:1-96:301">特にSDL3については、近日中に正式リリースになるので（【追記】2025/1/22に正式リリースされました）、特に<a href="https://wiki.libsdl.org/SDL3/CategoryGPU" rel="nofollow noopener" target="_blank">SDL GPU</a>をベースにした新しいフレームワークが次々と誕生するのではないかと予想。</p>
+<p data-sourcepos="98:1-98:409">ちなみに今回は挙げていないけれど、<a href="https://processing.org/" rel="nofollow noopener" target="_blank">Processing</a>や<a href="https://openframeworks.cc/" rel="nofollow noopener" target="_blank">OpenFrameworks</a>のような、旧来のOpenGL系の枯れたフレームワーク群も、まだまだ使えるし今後もおそらく使えるので、特に古いマシンやスマホとの互換性を保つ場合には是非検討してほしいと思う。（Web系も同様<sup><a href="#fn-2" id="fnref-2">3</a></sup>。）</p>
+<section class="footnotes">
+<ol>
+<li id="fn-3">
+<p data-sourcepos="104:7-104:310">次のBevyを紹介しているYouTube動画の、4:15あたりから、ビルド時間改善方法が紹介されている。 <a href="https://www.youtube.com/watch?v=5k66KB6DisI&amp;t=251s" class="autolink" rel="nofollow noopener" target="_blank">https://www.youtube.com/watch?v=5k66KB6DisI&amp;t=251s</a> （具体的には、動的リンクに変更する方法と、リンカを変える方法がしょうかいされている） <a href="#fnref-3" class="">↩</a></p>
+</li>
+<li id="fn-1">
+<p data-sourcepos="100:7-100:453"><a href="https://odin-lang.org/" rel="nofollow noopener" target="_blank">Odin言語</a>については、各種描画APIへのバインディングが公式で既になされているので、ライブラリではなく言語自体を列挙した。が、<a href="https://github.com/bkaradzic/bgfx" rel="nofollow noopener" target="_blank">BGFX</a>や<a href="https://github.com/RavEngine/RGL/" rel="nofollow noopener" target="_blank">RGL</a>のようなクロスプラットフォーム描画APIへのバインディング、かつ安定したものがあるとさらに使いやすくなりそう。 <a href="#fnref-1" class="">↩</a></p>
+</li>
+<li id="fn-2">
+<p data-sourcepos="102:7-102:310">Web系はもしかすると<a href="https://threejs.org/" rel="nofollow noopener" target="_blank">three.js</a>一択といえるのかもしれないし、最近WebGPUなどの動きが活発なので、<a href="https://bevyengine.org/examples/" rel="nofollow noopener" target="_blank">BevyのExampleもWebで動くものが見れる</a>し、選択肢は豊富にあるともいえるかもしれない。 <a href="#fnref-2" class="">↩</a></p>
+</li>
+</ol>
+</section>

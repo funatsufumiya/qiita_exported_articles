@@ -1,0 +1,31 @@
+<p data-sourcepos="1:1-1:164">以下、2025年8月時点の備忘録。同様の主旨の記事は多くありながら、どれでも解決できなかったケースについてまとめた。</p>
+<h2 data-sourcepos="3:1-3:26">
+<span id="先に結論tldr" class="fragment"></span><a href="#%E5%85%88%E3%81%AB%E7%B5%90%E8%AB%96tldr"><i class="fa fa-link"></i></a>先に結論（TL;DR）</h2>
+<p data-sourcepos="5:1-5:330">オプション機能から公式にインストールできるならそれが一番良い。できないなら<a href="https://github.com/PowerShell/Win32-OpenSSH/wiki/Install-Win32-OpenSSH" rel="nofollow noopener" target="_blank">winget</a>か<a href="https://qiita.com/kujiraza/items/4cd5a2db98a9c5bdc21a" id="reference-e3068d1465582da3d580">chocolatey</a>から入れる。GitHub版を直はあまりおすすめしない。</p>
+<h2 data-sourcepos="7:1-7:58">
+<span id="1-そもそもopensshサーバが有効化できない" class="fragment"></span><a href="#1-%E3%81%9D%E3%82%82%E3%81%9D%E3%82%82openssh%E3%82%B5%E3%83%BC%E3%83%90%E3%81%8C%E6%9C%89%E5%8A%B9%E5%8C%96%E3%81%A7%E3%81%8D%E3%81%AA%E3%81%84"><i class="fa fa-link"></i></a>1. そもそもOpenSSHサーバが有効化できない</h2>
+<p data-sourcepos="9:1-9:96">一番ハマるのがこれで、このあとの対応で明暗が分かれることが多い。</p>
+<p data-sourcepos="11:1-11:209">WSUS、グループポリシーの変更などでインストールできるようになることもあるので、それで解決できる場合はOK。Windows Updateなどで解消できる場合もある。</p>
+<p data-sourcepos="13:1-13:258">自分の場合はその他Dockerなどの兼ね合いから、Windows HomeではなくWindows ProであればOpenSSHサーバのインストールも不思議とうまくいくことが多かったので、それで難を逃れていたこともあった。</p>
+<p data-sourcepos="15:1-15:84">以下で扱うのは、どうしてもインストールできなかった場合。</p>
+<h2 data-sourcepos="17:1-17:106">
+<span id="2-github版から直でopensshをインストールして実際のssh接続がうまくいかない" class="fragment"></span><a href="#2-github%E7%89%88%E3%81%8B%E3%82%89%E7%9B%B4%E3%81%A7openssh%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%97%E3%81%A6%E5%AE%9F%E9%9A%9B%E3%81%AEssh%E6%8E%A5%E7%B6%9A%E3%81%8C%E3%81%86%E3%81%BE%E3%81%8F%E3%81%84%E3%81%8B%E3%81%AA%E3%81%84"><i class="fa fa-link"></i></a>2. GitHub版から直でOpenSSHをインストールして、実際のSSH接続がうまくいかない</h2>
+<p data-sourcepos="19:1-19:103">1で真っ先に考えるのは、いわゆるGitHub版からインストールするということ。</p>
+<p data-sourcepos="21:1-21:55"><iframe id="qiita-embed-content__885665f53c941b3abb9f55926e98f671" src="https://qiita.com/embed-contents/link-card#qiita-embed-content__885665f53c941b3abb9f55926e98f671" data-content="https%3A%2F%2Fqiita.com%2FShortArrow%2Fitems%2Fa17a2071fe9cfffe4dbb" frameborder="0" scrolling="no" loading="lazy" style="width:100%;" height="29">
+</iframe>
+</p>
+<p data-sourcepos="23:1-23:187">1の中で書いた「インストールできる」ケースは、「公式版」や「オプション機能版」などと呼ばれていて、中身は実は同じものではない。</p>
+<p data-sourcepos="25:1-25:712">GitHub版からインストールすると、<a href="https://github.com/PowerShell/Win32-OpenSSH/releases" rel="nofollow noopener" target="_blank">Releases</a>にあるのがPreview版やBeta版ばかりでありどれを選べばいいかわからないため、実際はSSH接続に失敗するなどのトラブルに見舞われることがある。そして、どれならうまくいくかなどは、正直、OSのバージョンとの組み合わせが様々にあって、ノウハウのレベルになってくるし、<a href="https://github.com/PowerShell/Win32-OpenSSH/issues/1317" rel="nofollow noopener" target="_blank">Win32-OpenSSH Issue#1317</a> にある以下の図にあるように、Windowsから配布されているOpenSSHサーバは、必ずしもGitHubの内容とは一致しない。</p>
+<p data-sourcepos="27:1-27:160"><a href="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fd7b26381-0c4b-410b-929b-1b292d594063.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=e39917bc8c6a86981a505e0c3a6b417f" target="_blank" rel="nofollow noopener"><img src="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fd7b26381-0c4b-410b-929b-1b292d594063.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=e39917bc8c6a86981a505e0c3a6b417f" alt="50652818-88dab600-0f3c-11e9-9523-30f3474f5824.png" srcset="https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F44103%2Fd7b26381-0c4b-410b-929b-1b292d594063.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=6eea503325a0597a12fcc6aaa6f34ef4 1x" data-canonical-src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/d7b26381-0c4b-410b-929b-1b292d594063.png" loading="lazy"></a></p>
+<p data-sourcepos="29:1-29:144">で、それも踏まえてとりあえず適当なGitHub版を入れたとする。それで万事うまくいったなら何も問題ない。</p>
+<p data-sourcepos="31:1-31:427">ここからがハマりどころなのだけれど、設定したあとにSSH接続がうまくいかなかったりして、 <code>ssh xxxx -v</code> でログを見ると <code>debug1: SSH2_MSG_KEXINIT sent</code> などでハングしたりして、その解決策としてMTUの変更や、インストールパスをProgram Files以外にすると良いなどの記事が出てくる。が、実際はこれでは直らないことがある。</p>
+<h2 data-sourcepos="33:1-33:55">
+<span id="3-wingetやchocolateyなどからインストール" class="fragment"></span><a href="#3-winget%E3%82%84chocolatey%E3%81%AA%E3%81%A9%E3%81%8B%E3%82%89%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><i class="fa fa-link"></i></a>3. wingetやchocolateyなどからインストール</h2>
+<p data-sourcepos="35:1-35:322">これが結論になるのだけれど、<strong>GitHub直よりもマシというレベルの話で</strong>、wingetやchocolateyから入れると良い。例えばwingetから入れる場合は<a href="https://github.com/PowerShell/Win32-OpenSSH/wiki/Install-Win32-OpenSSH" rel="nofollow noopener" target="_blank">Install Win32 OpenSSH - Install using WinGet</a> などを参照。</p>
+<p data-sourcepos="37:1-37:200">正直このレベルで詰まってしまうPCの場合は、wingetも入っていないとかうまく入れられないようなPCも多いので、その場合はchocolateyを使うほかない。</p>
+<p data-sourcepos="39:1-39:418">wingetやchocolateyを使えば、GitHub直から入れたときに、手持ちのPCに対してハズレを引く確率は減る。もちろん時期によっては良くないリリースを引く可能性もあるけれど、インストール時に <code>-pre</code> や <code>Preview</code> などを付けない限りは、自分でバージョン選択するより安定したバージョンを選択してくれる確率が高い。</p>
+<p data-sourcepos="41:1-41:176">例えばchocolateyから入れる場合は以下のようなコマンドになる。（詳しくは <a href="https://qiita.com/kujiraza/items/4cd5a2db98a9c5bdc21a" class="autolink">https://qiita.com/kujiraza/items/4cd5a2db98a9c5bdc21a</a> などを参考。）</p>
+<div class="code-frame" data-lang="bash" data-sourcepos="43:1-45:3"><div class="highlight"><pre><code>choco <span class="nb">install </span>openssh <span class="nt">-params</span> <span class="s1">'"/SSHServerFeature"'</span> <span class="nt">-confirm</span>
+</code></pre></div></div>
+<p data-sourcepos="47:1-47:451">ただ注意が一つあって、このコマンドも結局GitHub版のどれかをとってきてインストールスクリプトを実行するので、それまでの試行錯誤でPATHなどがめちゃくちゃになっていると、うまくいかないことも多い。そのため、実行前に過去のOpenSSHを削除したりアンインストールスクリプトを実行したり、PATHからOpenSSHを削除するなどを推奨。</p>
+<p data-sourcepos="49:1-49:127">… MTU設定などでドツボにはまってしまう人がこれで一人でも減ってくれたら幸いだなと思う。</p>
