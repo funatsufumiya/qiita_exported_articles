@@ -1,6 +1,6 @@
 <!-- ![screenshot.jpg](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/2bafa837-39bc-044c-fd28-4689d3494914.jpeg) -->
 
-![screenshot.jpg](/img/6_c.jpeg)
+![screenshot.jpg](../../img/6_c.jpeg)
 
 ゲームエンジン、とタイトルにつけようか迷ったけれど、[minimax](https://github.com/roman01la/minimax)という名前の通り、ミニマリスト的なフレームワークなので、ゲームフレームワークとタイトルにはつけた。[^3]
 
