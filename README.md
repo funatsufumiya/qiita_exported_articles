@@ -6,4 +6,6 @@ https://funatsufumiya.github.io/qiita_exported_articles/items/index.html によ�
 
 ## License
 
-内容のライセンスは[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.en)とします。
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.en)
+
+Copyright (c) 2025 Fumiya Funatsu
