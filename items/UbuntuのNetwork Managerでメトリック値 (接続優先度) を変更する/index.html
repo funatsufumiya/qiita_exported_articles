@@ -1,3 +1,4 @@
+<h1>UbuntuのNetwork Managerでメトリック値 (接続優先度) を変更する</h1>
 <p data-sourcepos="1:1-1:273">ネットワークのメトリック値 (接続優先度、低いほど優先) を適切に設定することで、複数のネットワークに同時接続しても安定して使用できるようになる（例えばWi-Fiを常に有線LANより優先するなど）。</p>
 <p data-sourcepos="3:1-3:181"><code>ifmetric</code> コマンドでメトリック値を変更しても、一時的にしか反映されないので、Network Managerを使っている場合は <code>nmcli</code>から変更する。</p>
 <div class="code-frame" data-lang="bash" data-sourcepos="5:1-21:3"><div class="highlight"><pre><code><span class="c"># 確認</span>
