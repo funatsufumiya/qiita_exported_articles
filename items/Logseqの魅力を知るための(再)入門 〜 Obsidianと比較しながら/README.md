@@ -10,7 +10,7 @@
 
 Logseqを知らない人でも、[Obsidian](https://obsidian.md/)を知っている人は多いかもしれません。Obsidianはわかりやすくいえば、シンプルなマークダウン（テキスト）エディタでもあり、Evernoteの代替になるものでもあり、自分用のWikiを作れるものでもあります。
 
-![スクリーンショット 2024-11-05 12.01.23.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/144ace3c-230b-51ef-1b15-c169041ec7cd.png) [^g2]
+![スクリーンショット 2024-11-05 12.01.23.png](../../img/0_a.png) [^g2]
 
 ### (比較表)
 
