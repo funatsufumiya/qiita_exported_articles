@@ -1,4 +1,4 @@
-![social-banner-230118.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/44103/861a5319-d2ad-a791-f71f-285fbdb6bf7c.png) [^g1]
+![social-banner-230118.png](../../img/31_d.png) [^g1]
 
 [Logseq](https://logseq.com/)というツールをご存知でしょうか。
 
