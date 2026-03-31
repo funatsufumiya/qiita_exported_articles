@@ -85,9 +85,9 @@ TouchDesignerのオープンソース的代替候補については[冒頭で紹
 
 - [Cocos Creator](https://www.cocos.com/en/creator) ※ Cocos2d-xとは別物
 - [SDL3](https://wiki.libsdl.org/SDL3/NewFeatures) (C++ほか。)
-- [RavEngine](https://github.com/RavEngine/RavEngine/) (C++。[紹介記事](https://qiita.com/funatsufumiya/items/4a154378e490fdde42a8))
-- [Sinen](https://github.com/astomih/sinen) (C++。[紹介記事](https://qiita.com/funatsufumiya/items/db1e13033ca071425cf6))
-- [minimax](https://github.com/roman01la/minimax) (Clojure言語。[紹介記事](https://qiita.com/funatsufumiya/items/e41df266eb72b097074a))
+- [RavEngine](https://github.com/RavEngine/RavEngine/) (C++。[紹介記事](./RavEngineRGL%E3%81%A8%E3%81%84%E3%81%86%E6%96%B0%E3%81%97%E3%81%84%E9%A2%A8))
+- [Sinen](https://github.com/astomih/sinen) (C++。[紹介記事](./Sinen%20-%20Vulkan%E3%83%99%E3%83%BC%E3%82%B9%E3%81%AE%E3%82%AF%E3%83%AA%E3%82%A8%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0%E3%83%AF%E3%83%BC%E3%82%AF))
+- [minimax](https://github.com/roman01la/minimax) (Clojure言語。[紹介記事](./minimax%20-%20Clojure%E3%81%A7%E6%9B%B8%E3%81%8B%E3%82%8C%E3%81%9F%E3%80%81DirectX11VulkanMetal%E5%AF%BE%E5%BF%9C%E3%81%AE%E3%83%9F%E3%83%8B%E3%83%9E%E3%83%AB%E3%81%AA%E3%82%B2%E3%83%BC%E3%83%A0%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0%E3%83%AF%E3%83%BC%E3%82%AF))
 - [OGRE-Next](https://github.com/OGRECave/ogre-next) (C++)
 - [Mach Engine](https://machengine.org/) (Zig言語)
 - [Odin Language](https://odin-lang.org/) (Odin言語 [^1])
